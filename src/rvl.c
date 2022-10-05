@@ -42,7 +42,7 @@ rvl_write_INFO (RVL_t *self, const RVLInfo_t *info)
   memcpy (&buf[19], info->voxelSize, 12);
   memcpy (&buf[31], info->originCoord, 12);
 
-  rvl_write_chunk_header (self, RVL_CHUNK_CODE_INFO, byteSize);
+  rvl_write_chunk_header (self, RVLChunkCode_INFO, byteSize);
   rvl_write_chunk_payload (self, buf, byteSize);
   rvl_write_chunk_end (self);
 }
@@ -54,7 +54,7 @@ rvl_write_DATA (RVL_t *self, RVLConstByte_t *data, RVLSize_t size)
   const int compressedSize = LZ4_compress_HC ((char *)data, compressedBuf,
                                               size, size, LZ4HC_CLEVEL_MIN);
 
-  rvl_write_chunk_header (self, RVL_CHUNK_CODE_DATA, compressedSize);
+  rvl_write_chunk_header (self, RVLChunkCode_DATA, compressedSize);
   rvl_write_chunk_payload (self, (RVLConstByte_t *)compressedBuf,
                            compressedSize);
   rvl_write_chunk_end (self);
@@ -81,7 +81,7 @@ rvl_write_TEXT (RVL_t *self, const RVLText_t *arrText, int numText)
           keySize = 79;
         }
 
-      rvl_write_chunk_header (self, RVL_CHUNK_CODE_TEXT,
+      rvl_write_chunk_header (self, RVLChunkCode_TEXT,
                               keySize + valueSize + 1);
 
       // Chunk Payload
@@ -102,7 +102,7 @@ rvl_write_TEXT (RVL_t *self, const RVLText_t *arrText, int numText)
 void
 rvl_write_END (RVL_t *self)
 {
-  rvl_write_chunk_header (self, RVL_CHUNK_CODE_END, 0);
+  rvl_write_chunk_header (self, RVLChunkCode_END, 0);
   rvl_write_chunk_payload (self, NULL, 0);
   rvl_write_chunk_end (self);
 }

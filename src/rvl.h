@@ -71,10 +71,10 @@ typedef struct
 
 typedef enum
 {
-  RVL_CHUNK_CODE_INFO = CHUNK_CODE (73, 78, 70, 79),
-  RVL_CHUNK_CODE_DATA = CHUNK_CODE (68, 65, 84, 65),
-  RVL_CHUNK_CODE_TEXT = CHUNK_CODE (84, 69, 88, 84),
-  RVL_CHUNK_CODE_END = CHUNK_CODE (69, 78, 68, 32),
+  RVLChunkCode_INFO = CHUNK_CODE (73, 78, 70, 79),
+  RVLChunkCode_DATA = CHUNK_CODE (68, 65, 84, 65),
+  RVLChunkCode_TEXT = CHUNK_CODE (84, 69, 88, 84),
+  RVLChunkCode_END = CHUNK_CODE (69, 78, 68, 32),
 } RVLChunkCode_t;
 
 // vHDR
