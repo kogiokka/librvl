@@ -4,7 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "rvl.h"
+#include "detail/rvl_p.h"
+
+#include "detail/rvl_data_p.h"
+#include "detail/rvl_info_p.h"
+#include "detail/rvl_text_p.h"
 
 #define SIG_SIZE 12
 
@@ -20,41 +24,6 @@ static void rvl_write_DATA_chunk (RVL_t *self, const RVLData_t *data);
 static void rvl_write_TEXT_chunk (RVL_t *self, const RVLText_t *arrText,
                                   int numText);
 static void rvl_write_END_chunk (RVL_t *self);
-
-RVL_t *
-rvl_create (const char *filename, RVLIoState_t ioState)
-{
-  RVL_t *self = (RVL_t *)malloc (sizeof (RVL_t));
-  self->version[0] = RVL_VERSION_MAJOR;
-  self->version[1] = RVL_VERSION_MINOR;
-  self->ioState = ioState;
-
-  switch (ioState)
-    {
-    case RVLIoState_Read:
-      self->io = fopen (filename, "rb");
-      break;
-    case RVLIoState_Write:
-      self->io = fopen (filename, "wb");
-      break;
-    }
-
-  return self;
-}
-
-void
-rvl_destroy (RVL_t **self)
-{
-  RVL_t *ptr = *self;
-  rvl_info_destroy (&ptr->info);
-  rvl_text_array_destroy (&ptr->text);
-  rvl_data_destroy (&ptr->data);
-
-  fclose (ptr->io);
-  free (ptr);
-
-  *self = NULL;
-}
 
 void
 rvl_set_INFO (RVL_t *self, RVLInfo_t **info)
@@ -116,12 +85,6 @@ rvl_write (RVL_t *self)
 }
 
 void
-rvl_read (RVL_t *self)
-{
-  // TODO
-}
-
-void
 rvl_write_file_sig (RVL_t *self)
 {
   // .RVL FORMAT\0
@@ -139,14 +102,21 @@ rvl_write_INFO_chunk (RVL_t *self, const RVLInfo_t *info)
   u8 *buf = calloc (1, byteSize);
 
   memcpy (&buf[0], self->version, 2);
-  buf[2] = info->gridType;
-  buf[3] = info->gridUnit;
-  buf[4] = info->dataDimen;
-  buf[5] = info->bitDepth;
-  buf[6] = info->endian;
-  memcpy (&buf[7], info->resolution, 12);
-  memcpy (&buf[19], info->voxelSize, 12);
-  memcpy (&buf[31], info->coordinates, 12);
+  buf[2] = info->grid.type;
+  buf[3] = info->grid.unit;
+  buf[4] = info->dataForm.format;
+  buf[5] = info->dataForm.bits;
+  buf[6] = info->dataForm.dimen;
+  buf[7] = info->endian;
+  memcpy (&buf[8], &info->resolution.x, 4);
+  memcpy (&buf[12], &info->resolution.y, 4);
+  memcpy (&buf[16], &info->resolution.z, 4);
+  memcpy (&buf[20], &info->voxelSize.x, 4);
+  memcpy (&buf[24], &info->voxelSize.y, 4);
+  memcpy (&buf[28], &info->voxelSize.z, 4);
+  memcpy (&buf[32], &info->position.x, 4);
+  memcpy (&buf[36], &info->position.y, 4);
+  memcpy (&buf[40], &info->position.z, 4);
 
   rvl_write_chunk_header (self, RVLChunkCode_INFO, byteSize);
   rvl_write_chunk_payload (self, buf, byteSize);

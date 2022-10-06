@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
-#include "rvl_text.h"
+#include "detail/rvl_p.h"
+#include "detail/rvl_text_p.h"
 
 RVLText_t *
 rvl_text_array_create (u32 num)
@@ -22,8 +23,8 @@ rvl_text_array_destroy (RVLText_t **self)
 }
 
 void
-rvl_text_set (RVLText_t *self, char *key, char *value)
+rvl_text_set (RVLText_t *textArr, int index, char *key, char *value)
 {
-  self->key = key;
-  self->value = value;
+  textArr[index].key = key;
+  textArr[index].value = value;
 }

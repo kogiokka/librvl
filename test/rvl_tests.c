@@ -1,7 +1,10 @@
-#include "../src/rvl.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../include/rvl.h"
+
+#include "../include/detail/rvl_p.h"
 
 static RVLInfo_t *init_info ();
 
@@ -28,8 +31,13 @@ rvl_test_data ()
 {
   RVLInfo_t *info = init_info ();
 
-  RVLData_t *data = rvl_data_create (info);
-  memset (data->buffer, 'A', data->size);
+  RVLData_t *data = rvl_data_create ();
+
+  unsigned char *buffer;
+
+  rvl_data_alloc(data, info);
+  unsigned int size = rvl_data_get_buffer (data, &buffer);
+  memset (buffer, 'A', size);
 
   RVL_t *rvl = rvl_create ("test_DATA.rvl", RVLIoState_Write);
   rvl_set_INFO (rvl, &info);
@@ -51,18 +59,18 @@ rvl_test_text ()
   RVLInfo_t *info = init_info ();
 
   int numText = 2;
-  RVLText_t *text = rvl_text_array_create (numText);
-  rvl_text_set (&text[0], "Title", "librvl");
-  rvl_text_set (&text[1], "Description",
+  RVLText_t *textArr = rvl_text_array_create (numText);
+  rvl_text_set (textArr, 0, "Title", "librvl");
+  rvl_text_set (textArr, 1, "Description",
                 "The Regular VoLumetric format reference library");
 
   RVL_t *rvl = rvl_create ("test_TEXT.rvl", RVLIoState_Write);
   rvl_set_INFO (rvl, &info);
-  rvl_set_TEXT (rvl, &text, numText);
+  rvl_set_TEXT (rvl, &textArr, numText);
   rvl_write (rvl);
 
   rvl_text_array_destroy (&rvl->text);
-  if (text != NULL || rvl->text != NULL)
+  if (textArr != NULL || rvl->text != NULL)
     {
       exit (EXIT_FAILURE);
     }
