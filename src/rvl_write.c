@@ -14,9 +14,9 @@
 
 static void rvl_write_chunk_header (RVL_t *self, RVLChunkCode_t code,
                                     u32 size);
-static void rvl_write_chunk_payload (RVL_t *self, u8const *data, u32 size);
+static void rvl_write_chunk_payload (RVL_t *self, rvlcbyte_t *data, u32 size);
 static void rvl_write_chunk_end (RVL_t *self);
-static void rvl_write_data (RVL_t *self, u8const *data, u32 size);
+static void rvl_write_data (RVL_t *self, rvlcbyte_t *data, u32 size);
 
 static void rvl_write_file_sig (RVL_t *self);
 static void rvl_write_INFO_chunk (RVL_t *self, const RVLInfo_t *info);
@@ -102,21 +102,15 @@ rvl_write_INFO_chunk (RVL_t *self, const RVLInfo_t *info)
   u8 *buf = calloc (1, byteSize);
 
   memcpy (&buf[0], self->version, 2);
-  buf[2] = info->grid.type;
-  buf[3] = info->grid.unit;
-  buf[4] = info->dataForm.format;
-  buf[5] = info->dataForm.bits;
-  buf[6] = info->dataForm.dimen;
+  buf[2] = info->gridType;
+  buf[3] = info->gridUnit;
+  buf[4] = info->dataFormat;
+  buf[5] = info->bitDepth;
+  buf[6] = info->dataDimen;
   buf[7] = info->endian;
-  memcpy (&buf[8], &info->resolution.x, 4);
-  memcpy (&buf[12], &info->resolution.y, 4);
-  memcpy (&buf[16], &info->resolution.z, 4);
-  memcpy (&buf[20], &info->voxelSize.x, 4);
-  memcpy (&buf[24], &info->voxelSize.y, 4);
-  memcpy (&buf[28], &info->voxelSize.z, 4);
-  memcpy (&buf[32], &info->position.x, 4);
-  memcpy (&buf[36], &info->position.y, 4);
-  memcpy (&buf[40], &info->position.z, 4);
+  memcpy (&buf[8], &info->resolution[0], 12);
+  memcpy (&buf[20], &info->voxelSize[0], 12);
+  memcpy (&buf[32], &info->position[0], 12);
 
   rvl_write_chunk_header (self, RVLChunkCode_INFO, byteSize);
   rvl_write_chunk_payload (self, buf, byteSize);
@@ -132,7 +126,7 @@ rvl_write_DATA_chunk (RVL_t *self, const RVLData_t *data)
                          data->size, LZ4HC_CLEVEL_MIN);
 
   rvl_write_chunk_header (self, RVLChunkCode_DATA, compressedSize);
-  rvl_write_chunk_payload (self, (u8const *)compressedBuf, compressedSize);
+  rvl_write_chunk_payload (self, (rvlcbyte_t *)compressedBuf, compressedSize);
   rvl_write_chunk_end (self);
 }
 
@@ -163,11 +157,11 @@ rvl_write_TEXT_chunk (RVL_t *self, const RVLText_t *arrText, int numText)
       // Chunk Payload
       memcpy (keyword, text->key, keySize);
       keyword[keySize] = '\0';
-      rvl_write_chunk_payload (self, (u8const *)keyword, keySize + 1);
+      rvl_write_chunk_payload (self, (rvlcbyte_t *)keyword, keySize + 1);
 
       if (valueSize != 0)
         {
-          rvl_write_chunk_payload (self, (u8const *)text->value, valueSize);
+          rvl_write_chunk_payload (self, (rvlcbyte_t *)text->value, valueSize);
         }
 
       rvl_write_chunk_end (self);
@@ -196,7 +190,7 @@ rvl_write_chunk_header (RVL_t *self, RVLChunkCode_t code, u32 size)
 }
 
 void
-rvl_write_chunk_payload (RVL_t *self, u8const *data, u32 size)
+rvl_write_chunk_payload (RVL_t *self, rvlcbyte_t *data, u32 size)
 {
   if (data != NULL && size > 0)
     {
@@ -211,7 +205,7 @@ rvl_write_chunk_end (RVL_t *self)
 }
 
 void
-rvl_write_data (RVL_t *self, u8const *data, u32 size)
+rvl_write_data (RVL_t *self, rvlcbyte_t *data, u32 size)
 {
   if (self->io == NULL)
     {

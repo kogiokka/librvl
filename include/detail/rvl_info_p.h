@@ -1,16 +1,19 @@
 #ifndef RVL_INFO_P_H
 #define RVL_INFO_P_H
 
-#include "../rvl.h"
+#include "rvl_p.h"
 
 struct RVLInfo
 {
-  RVLInfoGrid_t grid;
-  RVLInfoDataForm_t dataForm;
+  RVLGridType_t gridType;
+  RVLGridUnit_t gridUnit;
+  RVLDataFormat_t dataFormat;
+  RVLBitDepth_t bitDepth;
+  RVLDataDimen_t dataDimen;
   RVLEndian_t endian;
-  RVLVec3u_t resolution;
-  RVLVec3f_t voxelSize;
-  RVLVec3f_t position;
+  u32 resolution[3];
+  f32 voxelSize[3];
+  f32 position[3];
 };
 
 #endif

@@ -9,7 +9,7 @@
 typedef float f32;
 typedef uint8_t u8;
 typedef uint32_t u32;
-typedef const uint8_t u8const;
+typedef const uint8_t rvlcbyte_t;
 
 #define SHIFT32(byte, numBits) ((u32)(byte) << numBits)
 

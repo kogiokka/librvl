@@ -4,7 +4,7 @@
 #include "detail/rvl_text_p.h"
 
 RVLText_t *
-rvl_text_array_create (u32 num)
+rvl_text_array_create (int num)
 {
   RVLText_t *textarr = (RVLText_t *)malloc (sizeof (RVLText_t) * num);
   return textarr;

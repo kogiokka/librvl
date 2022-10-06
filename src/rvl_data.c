@@ -23,7 +23,7 @@ rvl_data_alloc (RVLData_t *self, RVLInfo_t *info)
     }
 
   const u32 size
-      = info->resolution.x * info->resolution.y * info->resolution.z;
+      = info->resolution[0] * info->resolution[1] * info->resolution[2];
   self->buffer = (u8 *)malloc (sizeof (u8) * size);
   self->size = size;
 }
@@ -45,13 +45,14 @@ rvl_data_destroy (RVLData_t **self)
 }
 
 void
-rvl_data_set (RVLData_t *self, uint8_t *data, uint32_t size, uint32_t offset)
+rvl_data_set (RVLData_t *self, rvlbyte_t *data, rvlsize_t size,
+              rvlsize_t offset)
 {
   memcpy (&self->buffer[offset], data, size);
 }
 
-uint32_t
-rvl_data_get_buffer (RVLData_t *self, uint8_t **buffer)
+rvlsize_t
+rvl_data_get_buffer (RVLData_t *self, rvlbyte_t **buffer)
 {
   *buffer = self->buffer;
   return self->size;
