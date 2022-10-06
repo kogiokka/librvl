@@ -19,6 +19,9 @@ target_compile_options(librvl PRIVATE
 
 target_sources(librvl PRIVATE
     "src/rvl.c"
+    "src/rvl_info.c"
+    "src/rvl_text.c"
+    "src/rvl_data.c"
 )
 
 target_link_libraries(librvl
