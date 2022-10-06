@@ -1,11 +1,50 @@
+/**
+ * rvl.h - Structs and functions for read/write an rvl file.
+ *
+ * Chunk
+ * =====
+ *
+ * Each chunk consists of three parts: size, code and payload.
+ *
+ * +00 4B chunk size (N bytes)
+ * +04 4B chunk code
+ * +08 NB chunk payload
+ *
+ * Chunk Codes
+ * ===========
+ *
+ * Currently, there are 4 types of chunk: INFO, DATA, TEXT, END.
+ *
+ * INFO Chunk
+ * ++++++++++
+ *
+ * INFO chunk holds the information on how to interpret the DATA chunk. The
+ * layout of the chunk payload is as follow:
+ *
+ * +00 1B    librvl major version
+ * +01 1B    librvl minor version
+ * +02 1B    grid type
+ * +03 1B    grid unit
+ * +04 1B    data format
+ * +05 1B    data dimensions
+ * +06 1B    bit depth
+ * +07 1B    endianness
+ * +08 12B   resolution
+ * +20 12B   voxel size
+ * +32 12B   coordinates of the lower corner of the dataset
+ *
+ * Total 44 bytes
+ *
+ */
+
 #ifndef RVL_H
 #define RVL_H
 
 #include <stdint.h>
 #include <stdio.h>
 
-#define RVL_VERSION_MAJOR 1
-#define RVL_VERSION_MINOR 0
+#define RVL_VERSION_MAJOR 0
+#define RVL_VERSION_MINOR 1
 
 typedef uint8_t RVLByte_t;
 typedef uint32_t RVLSize_t;
@@ -77,9 +116,6 @@ typedef enum
   RVLChunkCode_END = CHUNK_CODE (69, 78, 68, 32),
 } RVLChunkCode_t;
 
-// vHDR
-// 1 * 2 + 1 * 6 + 4 * 3 + 4 * 3 + 4 * 3 = 44 bytes
-// Padding with 32-bit boundary
 typedef struct
 {
   RVLByte_t version[2]; // major, minor
@@ -89,7 +125,6 @@ typedef struct
   RVLDataDimen_t dataDimen;
   RVLBitDepth_t bitDepth;
   RVLEndian_t endian;
-  //  -----------------   8 bytes
   uint32_t resolution[3];
   float voxelSize[3];
   float originCoord[3];
