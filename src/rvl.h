@@ -127,7 +127,7 @@ typedef struct
   RVLEndian_t endian;
   uint32_t resolution[3];
   float voxelSize[3];
-  float originCoord[3];
+  float coordinates[3];
 } RVLInfo_t;
 
 typedef struct

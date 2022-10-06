@@ -15,7 +15,7 @@ rvl_test_write_info ()
     .endian = RVLEndian_Little,
     .resolution = { 300, 400, 500 },
     .voxelSize = { 1.0f, 1.0f, 1.0f },
-    .originCoord = { -250.0f, 0.0f, -250.0f },
+    .coordinates = { -250.0f, 0.0f, -250.0f },
   };
 
   RVL_t rvl = {
