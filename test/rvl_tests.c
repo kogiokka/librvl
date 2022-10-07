@@ -77,17 +77,17 @@ rvl_test_text ()
   {
     RVL_t *rvl = rvl_create ("test_TEXT.rvl", RVLIoState_Read);
     rvl_read (rvl);
-    // RVLText_t *textArr;
-    // int numText;
-    // rvl_get_TEXT (rvl, &textArr, &numText);
+    RVLText_t *textArr;
+    int numText;
+    rvl_get_TEXT (rvl, &textArr, &numText);
 
-    // const char *key = NULL;
-    // const char *value = NULL;
-    // for (int i = 0; i < numText; i++)
-    //   {
-    //     rvl_text_get (textArr, i, &key, &value);
-    //     fprintf (stdout, "%s: %s\n", key, value);
-    //   }
+    const char *key = NULL;
+    const char *value = NULL;
+    for (int i = 0; i < numText; i++)
+      {
+        rvl_text_get (textArr, i, &key, &value);
+        fprintf (stdout, "%s: %s\n", key, value);
+      }
     rvl_destroy (&rvl);
   }
 }

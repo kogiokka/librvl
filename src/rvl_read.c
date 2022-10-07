@@ -168,44 +168,32 @@ void
 rvl_read_TEXT_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
 {
   RVLText_t *newArr = rvl_text_array_create (self->numText + 1);
-  for (int i = 0; i < self->numText; i++)
+  int numText = self->numText + 1;
+
+  if (self->text != NULL)
     {
-      strcpy (newArr[i].key, self->text[i].key);
-      newArr[i].value = self->text[i].value;
-      self->text[i].value = NULL;
+      memcpy (newArr, self->text, sizeof (RVLText_t) * self->numText);
+      free (self->text);
     }
 
-  const int index = self->numText + 1;
-  RVLText_t *newText = &newArr[index];
+  RVLText_t *newText = &newArr[numText - 1];
 
-  rvlsize_t keySize = 0;
-  rvlsize_t valueSize = 0;
-
+  // Both the key and the value will be null-terminated.
+  rvlsize_t nullPos = 0;
   for (rvlsize_t i = 0; i < size; i++)
     {
       if (buffer[i] == '\0')
         {
-          keySize = i + 1;
+          nullPos = i;
         }
     }
+  memcpy (newText->key, buffer, nullPos + 1);
 
-  valueSize = size - (keySize + 1);
-
-  memcpy (newText->key, buffer, keySize + 1);
-
+  rvlsize_t valueSize = size - (nullPos + 1);
   newText->value = (char *)malloc (valueSize + 1);
-  memcpy (newText->value, buffer + keySize + 1, valueSize);
+  memcpy (newText->value, buffer + nullPos + 1, valueSize);
   newText->value[valueSize + 1] = '\0';
 
-  if (self->text != NULL)
-    {
-      for (int i = 0; i < self->numText; i++)
-        {
-          free (self->text[i].value);
-        }
-      free (self->text);
-    }
-
   self->text = newArr;
-  self->numText += 1;
+  self->numText = numText;
 }
