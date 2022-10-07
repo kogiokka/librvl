@@ -19,7 +19,8 @@ static void rvl_read_file_sig (RVL_t *self);
 static void rvl_read_INFO_chunk (RVL_t *self, rvlbyte_t *buffer);
 static void rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer,
                                  rvlsize_t size);
-static void rvl_read_TEXT_chunk (RVL_t *self, rvlbyte_t *buffer);
+static void rvl_read_TEXT_chunk (RVL_t *self, rvlcbyte_t *buffer,
+                                 rvlsize_t size);
 
 void
 rvl_read_data (RVL_t *self, rvlbyte_t *data, rvlsize_t size)
@@ -89,6 +90,7 @@ rvl_read (RVL_t *self)
           rvl_read_DATA_chunk (self, payload, size);
           break;
         case RVLChunkCode_TEXT:
+          rvl_read_TEXT_chunk (self, payload, size);
           break;
         default:
           fprintf (stderr, "Unknown chunk code: %.4x, ", code);
@@ -142,8 +144,25 @@ rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
 }
 
 void
-rvl_read_TEXT_chunk (RVL_t *self, rvlbyte_t *buffer)
+rvl_read_TEXT_chunk (RVL_t *self, rvlcbyte_t *buffer, rvlsize_t size)
 {
   self->numText++;
-  // TODO
+  rvlsize_t keySize = 0;
+  rvlsize_t valueSize = 0;
+
+  for (rvlsize_t i = 0; i < size; i++)
+    {
+      if (buffer[i] == '\0')
+        {
+          keySize = i;
+        }
+    }
+
+  valueSize = size - keySize;
+
+  memcpy (self->text->key, buffer, keySize);
+
+  self->text->value = (char *)malloc (valueSize);
+  memcpy (self->text->value, buffer + keySize, valueSize);
 }
+

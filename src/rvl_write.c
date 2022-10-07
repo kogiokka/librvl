@@ -19,7 +19,7 @@ static void rvl_write_data (RVL_t *self, rvlcbyte_t *data, u32 size);
 static void rvl_write_file_sig (RVL_t *self);
 static void rvl_write_INFO_chunk (RVL_t *self, const RVLInfo_t *info);
 static void rvl_write_DATA_chunk (RVL_t *self, const RVLData_t *data);
-static void rvl_write_TEXT_chunk (RVL_t *self, const RVLText_t *arrText,
+static void rvl_write_TEXT_chunk (RVL_t *self, const RVLText_t *textArr,
                                   int numText);
 static void rvl_write_END_chunk (RVL_t *self);
 
@@ -124,33 +124,19 @@ rvl_write_DATA_chunk (RVL_t *self, const RVLData_t *data)
 }
 
 void
-rvl_write_TEXT_chunk (RVL_t *self, const RVLText_t *arrText, int numText)
+rvl_write_TEXT_chunk (RVL_t *self, const RVLText_t *textArr, int numText)
 {
   for (int i = 0; i < numText; i++)
     {
-      const RVLText_t *const text = &arrText[i];
-
-      char keyword[80];
-      u32 keySize = strlen (text->key);
-      u32 valueSize = strlen (text->value);
-
-      if (keySize >= 80)
-        {
-          fprintf (
-              stderr,
-              "[WARNING] Keyword length exceeds the maximum limit and will "
-              "be truncated:\n \"%s\"\n",
-              text->key);
-          keySize = 79;
-        }
+      const RVLText_t *const text = &textArr[i];
+      const rvlsize_t keySize = text->keySize;
+      const rvlsize_t valueSize = text->valueSize;
 
       rvl_write_chunk_header (self, RVLChunkCode_TEXT,
                               keySize + valueSize + 1);
 
-      // Chunk Payload
-      memcpy (keyword, text->key, keySize);
-      keyword[keySize] = '\0';
-      rvl_write_chunk_payload (self, (rvlcbyte_t *)keyword, keySize + 1);
+      // Include the null terminator
+      rvl_write_chunk_payload (self, (rvlcbyte_t *)text->key, keySize + 1);
 
       if (valueSize != 0)
         {
