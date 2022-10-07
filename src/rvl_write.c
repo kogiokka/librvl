@@ -10,8 +10,6 @@
 #include "detail/rvl_info_p.h"
 #include "detail/rvl_text_p.h"
 
-#define SIG_SIZE 12
-
 static void rvl_write_chunk_header (RVL_t *self, RVLChunkCode_t code,
                                     u32 size);
 static void rvl_write_chunk_payload (RVL_t *self, rvlcbyte_t *data, u32 size);
@@ -87,12 +85,7 @@ rvl_write (RVL_t *self)
 void
 rvl_write_file_sig (RVL_t *self)
 {
-  // .RVL FORMAT\0
-  u8 signature[SIG_SIZE] = {
-    131, 82, 86, 76, 32, 70, 79, 82, 77, 65, 84, 0,
-  };
-
-  rvl_write_data (self, signature, SIG_SIZE);
+  rvl_write_data (self, RVL_FILE_SIG, RVL_FILE_SIG_SIZE);
 }
 
 void

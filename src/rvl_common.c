@@ -1,7 +1,12 @@
 #include <stdlib.h>
 
-#include "rvl.h"
 #include "detail/rvl_p.h"
+#include "rvl.h"
+
+// .RVL FORMAT\0
+rvlbyte_t RVL_FILE_SIG[RVL_FILE_SIG_SIZE] = {
+  131, 82, 86, 76, 32, 70, 79, 82, 77, 65, 84, 0,
+};
 
 RVL_t *
 rvl_create (const char *filename, RVLIoState_t ioState)
