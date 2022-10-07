@@ -11,10 +11,11 @@
 #include "detail/rvl_text_p.h"
 
 static void rvl_write_chunk_header (RVL_t *self, RVLChunkCode_t code,
-                                    u32 size);
-static void rvl_write_chunk_payload (RVL_t *self, rvlcbyte_t *data, u32 size);
+                                    rvlsize_t size);
+static void rvl_write_chunk_payload (RVL_t *self, rvlcbyte_t *data,
+                                     rvlsize_t size);
 static void rvl_write_chunk_end (RVL_t *self);
-static void rvl_write_data (RVL_t *self, rvlcbyte_t *data, u32 size);
+static void rvl_write_data (RVL_t *self, rvlcbyte_t *data, rvlsize_t size);
 
 static void rvl_write_file_sig (RVL_t *self);
 static void rvl_write_INFO_chunk (RVL_t *self, const RVLInfo_t *info);
@@ -157,7 +158,7 @@ rvl_write_END_chunk (RVL_t *self)
 }
 
 void
-rvl_write_chunk_header (RVL_t *self, RVLChunkCode_t code, u32 size)
+rvl_write_chunk_header (RVL_t *self, RVLChunkCode_t code, rvlsize_t size)
 {
   u8 buf[8];
 
@@ -170,7 +171,7 @@ rvl_write_chunk_header (RVL_t *self, RVLChunkCode_t code, u32 size)
 }
 
 void
-rvl_write_chunk_payload (RVL_t *self, rvlcbyte_t *data, u32 size)
+rvl_write_chunk_payload (RVL_t *self, rvlcbyte_t *data, rvlsize_t size)
 {
   if (data != NULL && size > 0)
     {
@@ -185,7 +186,7 @@ rvl_write_chunk_end (RVL_t *self)
 }
 
 void
-rvl_write_data (RVL_t *self, rvlcbyte_t *data, u32 size)
+rvl_write_data (RVL_t *self, rvlcbyte_t *data, rvlsize_t size)
 {
   if (self->io == NULL)
     {
