@@ -7,7 +7,7 @@
 static RVLInfo_t *init_info ();
 
 void
-rvl_test_info ()
+rvl_test_write_INFO ()
 {
   RVLInfo_t *info = init_info ();
 
@@ -24,16 +24,57 @@ rvl_test_info ()
 }
 
 void
-rvl_test_data ()
+rvl_test_read_INFO ()
+{
+  RVL_t *rvl = rvl_create ("test_INFO.rvl", RVLIoState_Read);
+
+  rvl_read (rvl);
+
+  RVLInfo_t *info = NULL;
+  rvl_get_INFO (rvl, &info);
+
+  RVLGridType_t gridType;
+  RVLGridUnit_t unit;
+  RVLDataFormat_t format;
+  RVLBitDepth_t bitDepth;
+  RVLDataDimen_t dimen;
+  RVLEndian_t endian;
+  int res[3];
+  float vsize[3];
+  float pos[3];
+
+  rvl_info_get_grid (info, &gridType, &unit);
+  rvl_info_get_data_form (info, &format, &bitDepth, &dimen);
+  rvl_info_get_endian (info, &endian);
+  rvl_info_get_resolution (info, &res[0], &res[1], &res[2]);
+  rvl_info_get_voxel_size (info, &vsize[0], &vsize[1], &vsize[2]);
+  rvl_info_get_position (info, &pos[0], &pos[1], &pos[2]);
+
+  fprintf (stdout, "Grid - type: %d, unit: %d\n", gridType, unit);
+  fprintf (stdout, "Data Form - format: %d, bits: %d, dimensions: %d\n",
+           format, bitDepth, dimen);
+  fprintf (stdout, "Endian - %d", endian);
+  fprintf (stdout, "Resolution - x: %d, y: %d, z: %d\n", res[0], res[1],
+           res[2]);
+  fprintf (stdout, "Voxel Size - x: %.3f, y: %.3f, z: %.3f\n", vsize[0],
+           vsize[1], vsize[2]);
+  fprintf (stdout, "Position - x: %.3f, y: %.3f, z: %.3f\n", pos[0], pos[1],
+           pos[2]);
+
+  rvl_destroy (&rvl);
+}
+
+void
+rvl_test_write_DATA ()
 {
   RVLInfo_t *info = init_info ();
 
   RVLData_t *data = rvl_data_create ();
 
-  unsigned char *buffer;
+  rvlbyte_t *buffer;
 
   rvl_data_alloc (data, info);
-  unsigned int size = rvl_data_get_buffer (data, &buffer);
+  rvlsize_t size = rvl_data_get_buffer (data, &buffer);
   memset (buffer, 'A', size);
 
   RVL_t *rvl = rvl_create ("test_DATA.rvl", RVLIoState_Write);
@@ -45,6 +86,27 @@ rvl_test_data ()
     {
       exit (EXIT_FAILURE);
     }
+
+  rvl_destroy (&rvl);
+}
+
+void
+rvl_test_read_DATA ()
+{
+  RVL_t *rvl = rvl_create ("test_DATA.rvl", RVLIoState_Read);
+
+  rvl_read (rvl);
+
+  RVLInfo_t *info;
+  RVLData_t *data;
+
+  rvl_get_INFO (rvl, &info);
+  rvl_get_DATA (rvl, &data);
+
+  unsigned char *buffer;
+  rvlsize_t size = rvl_data_get_buffer (data, &buffer);
+
+  fwrite (buffer, 1, size, stdout);
 
   rvl_destroy (&rvl);
 }
@@ -103,3 +165,4 @@ init_info ()
   rvl_info_set_voxel_size (info, 1.0f, 1.0f, 1.0f);
   return info;
 }
+
