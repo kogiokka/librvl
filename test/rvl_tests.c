@@ -50,46 +50,45 @@ rvl_test_data ()
 }
 
 void
-rvl_test_text ()
+rvl_test_write_TEXT ()
 {
   RVLInfo_t *info = init_info ();
+  int numText = 2;
+  RVLText_t *textArr = rvl_text_array_create (numText);
+  rvl_text_set (textArr, 0, "Title", "librvl");
+  rvl_text_set (textArr, 1, "Description",
+                "The Regular VoLumetric format reference library");
 
-  {
-    int numText = 2;
-    RVLText_t *textArr = rvl_text_array_create (numText);
-    rvl_text_set (textArr, 0, "Title", "librvl");
-    rvl_text_set (textArr, 1, "Description",
-                  "The Regular VoLumetric format reference library");
+  RVL_t *rvl = rvl_create ("test_TEXT.rvl", RVLIoState_Write);
+  rvl_set_INFO (rvl, &info);
+  rvl_set_TEXT (rvl, &textArr, numText);
+  rvl_write (rvl);
 
-    RVL_t *rvl = rvl_create ("test_TEXT.rvl", RVLIoState_Write);
-    rvl_set_INFO (rvl, &info);
-    rvl_set_TEXT (rvl, &textArr, numText);
-    rvl_write (rvl);
+  if (textArr != NULL)
+    {
+      exit (EXIT_FAILURE);
+    }
 
-    if (textArr != NULL)
-      {
-        exit (EXIT_FAILURE);
-      }
+  rvl_destroy (&rvl);
+}
 
-    rvl_destroy (&rvl);
-  }
+void
+rvl_test_read_TEXT ()
+{
+  RVL_t *rvl = rvl_create ("test_TEXT.rvl", RVLIoState_Read);
+  rvl_read (rvl);
+  RVLText_t *textArr;
+  int numText;
+  rvl_get_TEXT (rvl, &textArr, &numText);
 
-  {
-    RVL_t *rvl = rvl_create ("test_TEXT.rvl", RVLIoState_Read);
-    rvl_read (rvl);
-    RVLText_t *textArr;
-    int numText;
-    rvl_get_TEXT (rvl, &textArr, &numText);
-
-    const char *key = NULL;
-    const char *value = NULL;
-    for (int i = 0; i < numText; i++)
-      {
-        rvl_text_get (textArr, i, &key, &value);
-        fprintf (stdout, "%s: %s\n", key, value);
-      }
-    rvl_destroy (&rvl);
-  }
+  const char *key = NULL;
+  const char *value = NULL;
+  for (int i = 0; i < numText; i++)
+    {
+      rvl_text_get (textArr, i, &key, &value);
+      fprintf (stdout, "%s: %s\n", key, value);
+    }
+  rvl_destroy (&rvl);
 }
 
 RVLInfo_t *
