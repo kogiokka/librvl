@@ -7,8 +7,6 @@ struct RVLText
 {
   char key[80];
   char *value;
-  rvlsize_t keySize;
-  rvlsize_t valueSize;
 };
 
 #endif

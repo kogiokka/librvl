@@ -15,6 +15,10 @@ rvl_create (const char *filename, RVLIoState_t ioState)
   self->version[0] = RVL_VERSION_MAJOR;
   self->version[1] = RVL_VERSION_MINOR;
   self->ioState = ioState;
+  self->info = NULL;
+  self->data = NULL;
+  self->text = NULL;
+  self->numText = 0;
 
   switch (ioState)
     {

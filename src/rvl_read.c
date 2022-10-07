@@ -16,10 +16,11 @@ static void rvl_read_chunk_payload (RVL_t *self, rvlbyte_t *data,
                                     rvlsize_t size);
 
 static void rvl_read_file_sig (RVL_t *self);
-static void rvl_read_INFO_chunk (RVL_t *self, rvlbyte_t *buffer);
+static void rvl_read_INFO_chunk (RVL_t *self, rvlbyte_t *buffer,
+                                 rvlsize_t size);
 static void rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer,
                                  rvlsize_t size);
-static void rvl_read_TEXT_chunk (RVL_t *self, rvlcbyte_t *buffer,
+static void rvl_read_TEXT_chunk (RVL_t *self, rvlbyte_t *buffer,
                                  rvlsize_t size);
 
 void
@@ -29,7 +30,7 @@ rvl_read_data (RVL_t *self, rvlbyte_t *data, rvlsize_t size)
 
   if (count != size)
     {
-      fprintf (stderr, "[ERROR] Read error occured!");
+      fprintf (stderr, "[ERROR] Read error occured!\n");
       exit (EXIT_FAILURE);
     }
 }
@@ -78,24 +79,40 @@ rvl_read (RVL_t *self)
   do
     {
       rvlsize_t size;
-      rvlbyte_t *payload = NULL;
       rvl_read_chunk_header (self, &size, &code);
-      rvl_read_chunk_payload (self, payload, size);
+#ifndef NDEBUG
+      char *ch = (char *)&code;
+      printf ("# Reading header\n"
+              "    size: %d\n"
+              "    code: %c%c%c%c\n",
+              size, ch[0], ch[1], ch[2], ch[3]);
+#endif
+
+      rvlbyte_t *buffer = (rvlbyte_t *)malloc (size);
+      rvl_read_chunk_payload (self, buffer, size);
+
       switch (code)
         {
         case RVLChunkCode_INFO:
-          rvl_read_INFO_chunk (self, payload);
+          rvl_read_INFO_chunk (self, buffer, size);
           break;
         case RVLChunkCode_DATA:
-          rvl_read_DATA_chunk (self, payload, size);
+          rvl_read_DATA_chunk (self, buffer, size);
           break;
         case RVLChunkCode_TEXT:
-          rvl_read_TEXT_chunk (self, payload, size);
+          rvl_read_TEXT_chunk (self, buffer, size);
+          break;
+        case RVLChunkCode_END:
           break;
         default:
-          fprintf (stderr, "Unknown chunk code: %.4x, ", code);
+          {
+            rvlcbyte_t *ch = (rvlcbyte_t *)&code;
+            fprintf (stderr, "Unknown chunk code: %c%c%c%c", ch[0], ch[1],
+                     ch[2], ch[3]);
+          }
           break;
         }
+      free (buffer);
     }
   while (code != RVLChunkCode_END);
 }
@@ -117,7 +134,7 @@ rvl_read_file_sig (RVL_t *self)
 }
 
 void
-rvl_read_INFO_chunk (RVL_t *self, rvlbyte_t *buffer)
+rvl_read_INFO_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
 {
   self->info = rvl_info_create ();
   self->info->gridType = buffer[2];
@@ -138,6 +155,8 @@ rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
   self->data = rvl_data_create ();
   rvl_data_alloc (self->data, self->info);
 
+  rvl_read_data (self, buffer, size);
+
   char *const src = (char *)buffer;
   char *const dst = (char *)self->data->buffer;
   const rvlsize_t srcSize = size;
@@ -146,11 +165,19 @@ rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
 }
 
 void
-rvl_read_TEXT_chunk (RVL_t *self, rvlcbyte_t *buffer, rvlsize_t size)
+rvl_read_TEXT_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
 {
-  self->text = rvl_text_array_create (1);
+  RVLText_t *newArr = rvl_text_array_create (self->numText + 1);
+  for (int i = 0; i < self->numText; i++)
+    {
+      strcpy (newArr[i].key, self->text[i].key);
+      newArr[i].value = self->text[i].value;
+      self->text[i].value = NULL;
+    }
 
-  self->numText++;
+  const int index = self->numText + 1;
+  RVLText_t *newText = &newArr[index];
+
   rvlsize_t keySize = 0;
   rvlsize_t valueSize = 0;
 
@@ -158,14 +185,27 @@ rvl_read_TEXT_chunk (RVL_t *self, rvlcbyte_t *buffer, rvlsize_t size)
     {
       if (buffer[i] == '\0')
         {
-          keySize = i;
+          keySize = i + 1;
         }
     }
 
-  valueSize = size - keySize;
+  valueSize = size - (keySize + 1);
 
-  memcpy (self->text->key, buffer, keySize);
+  memcpy (newText->key, buffer, keySize + 1);
 
-  self->text->value = (char *)malloc (valueSize);
-  memcpy (self->text->value, buffer + keySize, valueSize);
+  newText->value = (char *)malloc (valueSize + 1);
+  memcpy (newText->value, buffer + keySize + 1, valueSize);
+  newText->value[valueSize + 1] = '\0';
+
+  if (self->text != NULL)
+    {
+      for (int i = 0; i < self->numText; i++)
+        {
+          free (self->text[i].value);
+        }
+      free (self->text);
+    }
+
+  self->text = newArr;
+  self->numText += 1;
 }

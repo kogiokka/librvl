@@ -25,6 +25,7 @@ rvl_text_array_destroy (RVLText_t **self)
   *self = NULL;
 }
 
+// key and value must be null-terminated.
 void
 rvl_text_set (RVLText_t *textArr, int index, char *key, char *value)
 {
@@ -41,21 +42,26 @@ rvl_text_set (RVLText_t *textArr, int index, char *key, char *value)
                key);
       keySize = 79;
     }
-  if (valueSize > sizeof (rvlsize_t) - keySize)
+  if (valueSize > sizeof (rvlsize_t) - (keySize + 1))
     {
       fprintf (stderr,
                "[WARNING] Value length exceeds the maximum limit and will "
                "be truncated:\n \"%s\"\n",
                value);
-      valueSize = sizeof (rvlsize_t) - keySize;
+      valueSize = sizeof (rvlsize_t) - (keySize + 1);
     }
 
-  text->value = (char *)malloc (valueSize);
+  memcpy(text->key, key, keySize);
+  text->key[keySize] = '\0';
 
-  memcpy (text->key, key, keySize);
-  text->key[keySize + 1] = '\0';
-  memcpy (text->value, value, valueSize);
+  text->value = (char *)malloc (valueSize + 1);
+  strcpy(text->value, value);
+}
 
-  text->keySize = keySize;
-  text->valueSize = valueSize;
+void
+rvl_text_get (RVLText_t *textArr, int index, const char **key,
+              const char **value)
+{
+  *key = textArr[index].key;
+  *value = textArr[index].value;
 }

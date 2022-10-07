@@ -123,14 +123,15 @@ rvl_write_DATA_chunk (RVL_t *self, const RVLData_t *data)
   rvl_write_chunk_end (self);
 }
 
+// Strip off the null terminator at the end of the value string.
 void
 rvl_write_TEXT_chunk (RVL_t *self, const RVLText_t *textArr, int numText)
 {
   for (int i = 0; i < numText; i++)
     {
       const RVLText_t *const text = &textArr[i];
-      const rvlsize_t keySize = text->keySize;
-      const rvlsize_t valueSize = text->valueSize;
+      const rvlsize_t keySize = strlen (text->key);
+      const rvlsize_t valueSize = strlen (text->value);
 
       rvl_write_chunk_header (self, RVLChunkCode_TEXT,
                               keySize + valueSize + 1);
