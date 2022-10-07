@@ -133,8 +133,12 @@ void
 rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
 {
   rvl_data_alloc (self->data, self->info);
-  LZ4_decompress_safe ((char *)buffer, (char *)self->data->buffer, size,
-                       self->data->size);
+
+  char *const src = (char *)buffer;
+  char *const dst = (char *)self->data->buffer;
+  const rvlsize_t srcSize = size;
+  const rvlsize_t dstCap = self->data->size;
+  LZ4_decompress_safe (src, dst, srcSize, dstCap);
 }
 
 void
