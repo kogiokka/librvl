@@ -119,6 +119,7 @@ rvl_read_file_sig (RVL_t *self)
 void
 rvl_read_INFO_chunk (RVL_t *self, rvlbyte_t *buffer)
 {
+  self->info = rvl_info_create ();
   self->info->gridType = buffer[2];
   self->info->gridUnit = buffer[3];
   self->info->dataFormat = buffer[4];
@@ -134,6 +135,7 @@ rvl_read_INFO_chunk (RVL_t *self, rvlbyte_t *buffer)
 void
 rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
 {
+  self->data = rvl_data_create ();
   rvl_data_alloc (self->data, self->info);
 
   char *const src = (char *)buffer;
@@ -146,6 +148,8 @@ rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
 void
 rvl_read_TEXT_chunk (RVL_t *self, rvlcbyte_t *buffer, rvlsize_t size)
 {
+  self->text = rvl_text_array_create (1);
+
   self->numText++;
   rvlsize_t keySize = 0;
   rvlsize_t valueSize = 0;
@@ -165,4 +169,3 @@ rvl_read_TEXT_chunk (RVL_t *self, rvlcbyte_t *buffer, rvlsize_t size)
   self->text->value = (char *)malloc (valueSize);
   memcpy (self->text->value, buffer + keySize, valueSize);
 }
-
