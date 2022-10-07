@@ -11,6 +11,13 @@ typedef uint8_t u8;
 typedef uint32_t u32;
 typedef const uint8_t rvlcbyte_t;
 
+
+#define RVL_FILE_SIG_SIZE 12
+
+// .RVL FORMAT\0
+extern rvlbyte_t RVL_FILE_SIG[RVL_FILE_SIG_SIZE];
+
+
 #define SHIFT32(byte, numBits) ((u32)(byte) << numBits)
 
 // Little-endian

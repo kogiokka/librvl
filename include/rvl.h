@@ -143,6 +143,8 @@ void rvl_info_get_position (RVLInfo_t *self, float *x, float *y, float *z);
 RVLText_t *rvl_text_array_create (int num);
 void rvl_text_array_destroy (RVLText_t **self);
 void rvl_text_set (RVLText_t *textArr, int index, char *key, char *value);
+void rvl_text_get (RVLText_t *textArr, int index, const char **key,
+                   const char **value);
 
 RVLData_t *rvl_data_create ();
 void rvl_data_destroy (RVLData_t **self);
