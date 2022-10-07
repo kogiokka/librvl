@@ -155,8 +155,6 @@ rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
   self->data = rvl_data_create ();
   rvl_data_alloc (self->data, self->info);
 
-  rvl_read_data (self, buffer, size);
-
   char *const src = (char *)buffer;
   char *const dst = (char *)self->data->buffer;
   const rvlsize_t srcSize = size;
