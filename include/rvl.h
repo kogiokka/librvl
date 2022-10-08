@@ -45,59 +45,6 @@
 #define RVL_VERSION_MAJOR 0
 #define RVL_VERSION_MINOR 1
 
-typedef enum
-{
-  RVLDataFormat_Unsigned = 0,
-  RVLDataFormat_Signed = 1,
-  RVLDataFormat_IEEE754 = 2,
-} RVLDataFormat_t;
-
-typedef enum
-{
-  RVLDataDimen_Scalar = 1,
-  RVLDataDimen_Vec2 = 2,
-  RVLDataDimen_Vec3 = 3,
-  RVLDataDimen_Vec4 = 3,
-} RVLDataDimen_t;
-
-typedef enum
-{
-  RVLGridType_Cartesian = 0,
-  RVLGridType_Regular = 1,
-  RVLGridType_Rectilinear = 2,
-} RVLGridType_t;
-
-typedef enum
-{
-  RVLBitDepth_8Bits = 8,
-  RVLBitDepth_16Bits = 16,
-  RVLBitDepth_32Bits = 32,
-  RVLBitDepth_64Bits = 64,
-  RVLBitDepth_128Bits = 128,
-} RVLBitDepth_t;
-
-typedef enum
-{
-  RVLEndian_Big = 0,
-  RVLEndian_Little = 1,
-} RVLEndian_t;
-
-// -128 - N/A or unknown, n - 1.0e+n meter
-typedef enum
-{
-  RVLGridUnit_NA = -128,
-  RVLGridUnit_Meter = 0,
-  RVLGridUnit_Kilometer = 3,
-  RVLGridUnit_Centimeter = -2,
-  RVLGridUnit_Milimeter = -3,
-} RVLGridUnit_t;
-
-typedef enum
-{
-  RVLIoState_Read,
-  RVLIoState_Write,
-} RVLIoState_t;
-
 typedef struct RVL RVL_t;
 typedef struct RVLInfo RVLInfo_t;
 typedef struct RVLData RVLData_t;
@@ -105,6 +52,49 @@ typedef struct RVLText RVLText_t;
 
 typedef uint8_t rvlbyte_t;
 typedef uint32_t rvlsize_t;
+
+typedef uint8_t RVLDataFormat_t;
+typedef uint8_t RVLBitDepth_t;
+typedef uint8_t RVLDataDimen_t;
+
+typedef uint8_t RVLGridType_t;
+typedef uint8_t RVLEndian_t;
+typedef int8_t RVLGridUnit_t;
+
+#define RVLDataFormat_Unsigned 0
+#define RVLDataFormat_Signed 1
+#define RVLDataFormat_IEEE754 2
+
+#define RVLDataDimen_Scalar 1
+#define RVLDataDimen_Vec2 2
+#define RVLDataDimen_Vec3 3
+#define RVLDataDimen_Vec4 3
+
+#define RVLGridType_Cartesian 0
+#define RVLGridType_Regular 1
+#define RVLGridType_Rectilinear 2
+
+#define RVLBitDepth_8Bits 8
+#define RVLBitDepth_16Bits 16
+#define RVLBitDepth_32Bits 32
+#define RVLBitDepth_64Bits 64
+#define RVLBitDepth_128Bits 128
+
+#define RVLEndian_Big 0
+#define RVLEndian_Little 1
+
+// -128 - N/A or unknown, n - 1.0e+n meter
+#define RVLGridUnit_NA -128
+#define RVLGridUnit_Milimeter -3
+#define RVLGridUnit_Centimeter -2
+#define RVLGridUnit_Meter 0
+#define RVLGridUnit_Kilometer 3
+
+typedef enum
+{
+  RVLIoState_Read,
+  RVLIoState_Write,
+} RVLIoState_t;
 
 RVL_t *rvl_create (const char *filename, RVLIoState_t ioState);
 void rvl_destroy (RVL_t **self);

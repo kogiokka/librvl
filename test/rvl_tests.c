@@ -61,6 +61,11 @@ rvl_test_read_INFO ()
   fprintf (stdout, "Position - x: %.3f, y: %.3f, z: %.3f\n", pos[0], pos[1],
            pos[2]);
 
+  if (unit != RVLGridUnit_NA)
+    {
+      exit (EXIT_FAILURE);
+    }
+
   rvl_destroy (&rvl);
 }
 
@@ -165,4 +170,3 @@ init_info ()
   rvl_info_set_voxel_size (info, 1.0f, 1.0f, 1.0f);
   return info;
 }
-
