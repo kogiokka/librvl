@@ -6,26 +6,24 @@
 
 #include "detail/rvl_write_p.h"
 
-#include "detail/rvl_data_p.h"
-#include "detail/rvl_info_p.h"
 #include "detail/rvl_text_p.h"
 
 void
-rvl_write_INFO_chunk (RVL *self, const RVLInfo *info)
+rvl_write_INFO_chunk (RVL *self)
 {
   u32 byteSize = 44;
   u8 *buf = calloc (1, byteSize);
 
   memcpy (&buf[0], self->version, 2);
-  buf[2] = info->gridType;
-  buf[3] = info->gridUnit;
-  buf[4] = info->dataFormat;
-  buf[5] = info->bitDepth;
-  buf[6] = info->dataDimen;
-  buf[7] = info->endian;
-  memcpy (&buf[8], &info->resolution[0], 12);
-  memcpy (&buf[20], &info->voxelSize[0], 12);
-  memcpy (&buf[32], &info->position[0], 12);
+  buf[2] = self->gridType;
+  buf[3] = self->gridUnit;
+  buf[4] = self->dataFormat;
+  buf[5] = self->bitDepth;
+  buf[6] = self->dataDimen;
+  buf[7] = self->endian;
+  memcpy (&buf[8], &self->resolution[0], 12);
+  memcpy (&buf[20], &self->voxelSize[0], 12);
+  memcpy (&buf[32], &self->position[0], 12);
 
   rvl_write_chunk_header (self, RVLChunkCode_INFO, byteSize);
   rvl_write_chunk_payload (self, buf, byteSize);
@@ -33,12 +31,17 @@ rvl_write_INFO_chunk (RVL *self, const RVLInfo *info)
 }
 
 void
-rvl_write_DATA_chunk (RVL *self, const RVLData *data)
+rvl_write_DATA_chunk (RVL *self)
 {
-  char *compressedBuf = (char *)malloc (data->size);
+  if (self->data.buffer == NULL)
+    {
+      return;
+    }
+
+  char *compressedBuf = (char *)malloc (self->data.size);
   const int compressedSize
-      = LZ4_compress_HC ((char *)data->buffer, compressedBuf, data->size,
-                         data->size, LZ4HC_CLEVEL_MIN);
+      = LZ4_compress_HC ((char *)self->data.buffer, compressedBuf,
+                         self->data.size, self->data.size, LZ4HC_CLEVEL_MIN);
 
   rvl_write_chunk_header (self, RVLChunkCode_DATA, compressedSize);
   rvl_write_chunk_payload (self, (RVLConstByte *)compressedBuf,

@@ -6,14 +6,14 @@
 #include "detail/rvl_text_p.h"
 
 RVLText *
-rvl_text_array_create (int num)
+rvl_text_create_array (int num)
 {
   RVLText *textarr = (RVLText *)malloc (sizeof (RVLText) * num);
   return textarr;
 }
 
 void
-rvl_text_array_destroy (RVLText **self)
+rvl_text_destroy_array (RVLText **self)
 {
   if (*self == NULL)
     {

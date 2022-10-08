@@ -5,8 +5,6 @@
 
 #include "detail/rvl_read_p.h"
 
-#include "detail/rvl_data_p.h"
-#include "detail/rvl_info_p.h"
 #include "detail/rvl_text_p.h"
 
 void
@@ -25,36 +23,34 @@ rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size)
 void
 rvl_read_INFO_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 {
-  self->info = rvl_info_create ();
-  self->info->gridType = buffer[2];
-  self->info->gridUnit = buffer[3];
-  self->info->dataFormat = buffer[4];
-  self->info->bitDepth = buffer[5];
-  self->info->dataDimen = buffer[6];
-  self->info->endian = buffer[7];
+  self->gridType = buffer[2];
+  self->gridUnit = buffer[3];
+  self->dataFormat = buffer[4];
+  self->bitDepth = buffer[5];
+  self->dataDimen = buffer[6];
+  self->endian = buffer[7];
 
-  memcpy (&self->info->resolution, &buffer[8], 12);
-  memcpy (&self->info->voxelSize, &buffer[20], 12);
-  memcpy (&self->info->position, &buffer[32], 12);
+  memcpy (&self->resolution, &buffer[8], 12);
+  memcpy (&self->voxelSize, &buffer[20], 12);
+  memcpy (&self->position, &buffer[32], 12);
 }
 
 void
 rvl_read_DATA_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 {
-  self->data = rvl_data_create ();
-  rvl_data_alloc (self->data, self->info);
+  rvl_alloc_data_buffer(self);
 
   char *const src = (char *)buffer;
-  char *const dst = (char *)self->data->buffer;
+  char *const dst = (char *)self->data.buffer;
   const RVLSize srcSize = size;
-  const RVLSize dstCap = self->data->size;
+  const RVLSize dstCap = self->data.size;
   LZ4_decompress_safe (src, dst, srcSize, dstCap);
 }
 
 void
 rvl_read_TEXT_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 {
-  RVLText *newArr = rvl_text_array_create (self->numText + 1);
+  RVLText *newArr = rvl_text_create_array (self->numText + 1);
   int numText = self->numText + 1;
 
   if (self->text != NULL)

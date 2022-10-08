@@ -21,9 +21,9 @@ target_sources(librvl PRIVATE
     "src/rvl_write.c"
     "src/rvl_read.c"
     "src/rvl_common.c"
-    "src/rvl_info.c"
     "src/rvl_text.c"
-    "src/rvl_data.c"
+    "src/rvl_get.c"
+    "src/rvl_set.c"
 
     "src/detail/rvl_write_p.c"
     "src/detail/rvl_read_p.c"

@@ -33,9 +33,7 @@ void
 rvl_destroy (RVL **self)
 {
   RVL *ptr = *self;
-  rvl_info_destroy (&ptr->info);
-  rvl_text_array_destroy (&ptr->text);
-  rvl_data_destroy (&ptr->data);
+  rvl_text_destroy_array (&ptr->text);
 
   fclose (ptr->io);
   free (ptr);
@@ -50,8 +48,6 @@ rvl_create (const char *filename, RVLIoState ioState)
   self->version[0] = RVL_VERSION_MAJOR;
   self->version[1] = RVL_VERSION_MINOR;
   self->ioState = ioState;
-  self->info = NULL;
-  self->data = NULL;
   self->text = NULL;
   self->numText = 0;
 
@@ -66,4 +62,19 @@ rvl_create (const char *filename, RVLIoState ioState)
     }
 
   return self;
+}
+
+void
+rvl_alloc_data_buffer (RVL *self)
+{
+  if (self->data.buffer != NULL)
+    {
+      free (self->data.buffer);
+    }
+
+  const u32 *res = self->resolution;
+  const RVLSize size = res[0] * res[1] * res[2];
+
+  self->data.buffer = (RVLByte *)malloc (size);
+  self->data.size = size;
 }

@@ -14,6 +14,12 @@ typedef const uint8_t RVLConstByte;
 typedef void (*RVLWriteFn) (RVL *, RVLConstByte *, RVLSize);
 typedef void (*RVLReadFn) (RVL *, RVLByte *, RVLSize);
 
+typedef struct
+{
+  RVLByte *buffer;
+  RVLSize size;
+} RVLData;
+
 /**
  * Chunk code constants
  *
@@ -51,14 +57,25 @@ struct RVL
   RVLIoState ioState;
 
   /* INFO chunk */
-  RVLInfo *info;
+  RVLGridType gridType;
+  RVLGridUnit gridUnit;
+  RVLDataFormat dataFormat;
+  RVLBitDepth bitDepth;
+  RVLDataDimen dataDimen;
+  RVLEndian endian;
+  u32 resolution[3];
+  f32 voxelSize[3];
+  f32 position[3];
 
   /* TEXT chunk */
   RVLText *text;
   int numText;
 
   /* DATA chunk */
-  RVLData *data;
+  RVLData data;
 };
+
+RVLText *rvl_text_create_array (int num);
+void rvl_text_destroy_array (RVLText **self);
 
 #endif

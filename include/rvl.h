@@ -46,8 +46,6 @@
 #define RVL_VERSION_MINOR 1
 
 typedef struct RVL RVL;
-typedef struct RVLInfo RVLInfo;
-typedef struct RVLData RVLData;
 typedef struct RVLText RVLText;
 
 typedef uint8_t RVLByte;
@@ -94,47 +92,42 @@ RVL *rvl_create_writer (const char *filename);
 RVL *rvl_create_reader (const char *filename);
 void rvl_destroy (RVL **self);
 
-void rvl_set_INFO (RVL *self, RVLInfo **info);
-void rvl_set_TEXT (RVL *self, RVLText **text, int numText);
-void rvl_set_DATA (RVL *self, RVLData **data);
-
-void rvl_get_INFO (RVL *self, RVLInfo **info);
-void rvl_get_TEXT (RVL *self, RVLText **text, int *numText);
-void rvl_get_DATA (RVL *self, RVLData **data);
-
 void rvl_write (RVL *self);
 void rvl_read (RVL *self);
 
-RVLInfo *rvl_info_create ();
-void rvl_info_destroy (RVLInfo **self);
-void rvl_info_set_grid (RVLInfo *self, RVLGridType gridType,
-                        RVLGridUnit gridUnit);
-void rvl_info_set_data_form (RVLInfo *self, RVLDataFormat format,
-                             RVLBitDepth bits, RVLDataDimen dimen);
-void rvl_info_set_endian (RVLInfo *self, RVLEndian endian);
-void rvl_info_set_resolution (RVLInfo *self, int x, int y, int z);
-void rvl_info_set_voxel_size (RVLInfo *self, float x, float y, float z);
-void rvl_info_set_position (RVLInfo *self, float x, float y, float z);
+void rvl_set_grid_type (RVL *self, RVLGridType gridType);
+void rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit);
+void rvl_set_data_format (RVL *self, RVLDataFormat format);
+void rvl_set_data_dimensions (RVL *self, RVLDataDimen dimen);
+void rvl_set_data_bit_depth (RVL *self, RVLBitDepth bitDepth);
+void rvl_set_endian (RVL *self, RVLEndian endian);
 
-void rvl_info_get_grid (RVLInfo *self, RVLGridType *type, RVLGridUnit *unit);
-void rvl_info_get_data_form (RVLInfo *self, RVLDataFormat *format,
-                             RVLBitDepth *bits, RVLDataDimen *dimen);
-void rvl_info_get_endian (RVLInfo *self, RVLEndian *endian);
-void rvl_info_get_resolution (RVLInfo *self, int *x, int *y, int *z);
-void rvl_info_get_voxel_size (RVLInfo *self, float *x, float *y, float *z);
-void rvl_info_get_position (RVLInfo *self, float *x, float *y, float *z);
+void rvl_set_resolution (RVL *self, int x, int y, int z);
+void rvl_set_voxel_size (RVL *self, float x, float y, float z);
+void rvl_set_position (RVL *self, float x, float y, float z);
 
-RVLText *rvl_text_array_create (int num);
-void rvl_text_array_destroy (RVLText **self);
+RVLGridType rvl_get_grid_type (RVL *self);
+RVLGridUnit rvl_get_grid_unit (RVL *self);
+RVLDataDimen rvl_get_data_dimensions (RVL *self);
+RVLDataFormat rvl_get_data_format (RVL *self);
+RVLBitDepth rvl_get_data_bit_depth (RVL *self);
+RVLEndian rvl_get_endian (RVL *self);
+
+void rvl_get_resolution (RVL *self, int *x, int *y, int *z);
+void rvl_get_voxel_size (RVL *self, float *x, float *y, float *z);
+void rvl_get_position (RVL *self, float *x, float *y, float *z);
+
+RVLText *rvl_text_create_array (int num);
+void rvl_text_destroy_array (RVLText **self);
+void rvl_set_text (RVL *self, RVLText **text, int numText);
+void rvl_get_text (RVL *self, RVLText **text, int *numText);
 void rvl_text_set (RVLText *textArr, int index, char *key, char *value);
 void rvl_text_get (RVLText *textArr, int index, const char **key,
                    const char **value);
 
-RVLData *rvl_data_create ();
-void rvl_data_destroy (RVLData **self);
-void rvl_data_alloc (RVLData *self, RVLInfo *info);
-void rvl_data_set_sub_range (RVLData *self, RVLSize offset, RVLSize size,
-                             RVLByte *data);
-RVLSize rvl_data_get_buffer (RVLData *self, RVLByte **buffer);
+void rvl_alloc_data_buffer (RVL *self);
+void rvl_set_sub_data_buffer (RVL *self, RVLSize offset, RVLSize size,
+                              RVLByte *data);
+void rvl_get_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size);
 
 #endif

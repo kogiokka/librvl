@@ -54,22 +54,3 @@ rvl_read (RVL *self)
     }
   while (code != RVLChunkCode_END);
 }
-
-void
-rvl_get_INFO (RVL *self, RVLInfo **info)
-{
-  *info = self->info;
-}
-
-void
-rvl_get_DATA (RVL *self, RVLData **data)
-{
-  *data = self->data;
-}
-
-void
-rvl_get_TEXT (RVL *self, RVLText **text, int *numText)
-{
-  *text = self->text;
-  *numText = self->numText;
-}
