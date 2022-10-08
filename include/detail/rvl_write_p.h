@@ -14,5 +14,6 @@ void rvl_write_END_chunk (RVL_t *self);
 
 void rvl_write_file_sig (RVL_t *self);
 void rvl_write_data (RVL_t *self, rvlcbyte_t *data, rvlsize_t size);
+void rvl_write_data_default (RVL_t *self, rvlcbyte_t *data, rvlsize_t size);
 
 #endif

@@ -11,7 +11,7 @@ rvl_test_write_INFO ()
 {
   RVLInfo_t *info = init_info ();
 
-  RVL_t *rvl = rvl_create ("test_INFO.rvl", RVLIoState_Write);
+  RVL_t *rvl = rvl_create_writer ("test_INFO.rvl");
   rvl_set_INFO (rvl, &info);
   rvl_write (rvl);
 
@@ -26,7 +26,7 @@ rvl_test_write_INFO ()
 void
 rvl_test_read_INFO ()
 {
-  RVL_t *rvl = rvl_create ("test_INFO.rvl", RVLIoState_Read);
+  RVL_t *rvl = rvl_create_reader ("test_INFO.rvl");
 
   rvl_read (rvl);
 
@@ -82,7 +82,7 @@ rvl_test_write_DATA ()
   rvlsize_t size = rvl_data_get_buffer (data, &buffer);
   memset (buffer, 'A', size);
 
-  RVL_t *rvl = rvl_create ("test_DATA.rvl", RVLIoState_Write);
+  RVL_t *rvl = rvl_create_writer ("test_DATA.rvl");
   rvl_set_INFO (rvl, &info);
   rvl_set_DATA (rvl, &data);
   rvl_write (rvl);
@@ -98,7 +98,7 @@ rvl_test_write_DATA ()
 void
 rvl_test_read_DATA ()
 {
-  RVL_t *rvl = rvl_create ("test_DATA.rvl", RVLIoState_Read);
+  RVL_t *rvl = rvl_create_reader ("test_DATA.rvl");
 
   rvl_read (rvl);
 
@@ -126,7 +126,7 @@ rvl_test_write_TEXT ()
   rvl_text_set (textArr, 1, "Description",
                 "The Regular VoLumetric format reference library");
 
-  RVL_t *rvl = rvl_create ("test_TEXT.rvl", RVLIoState_Write);
+  RVL_t *rvl = rvl_create_writer ("test_TEXT.rvl");
   rvl_set_INFO (rvl, &info);
   rvl_set_TEXT (rvl, &textArr, numText);
   rvl_write (rvl);
@@ -142,7 +142,7 @@ rvl_test_write_TEXT ()
 void
 rvl_test_read_TEXT ()
 {
-  RVL_t *rvl = rvl_create ("test_TEXT.rvl", RVLIoState_Read);
+  RVL_t *rvl = rvl_create_reader ("test_TEXT.rvl");
   rvl_read (rvl);
   RVLText_t *textArr;
   int numText;

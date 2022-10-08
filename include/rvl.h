@@ -90,13 +90,8 @@ typedef int8_t RVLGridUnit_t;
 #define RVLGridUnit_Meter 0
 #define RVLGridUnit_Kilometer 3
 
-typedef enum
-{
-  RVLIoState_Read,
-  RVLIoState_Write,
-} RVLIoState_t;
-
-RVL_t *rvl_create (const char *filename, RVLIoState_t ioState);
+RVL_t *rvl_create_writer (const char *filename);
+RVL_t *rvl_create_reader (const char *filename);
 void rvl_destroy (RVL_t **self);
 
 void rvl_set_INFO (RVL_t *self, RVLInfo_t **info);

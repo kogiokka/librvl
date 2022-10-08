@@ -11,6 +11,9 @@ typedef uint8_t u8;
 typedef uint32_t u32;
 typedef const uint8_t rvlcbyte_t;
 
+typedef void (*RVLWriteFn_t) (RVL_t *, rvlcbyte_t *, rvlsize_t);
+typedef void (*RVLReadFn_t) (RVL_t *, rvlbyte_t *, rvlsize_t);
+
 /**
  * Chunk code constants
  *
@@ -32,9 +35,18 @@ typedef uint32_t RVLChunkCode_t;
 #define RVL_FILE_SIG_SIZE 12
 extern rvlbyte_t RVL_FILE_SIG[RVL_FILE_SIG_SIZE];
 
+typedef enum
+{
+  RVLIoState_Read,
+  RVLIoState_Write,
+} RVLIoState_t;
+
 struct RVL
 {
   FILE *io;
+  RVLWriteFn_t writeData;
+  RVLReadFn_t readData;
+
   u8 version[2]; // major, minor
   RVLIoState_t ioState;
 

@@ -115,6 +115,21 @@ rvl_write_file_sig (RVL_t *self)
 void
 rvl_write_data (RVL_t *self, rvlcbyte_t *data, rvlsize_t size)
 {
+  if (self->writeData == NULL)
+    {
+      fprintf (
+          stderr,
+          "[ERROR] The write data function is NULL. Might be due to wrong "
+          "read/write instance of RVL_t.\n");
+      exit (EXIT_FAILURE);
+    }
+
+  self->writeData (self, data, size);
+}
+
+void
+rvl_write_data_default (RVL_t *self, rvlcbyte_t *data, rvlsize_t size)
+{
   if (self->io == NULL)
     {
       fprintf (stderr, "[ERROR] RVL_t is not initialized!");

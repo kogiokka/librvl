@@ -104,6 +104,26 @@ rvl_read_file_sig (RVL_t *self)
 void
 rvl_read_data (RVL_t *self, rvlbyte_t *data, rvlsize_t size)
 {
+  if (self->readData == NULL)
+    {
+      fprintf (stderr,
+               "[ERROR] The read data function is NULL. Might be due to wrong "
+               "read/write instance of RVL_t.\n");
+      exit (EXIT_FAILURE);
+    }
+
+  self->readData (self, data, size);
+}
+
+void
+rvl_read_data_default (RVL_t *self, rvlbyte_t *data, rvlsize_t size)
+{
+  if (self->io == NULL)
+    {
+      fprintf (stderr, "[ERROR] RVL_t is not initialized!");
+      exit (EXIT_FAILURE);
+    }
+
   const size_t count = fread (data, 1, size, self->io);
 
   if (count != size)

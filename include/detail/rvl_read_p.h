@@ -13,5 +13,6 @@ void rvl_read_TEXT_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size);
 
 void rvl_read_file_sig (RVL_t *self);
 void rvl_read_data (RVL_t *self, rvlbyte_t *data, rvlsize_t size);
+void rvl_read_data_default (RVL_t *self, rvlbyte_t *data, rvlsize_t size);
 
 #endif
