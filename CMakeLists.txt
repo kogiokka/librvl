@@ -24,6 +24,9 @@ target_sources(librvl PRIVATE
     "src/rvl_info.c"
     "src/rvl_text.c"
     "src/rvl_data.c"
+
+    "src/detail/rvl_write_p.c"
+    "src/detail/rvl_read_p.c"
 )
 
 target_include_directories(librvl PRIVATE "include/")
