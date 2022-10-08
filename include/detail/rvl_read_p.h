@@ -3,16 +3,15 @@
 
 #include "rvl_p.h"
 
-void rvl_read_chunk_header (RVL_t *self, rvlsize_t *size,
-                            RVLChunkCode_t *code);
-void rvl_read_chunk_payload (RVL_t *self, rvlbyte_t *data, rvlsize_t size);
+void rvl_read_chunk_header (RVL *self, RVLSize *size, RVLChunkCode_t *code);
+void rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size);
 
-void rvl_read_INFO_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size);
-void rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size);
-void rvl_read_TEXT_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size);
+void rvl_read_INFO_chunk (RVL *self, RVLByte *buffer, RVLSize size);
+void rvl_read_DATA_chunk (RVL *self, RVLByte *buffer, RVLSize size);
+void rvl_read_TEXT_chunk (RVL *self, RVLByte *buffer, RVLSize size);
 
-void rvl_read_file_sig (RVL_t *self);
-void rvl_read_data (RVL_t *self, rvlbyte_t *data, rvlsize_t size);
-void rvl_read_data_default (RVL_t *self, rvlbyte_t *data, rvlsize_t size);
+void rvl_read_file_sig (RVL *self);
+void rvl_read_data (RVL *self, RVLByte *data, RVLSize size);
+void rvl_read_data_default (RVL *self, RVLByte *data, RVLSize size);
 
 #endif

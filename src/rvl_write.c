@@ -9,7 +9,7 @@
 #include "detail/rvl_write_p.h"
 
 void
-rvl_write (RVL_t *self)
+rvl_write (RVL *self)
 {
   rvl_write_file_sig (self);
 
@@ -30,7 +30,7 @@ rvl_write (RVL_t *self)
 }
 
 void
-rvl_set_INFO (RVL_t *self, RVLInfo_t **info)
+rvl_set_INFO (RVL *self, RVLInfo **info)
 {
   if (self->info != NULL)
     {
@@ -42,7 +42,7 @@ rvl_set_INFO (RVL_t *self, RVLInfo_t **info)
 }
 
 void
-rvl_set_TEXT (RVL_t *self, RVLText_t **text, int numText)
+rvl_set_TEXT (RVL *self, RVLText **text, int numText)
 {
   if (self->text != NULL)
     {
@@ -56,7 +56,7 @@ rvl_set_TEXT (RVL_t *self, RVLText_t **text, int numText)
 }
 
 void
-rvl_set_DATA (RVL_t *self, RVLData_t **data)
+rvl_set_DATA (RVL *self, RVLData **data)
 {
   if (self->data != NULL)
     {

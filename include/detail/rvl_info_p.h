@@ -5,12 +5,12 @@
 
 struct RVLInfo
 {
-  RVLGridType_t gridType;
-  RVLGridUnit_t gridUnit;
-  RVLDataFormat_t dataFormat;
-  RVLBitDepth_t bitDepth;
-  RVLDataDimen_t dataDimen;
-  RVLEndian_t endian;
+  RVLGridType gridType;
+  RVLGridUnit gridUnit;
+  RVLDataFormat dataFormat;
+  RVLBitDepth bitDepth;
+  RVLDataDimen dataDimen;
+  RVLEndian endian;
   u32 resolution[3];
   f32 voxelSize[3];
   f32 position[3];

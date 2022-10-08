@@ -10,20 +10,20 @@
 #include "detail/rvl_text_p.h"
 
 void
-rvl_read_chunk_header (RVL_t *self, rvlsize_t *size, RVLChunkCode_t *code)
+rvl_read_chunk_header (RVL *self, RVLSize *size, RVLChunkCode_t *code)
 {
-  rvl_read_data (self, (rvlbyte_t *)size, 4);
-  rvl_read_data (self, (rvlbyte_t *)code, 4);
+  rvl_read_data (self, (RVLByte *)size, 4);
+  rvl_read_data (self, (RVLByte *)code, 4);
 }
 
 void
-rvl_read_chunk_payload (RVL_t *self, rvlbyte_t *data, rvlsize_t size)
+rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size)
 {
   rvl_read_data (self, data, size);
 }
 
 void
-rvl_read_INFO_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
+rvl_read_INFO_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 {
   self->info = rvl_info_create ();
   self->info->gridType = buffer[2];
@@ -39,35 +39,35 @@ rvl_read_INFO_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
 }
 
 void
-rvl_read_DATA_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
+rvl_read_DATA_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 {
   self->data = rvl_data_create ();
   rvl_data_alloc (self->data, self->info);
 
   char *const src = (char *)buffer;
   char *const dst = (char *)self->data->buffer;
-  const rvlsize_t srcSize = size;
-  const rvlsize_t dstCap = self->data->size;
+  const RVLSize srcSize = size;
+  const RVLSize dstCap = self->data->size;
   LZ4_decompress_safe (src, dst, srcSize, dstCap);
 }
 
 void
-rvl_read_TEXT_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
+rvl_read_TEXT_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 {
-  RVLText_t *newArr = rvl_text_array_create (self->numText + 1);
+  RVLText *newArr = rvl_text_array_create (self->numText + 1);
   int numText = self->numText + 1;
 
   if (self->text != NULL)
     {
-      memcpy (newArr, self->text, sizeof (RVLText_t) * self->numText);
+      memcpy (newArr, self->text, sizeof (RVLText) * self->numText);
       free (self->text);
     }
 
-  RVLText_t *newText = &newArr[numText - 1];
+  RVLText *newText = &newArr[numText - 1];
 
   // Both the key and the value will be null-terminated.
-  rvlsize_t nullPos = 0;
-  for (rvlsize_t i = 0; i < size; i++)
+  RVLSize nullPos = 0;
+  for (RVLSize i = 0; i < size; i++)
     {
       if (buffer[i] == '\0')
         {
@@ -76,7 +76,7 @@ rvl_read_TEXT_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
     }
   memcpy (newText->key, buffer, nullPos + 1);
 
-  rvlsize_t valueSize = size - (nullPos + 1);
+  RVLSize valueSize = size - (nullPos + 1);
   newText->value = (char *)malloc (valueSize + 1);
   memcpy (newText->value, buffer + nullPos + 1, valueSize);
   newText->value[valueSize + 1] = '\0';
@@ -86,12 +86,12 @@ rvl_read_TEXT_chunk (RVL_t *self, rvlbyte_t *buffer, rvlsize_t size)
 }
 
 void
-rvl_read_file_sig (RVL_t *self)
+rvl_read_file_sig (RVL *self)
 {
-  rvlbyte_t sig[RVL_FILE_SIG_SIZE];
+  RVLByte sig[RVL_FILE_SIG_SIZE];
   rvl_read_data (self, sig, RVL_FILE_SIG_SIZE);
 
-  for (rvlsize_t i = 0; i < RVL_FILE_SIG_SIZE; i++)
+  for (RVLSize i = 0; i < RVL_FILE_SIG_SIZE; i++)
     {
       if (sig[i] != RVL_FILE_SIG[i])
         {
@@ -102,7 +102,7 @@ rvl_read_file_sig (RVL_t *self)
 }
 
 void
-rvl_read_data (RVL_t *self, rvlbyte_t *data, rvlsize_t size)
+rvl_read_data (RVL *self, RVLByte *data, RVLSize size)
 {
   if (self->readData == NULL)
     {
@@ -116,7 +116,7 @@ rvl_read_data (RVL_t *self, rvlbyte_t *data, rvlsize_t size)
 }
 
 void
-rvl_read_data_default (RVL_t *self, rvlbyte_t *data, rvlsize_t size)
+rvl_read_data_default (RVL *self, RVLByte *data, RVLSize size)
 {
   if (self->io == NULL)
     {

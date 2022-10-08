@@ -11,7 +11,7 @@
 #include "detail/rvl_text_p.h"
 
 void
-rvl_write_INFO_chunk (RVL_t *self, const RVLInfo_t *info)
+rvl_write_INFO_chunk (RVL *self, const RVLInfo *info)
 {
   u32 byteSize = 44;
   u8 *buf = calloc (1, byteSize);
@@ -33,7 +33,7 @@ rvl_write_INFO_chunk (RVL_t *self, const RVLInfo_t *info)
 }
 
 void
-rvl_write_DATA_chunk (RVL_t *self, const RVLData_t *data)
+rvl_write_DATA_chunk (RVL *self, const RVLData *data)
 {
   char *compressedBuf = (char *)malloc (data->size);
   const int compressedSize
@@ -41,29 +41,31 @@ rvl_write_DATA_chunk (RVL_t *self, const RVLData_t *data)
                          data->size, LZ4HC_CLEVEL_MIN);
 
   rvl_write_chunk_header (self, RVLChunkCode_DATA, compressedSize);
-  rvl_write_chunk_payload (self, (rvlcbyte_t *)compressedBuf, compressedSize);
+  rvl_write_chunk_payload (self, (RVLConstByte *)compressedBuf,
+                           compressedSize);
   rvl_write_chunk_end (self);
 }
 
 // Strip off the null terminator at the end of the value string.
 void
-rvl_write_TEXT_chunk (RVL_t *self, const RVLText_t *textArr, int numText)
+rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr, int numText)
 {
   for (int i = 0; i < numText; i++)
     {
-      const RVLText_t *const text = &textArr[i];
-      const rvlsize_t keySize = strlen (text->key);
-      const rvlsize_t valueSize = strlen (text->value);
+      const RVLText *const text = &textArr[i];
+      const RVLSize keySize = strlen (text->key);
+      const RVLSize valueSize = strlen (text->value);
 
       rvl_write_chunk_header (self, RVLChunkCode_TEXT,
                               keySize + valueSize + 1);
 
       // Include the null terminator
-      rvl_write_chunk_payload (self, (rvlcbyte_t *)text->key, keySize + 1);
+      rvl_write_chunk_payload (self, (RVLConstByte *)text->key, keySize + 1);
 
       if (valueSize != 0)
         {
-          rvl_write_chunk_payload (self, (rvlcbyte_t *)text->value, valueSize);
+          rvl_write_chunk_payload (self, (RVLConstByte *)text->value,
+                                   valueSize);
         }
 
       rvl_write_chunk_end (self);
@@ -71,7 +73,7 @@ rvl_write_TEXT_chunk (RVL_t *self, const RVLText_t *textArr, int numText)
 }
 
 void
-rvl_write_END_chunk (RVL_t *self)
+rvl_write_END_chunk (RVL *self)
 {
   rvl_write_chunk_header (self, RVLChunkCode_END, 0);
   rvl_write_chunk_payload (self, NULL, 0);
@@ -79,7 +81,7 @@ rvl_write_END_chunk (RVL_t *self)
 }
 
 void
-rvl_write_chunk_header (RVL_t *self, RVLChunkCode_t code, rvlsize_t size)
+rvl_write_chunk_header (RVL *self, RVLChunkCode_t code, RVLSize size)
 {
   u8 buf[8];
 
@@ -92,7 +94,7 @@ rvl_write_chunk_header (RVL_t *self, RVLChunkCode_t code, rvlsize_t size)
 }
 
 void
-rvl_write_chunk_payload (RVL_t *self, rvlcbyte_t *data, rvlsize_t size)
+rvl_write_chunk_payload (RVL *self, RVLConstByte *data, RVLSize size)
 {
   if (data != NULL && size > 0)
     {
@@ -101,19 +103,19 @@ rvl_write_chunk_payload (RVL_t *self, rvlcbyte_t *data, rvlsize_t size)
 }
 
 void
-rvl_write_chunk_end (RVL_t *self)
+rvl_write_chunk_end (RVL *self)
 {
   return;
 }
 
 void
-rvl_write_file_sig (RVL_t *self)
+rvl_write_file_sig (RVL *self)
 {
   rvl_write_data (self, RVL_FILE_SIG, RVL_FILE_SIG_SIZE);
 }
 
 void
-rvl_write_data (RVL_t *self, rvlcbyte_t *data, rvlsize_t size)
+rvl_write_data (RVL *self, RVLConstByte *data, RVLSize size)
 {
   if (self->writeData == NULL)
     {
@@ -128,7 +130,7 @@ rvl_write_data (RVL_t *self, rvlcbyte_t *data, rvlsize_t size)
 }
 
 void
-rvl_write_data_default (RVL_t *self, rvlcbyte_t *data, rvlsize_t size)
+rvl_write_data_default (RVL *self, RVLConstByte *data, RVLSize size)
 {
   if (self->io == NULL)
     {

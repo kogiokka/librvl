@@ -4,16 +4,16 @@
 #include "detail/rvl_info_p.h"
 #include "detail/rvl_p.h"
 
-RVLInfo_t *
+RVLInfo *
 rvl_info_create ()
 {
-  RVLInfo_t *self = (RVLInfo_t *)malloc (sizeof (RVLInfo_t));
-  memset (self, 0, sizeof (RVLInfo_t));
+  RVLInfo *self = (RVLInfo *)malloc (sizeof (RVLInfo));
+  memset (self, 0, sizeof (RVLInfo));
   return self;
 }
 
 void
-rvl_info_destroy (RVLInfo_t **self)
+rvl_info_destroy (RVLInfo **self)
 {
   if (*self == NULL)
     {
@@ -24,16 +24,15 @@ rvl_info_destroy (RVLInfo_t **self)
 }
 
 void
-rvl_info_set_grid (RVLInfo_t *self, RVLGridType_t gridType,
-                   RVLGridUnit_t gridUnit)
+rvl_info_set_grid (RVLInfo *self, RVLGridType gridType, RVLGridUnit gridUnit)
 {
   self->gridType = gridType;
   self->gridUnit = gridUnit;
 }
 
 void
-rvl_info_set_data_form (RVLInfo_t *self, RVLDataFormat_t format,
-                        RVLBitDepth_t bitDepth, RVLDataDimen_t dimen)
+rvl_info_set_data_form (RVLInfo *self, RVLDataFormat format,
+                        RVLBitDepth bitDepth, RVLDataDimen dimen)
 {
   self->dataFormat = format;
   self->bitDepth = bitDepth;
@@ -41,13 +40,13 @@ rvl_info_set_data_form (RVLInfo_t *self, RVLDataFormat_t format,
 }
 
 void
-rvl_info_set_endian (RVLInfo_t *self, RVLEndian_t endian)
+rvl_info_set_endian (RVLInfo *self, RVLEndian endian)
 {
   self->endian = endian;
 }
 
 void
-rvl_info_set_resolution (RVLInfo_t *self, int x, int y, int z)
+rvl_info_set_resolution (RVLInfo *self, int x, int y, int z)
 {
   self->resolution[0] = x;
   self->resolution[1] = y;
@@ -55,7 +54,7 @@ rvl_info_set_resolution (RVLInfo_t *self, int x, int y, int z)
 }
 
 void
-rvl_info_set_voxel_size (RVLInfo_t *self, float x, float y, float z)
+rvl_info_set_voxel_size (RVLInfo *self, float x, float y, float z)
 {
   self->voxelSize[0] = x;
   self->voxelSize[1] = y;
@@ -63,15 +62,15 @@ rvl_info_set_voxel_size (RVLInfo_t *self, float x, float y, float z)
 }
 
 void
-rvl_info_get_grid (RVLInfo_t *self, RVLGridType_t *type, RVLGridUnit_t *unit)
+rvl_info_get_grid (RVLInfo *self, RVLGridType *type, RVLGridUnit *unit)
 {
   *type = self->gridType;
   *unit = self->gridUnit;
 }
 
 void
-rvl_info_get_data_form (RVLInfo_t *self, RVLDataFormat_t *format,
-                        RVLBitDepth_t *bits, RVLDataDimen_t *dimen)
+rvl_info_get_data_form (RVLInfo *self, RVLDataFormat *format,
+                        RVLBitDepth *bits, RVLDataDimen *dimen)
 {
   *format = self->dataFormat;
   *bits = self->bitDepth;
@@ -79,13 +78,13 @@ rvl_info_get_data_form (RVLInfo_t *self, RVLDataFormat_t *format,
 }
 
 void
-rvl_info_get_endian (RVLInfo_t *self, RVLEndian_t *endian)
+rvl_info_get_endian (RVLInfo *self, RVLEndian *endian)
 {
   *endian = self->endian;
 }
 
 void
-rvl_info_get_resolution (RVLInfo_t *self, int *x, int *y, int *z)
+rvl_info_get_resolution (RVLInfo *self, int *x, int *y, int *z)
 {
   *x = self->resolution[0];
   *y = self->resolution[1];
@@ -93,7 +92,7 @@ rvl_info_get_resolution (RVLInfo_t *self, int *x, int *y, int *z)
 }
 
 void
-rvl_info_get_voxel_size (RVLInfo_t *self, float *x, float *y, float *z)
+rvl_info_get_voxel_size (RVLInfo *self, float *x, float *y, float *z)
 {
   *x = self->voxelSize[0];
   *y = self->voxelSize[1];
@@ -101,7 +100,7 @@ rvl_info_get_voxel_size (RVLInfo_t *self, float *x, float *y, float *z)
 }
 
 void
-rvl_info_get_position (RVLInfo_t *self, float *x, float *y, float *z)
+rvl_info_get_position (RVLInfo *self, float *x, float *y, float *z)
 {
   *x = self->position[0];
   *y = self->position[1];

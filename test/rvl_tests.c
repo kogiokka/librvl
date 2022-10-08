@@ -4,14 +4,14 @@
 
 #include "../include/rvl.h"
 
-static RVLInfo_t *init_info ();
+static RVLInfo *init_info ();
 
 void
 rvl_test_write_INFO ()
 {
-  RVLInfo_t *info = init_info ();
+  RVLInfo *info = init_info ();
 
-  RVL_t *rvl = rvl_create_writer ("test_INFO.rvl");
+  RVL *rvl = rvl_create_writer ("test_INFO.rvl");
   rvl_set_INFO (rvl, &info);
   rvl_write (rvl);
 
@@ -26,19 +26,19 @@ rvl_test_write_INFO ()
 void
 rvl_test_read_INFO ()
 {
-  RVL_t *rvl = rvl_create_reader ("test_INFO.rvl");
+  RVL *rvl = rvl_create_reader ("test_INFO.rvl");
 
   rvl_read (rvl);
 
-  RVLInfo_t *info = NULL;
+  RVLInfo *info = NULL;
   rvl_get_INFO (rvl, &info);
 
-  RVLGridType_t gridType;
-  RVLGridUnit_t unit;
-  RVLDataFormat_t format;
-  RVLBitDepth_t bitDepth;
-  RVLDataDimen_t dimen;
-  RVLEndian_t endian;
+  RVLGridType gridType;
+  RVLGridUnit unit;
+  RVLDataFormat format;
+  RVLBitDepth bitDepth;
+  RVLDataDimen dimen;
+  RVLEndian endian;
   int res[3];
   float vsize[3];
   float pos[3];
@@ -72,17 +72,17 @@ rvl_test_read_INFO ()
 void
 rvl_test_write_DATA ()
 {
-  RVLInfo_t *info = init_info ();
+  RVLInfo *info = init_info ();
 
-  RVLData_t *data = rvl_data_create ();
+  RVLData *data = rvl_data_create ();
 
-  rvlbyte_t *buffer;
+  RVLByte *buffer;
 
   rvl_data_alloc (data, info);
-  rvlsize_t size = rvl_data_get_buffer (data, &buffer);
+  RVLSize size = rvl_data_get_buffer (data, &buffer);
   memset (buffer, 'A', size);
 
-  RVL_t *rvl = rvl_create_writer ("test_DATA.rvl");
+  RVL *rvl = rvl_create_writer ("test_DATA.rvl");
   rvl_set_INFO (rvl, &info);
   rvl_set_DATA (rvl, &data);
   rvl_write (rvl);
@@ -98,18 +98,18 @@ rvl_test_write_DATA ()
 void
 rvl_test_read_DATA ()
 {
-  RVL_t *rvl = rvl_create_reader ("test_DATA.rvl");
+  RVL *rvl = rvl_create_reader ("test_DATA.rvl");
 
   rvl_read (rvl);
 
-  RVLInfo_t *info;
-  RVLData_t *data;
+  RVLInfo *info;
+  RVLData *data;
 
   rvl_get_INFO (rvl, &info);
   rvl_get_DATA (rvl, &data);
 
   unsigned char *buffer;
-  rvlsize_t size = rvl_data_get_buffer (data, &buffer);
+  RVLSize size = rvl_data_get_buffer (data, &buffer);
 
   fwrite (buffer, 1, size, stdout);
 
@@ -119,14 +119,14 @@ rvl_test_read_DATA ()
 void
 rvl_test_write_TEXT ()
 {
-  RVLInfo_t *info = init_info ();
+  RVLInfo *info = init_info ();
   int numText = 2;
-  RVLText_t *textArr = rvl_text_array_create (numText);
+  RVLText *textArr = rvl_text_array_create (numText);
   rvl_text_set (textArr, 0, "Title", "librvl");
   rvl_text_set (textArr, 1, "Description",
                 "The Regular VoLumetric format reference library");
 
-  RVL_t *rvl = rvl_create_writer ("test_TEXT.rvl");
+  RVL *rvl = rvl_create_writer ("test_TEXT.rvl");
   rvl_set_INFO (rvl, &info);
   rvl_set_TEXT (rvl, &textArr, numText);
   rvl_write (rvl);
@@ -142,9 +142,9 @@ rvl_test_write_TEXT ()
 void
 rvl_test_read_TEXT ()
 {
-  RVL_t *rvl = rvl_create_reader ("test_TEXT.rvl");
+  RVL *rvl = rvl_create_reader ("test_TEXT.rvl");
   rvl_read (rvl);
-  RVLText_t *textArr;
+  RVLText *textArr;
   int numText;
   rvl_get_TEXT (rvl, &textArr, &numText);
 
@@ -158,10 +158,10 @@ rvl_test_read_TEXT ()
   rvl_destroy (&rvl);
 }
 
-RVLInfo_t *
+RVLInfo *
 init_info ()
 {
-  RVLInfo_t *info = rvl_info_create ();
+  RVLInfo *info = rvl_info_create ();
   rvl_info_set_grid (info, RVLGridType_Cartesian, RVLGridUnit_NA);
   rvl_info_set_data_form (info, RVLDataFormat_Unsigned, RVLBitDepth_8Bits,
                           RVLDataDimen_Scalar);

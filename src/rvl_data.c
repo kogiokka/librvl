@@ -4,10 +4,10 @@
 #include "detail/rvl_data_p.h"
 #include "detail/rvl_info_p.h"
 
-RVLData_t *
+RVLData *
 rvl_data_create ()
 {
-  RVLData_t *data = (RVLData_t *)malloc (sizeof (RVLData_t));
+  RVLData *data = (RVLData *)malloc (sizeof (RVLData));
   data->buffer = NULL;
   data->size = 0;
 
@@ -15,7 +15,7 @@ rvl_data_create ()
 }
 
 void
-rvl_data_alloc (RVLData_t *self, RVLInfo_t *info)
+rvl_data_alloc (RVLData *self, RVLInfo *info)
 {
   if (self->buffer != NULL)
     {
@@ -23,14 +23,14 @@ rvl_data_alloc (RVLData_t *self, RVLInfo_t *info)
     }
 
   const u32 *res = info->resolution;
-  const rvlsize_t size = res[0] * res[1] * res[2];
+  const RVLSize size = res[0] * res[1] * res[2];
 
-  self->buffer = (rvlbyte_t *)malloc (size);
+  self->buffer = (RVLByte *)malloc (size);
   self->size = size;
 }
 
 void
-rvl_data_destroy (RVLData_t **self)
+rvl_data_destroy (RVLData **self)
 {
   if (*self == NULL)
     {
@@ -46,14 +46,14 @@ rvl_data_destroy (RVLData_t **self)
 }
 
 void
-rvl_data_set_sub_range (RVLData_t *self, rvlsize_t offset, rvlsize_t size,
-                        rvlbyte_t *data)
+rvl_data_set_sub_range (RVLData *self, RVLSize offset, RVLSize size,
+                        RVLByte *data)
 {
   memcpy (self->buffer + offset, data, size);
 }
 
-rvlsize_t
-rvl_data_get_buffer (RVLData_t *self, rvlbyte_t **buffer)
+RVLSize
+rvl_data_get_buffer (RVLData *self, RVLByte **buffer)
 {
   *buffer = self->buffer;
   return self->size;

@@ -9,10 +9,10 @@
 typedef float f32;
 typedef uint8_t u8;
 typedef uint32_t u32;
-typedef const uint8_t rvlcbyte_t;
+typedef const uint8_t RVLConstByte;
 
-typedef void (*RVLWriteFn_t) (RVL_t *, rvlcbyte_t *, rvlsize_t);
-typedef void (*RVLReadFn_t) (RVL_t *, rvlbyte_t *, rvlsize_t);
+typedef void (*RVLWriteFn) (RVL *, RVLConstByte *, RVLSize);
+typedef void (*RVLReadFn) (RVL *, RVLByte *, RVLSize);
 
 /**
  * Chunk code constants
@@ -33,32 +33,32 @@ typedef uint32_t RVLChunkCode_t;
 
 // RVL File Signature: .RVL FORMAT\0
 #define RVL_FILE_SIG_SIZE 12
-extern rvlbyte_t RVL_FILE_SIG[RVL_FILE_SIG_SIZE];
+extern RVLByte RVL_FILE_SIG[RVL_FILE_SIG_SIZE];
 
 typedef enum
 {
   RVLIoState_Read,
   RVLIoState_Write,
-} RVLIoState_t;
+} RVLIoState;
 
 struct RVL
 {
   FILE *io;
-  RVLWriteFn_t writeData;
-  RVLReadFn_t readData;
+  RVLWriteFn writeData;
+  RVLReadFn readData;
 
   u8 version[2]; // major, minor
-  RVLIoState_t ioState;
+  RVLIoState ioState;
 
   /* INFO chunk */
-  RVLInfo_t *info;
+  RVLInfo *info;
 
   /* TEXT chunk */
-  RVLText_t *text;
+  RVLText *text;
   int numText;
 
   /* DATA chunk */
-  RVLData_t *data;
+  RVLData *data;
 };
 
 #endif
