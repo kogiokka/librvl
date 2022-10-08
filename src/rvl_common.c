@@ -35,6 +35,11 @@ rvl_destroy (RVL **self)
   RVL *ptr = *self;
   rvl_text_destroy_array (&ptr->text);
 
+  if (ptr->data.buffer != NULL)
+    {
+      free (ptr->data.buffer);
+    }
+
   fclose (ptr->io);
   free (ptr);
 
