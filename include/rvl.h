@@ -149,8 +149,8 @@ void rvl_text_get (RVLText_t *textArr, int index, const char **key,
 RVLData_t *rvl_data_create ();
 void rvl_data_destroy (RVLData_t **self);
 void rvl_data_alloc (RVLData_t *self, RVLInfo_t *info);
-void rvl_data_set (RVLData_t *self, rvlbyte_t *data, rvlsize_t size,
-                   rvlsize_t offset);
+void rvl_data_set_sub_range (RVLData_t *self, rvlsize_t offset, rvlsize_t size,
+                             rvlbyte_t *data);
 rvlsize_t rvl_data_get_buffer (RVLData_t *self, rvlbyte_t **buffer);
 
 #endif

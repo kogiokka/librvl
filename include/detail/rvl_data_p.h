@@ -5,8 +5,8 @@
 
 struct RVLData
 {
-  u8 *buffer;
-  u32 size;
+  rvlbyte_t *buffer;
+  rvlsize_t size;
 };
 
 #endif
