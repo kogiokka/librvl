@@ -49,6 +49,14 @@ rvl_set_resolution (RVL *self, int x, int y, int z)
 }
 
 void
+rvl_set_position (RVL *self, float x, float y, float z)
+{
+  self->position[0] = x;
+  self->position[1] = y;
+  self->position[2] = z;
+}
+
+void
 rvl_set_voxel_size (RVL *self, float x, float y, float z)
 {
   self->voxelSize[0] = x;

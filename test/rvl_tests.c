@@ -138,4 +138,5 @@ init_info (RVL *rvl)
   rvl_set_endian (rvl, RVLEndian_Little);
   rvl_set_resolution (rvl, 20, 20, 20);
   rvl_set_voxel_size (rvl, 1.0f, 1.0f, 1.0f);
+  rvl_set_position(rvl, 0.0f, 0.0f, 0.0f);
 }
