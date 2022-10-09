@@ -21,6 +21,10 @@ rvl_write (RVL *self)
       rvl_write_TEXT_chunk (self, self->text, self->numText);
     }
 
-  rvl_write_DATA_chunk (self);
+  if (self->data.wbuf != NULL)
+    {
+      rvl_write_DATA_chunk (self);
+    }
+
   rvl_write_END_chunk (self);
 }

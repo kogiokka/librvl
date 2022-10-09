@@ -35,10 +35,9 @@ rvl_destroy (RVL **self)
   RVL *ptr = *self;
   rvl_text_destroy_array (&ptr->text);
 
-  if (ptr->data.buffer != NULL)
-    {
-      free (ptr->data.buffer);
-    }
+  // Dealloc read buffer. Writer buffer pointer is non-owning so the user is
+  // responsible for calling this dealloc function.
+  rvl_dealloc_data_buffer (&ptr->data.rbuf);
 
   fclose (ptr->io);
   free (ptr);
@@ -70,16 +69,20 @@ rvl_create (const char *filename, RVLIoState ioState)
 }
 
 void
-rvl_alloc_data_buffer (RVL *self)
+rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size)
 {
-  if (self->data.buffer != NULL)
-    {
-      free (self->data.buffer);
-    }
-
   const u32 *res = self->resolution;
-  const RVLSize size = res[0] * res[1] * res[2];
+  *size = res[0] * res[1] * res[2];
 
-  self->data.buffer = (RVLByte *)malloc (size);
-  self->data.size = size;
+  *buffer = (RVLByte *)malloc (*size);
+}
+
+void
+rvl_dealloc_data_buffer (RVLByte **buffer)
+{
+  if (buffer == NULL)
+    return;
+
+  free (*buffer);
+  *buffer = NULL;
 }

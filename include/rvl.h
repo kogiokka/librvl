@@ -49,6 +49,7 @@ typedef struct RVL RVL;
 typedef struct RVLText RVLText;
 
 typedef uint8_t RVLByte;
+typedef const uint8_t RVLConstByte;
 typedef uint32_t RVLSize;
 
 typedef uint8_t RVLDataFormat;
@@ -125,9 +126,9 @@ void rvl_text_set (RVLText *textArr, int index, char *key, char *value);
 void rvl_text_get (RVLText *textArr, int index, const char **key,
                    const char **value);
 
-void rvl_alloc_data_buffer (RVL *self);
-void rvl_set_sub_data_buffer (RVL *self, RVLSize offset, RVLSize size,
-                              RVLByte *data);
+void rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size);
+void rvl_dealloc_data_buffer (RVLByte **buffer);
+void rvl_set_data_buffer (RVL *self, RVLConstByte *buffer, RVLSize size);
 void rvl_get_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size);
 
 #endif

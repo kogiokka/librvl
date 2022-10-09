@@ -9,14 +9,14 @@
 typedef float f32;
 typedef uint8_t u8;
 typedef uint32_t u32;
-typedef const uint8_t RVLConstByte;
 
 typedef void (*RVLWriteFn) (RVL *, RVLConstByte *, RVLSize);
 typedef void (*RVLReadFn) (RVL *, RVLByte *, RVLSize);
 
 typedef struct
 {
-  RVLByte *buffer;
+  RVLConstByte *wbuf; // Non-owning pointer
+  RVLByte *rbuf;
   RVLSize size;
 } RVLData;
 

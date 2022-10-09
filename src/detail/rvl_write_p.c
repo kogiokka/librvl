@@ -33,14 +33,9 @@ rvl_write_INFO_chunk (RVL *self)
 void
 rvl_write_DATA_chunk (RVL *self)
 {
-  if (self->data.buffer == NULL)
-    {
-      return;
-    }
-
   char *compressedBuf = (char *)malloc (self->data.size);
   const int compressedSize
-      = LZ4_compress_HC ((char *)self->data.buffer, compressedBuf,
+      = LZ4_compress_HC ((char *)self->data.wbuf, compressedBuf,
                          self->data.size, self->data.size, LZ4HC_CLEVEL_MIN);
 
   rvl_write_chunk_header (self, RVLChunkCode_DATA, compressedSize);

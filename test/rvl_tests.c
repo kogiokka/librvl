@@ -58,14 +58,14 @@ rvl_test_write_DATA ()
   RVL *rvl = rvl_create_writer ("test_DATA.rvl");
   init_info (rvl);
 
-  rvl_alloc_data_buffer (rvl);
-
-  RVLByte *buffer;
+  RVLByte* buffer;
   RVLSize size;
-  rvl_get_data_buffer (rvl, &buffer, &size);
-  memset (buffer, 'A', size);
 
+  rvl_alloc_data_buffer (rvl, &buffer, &size);
+  memset (buffer, 'A', size);
+  rvl_set_data_buffer(rvl, buffer, size);
   rvl_write (rvl);
+  rvl_dealloc_data_buffer(&buffer);
 
   rvl_destroy (&rvl);
 }
@@ -75,11 +75,11 @@ rvl_test_read_DATA ()
 {
   RVL *rvl = rvl_create_reader ("test_DATA.rvl");
 
-  rvl_read (rvl);
-
+  RVLByte* buffer;
   RVLSize size;
-  unsigned char *buffer;
-  rvl_get_data_buffer (rvl, &buffer, &size);
+
+  rvl_read (rvl);
+  rvl_get_data_buffer(rvl, &buffer, &size);
 
   fwrite (buffer, 1, size, stdout);
 

@@ -1,4 +1,4 @@
-#include <string.h>
+#include <stdlib.h>
 
 #include "rvl.h"
 
@@ -57,10 +57,10 @@ rvl_set_voxel_size (RVL *self, float x, float y, float z)
 }
 
 void
-rvl_set_sub_data_buffer (RVL *self, RVLSize offset, RVLSize size,
-                         RVLByte *data)
+rvl_set_data_buffer (RVL *self, RVLConstByte *buffer, RVLSize size)
 {
-  memcpy (self->data.buffer + offset, data, size);
+  self->data.wbuf = buffer;
+  self->data.size = size;
 }
 
 void

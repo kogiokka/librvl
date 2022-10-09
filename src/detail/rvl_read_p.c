@@ -38,13 +38,20 @@ rvl_read_INFO_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 void
 rvl_read_DATA_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 {
-  rvl_alloc_data_buffer(self);
+  rvl_alloc_data_buffer (self, &self->data.rbuf, &self->data.size);
 
   char *const src = (char *)buffer;
-  char *const dst = (char *)self->data.buffer;
+  char *const dst = (char *)self->data.rbuf;
   const RVLSize srcSize = size;
   const RVLSize dstCap = self->data.size;
-  LZ4_decompress_safe (src, dst, srcSize, dstCap);
+
+  const RVLSize numBytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
+
+  if (numBytes != self->data.size)
+    {
+      fprintf (stderr, "[ERROR] Data decompression error!");
+      exit (EXIT_FAILURE);
+    }
 }
 
 void
