@@ -1,6 +1,6 @@
 include(FetchContent)
 
-set(lz4_SOURCE_DIR "${CMAKE_SOURCE_DIR}/external/lz4")
+set(lz4_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/lz4")
 
 FetchContent_Declare(
     lz4
