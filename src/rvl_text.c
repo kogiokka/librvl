@@ -8,7 +8,7 @@
 RVLText *
 rvl_text_create_array (int num)
 {
-  RVLText *textarr = (RVLText *)malloc (sizeof (RVLText) * num);
+  RVLText *textarr = (RVLText *)calloc (1, sizeof (RVLText) * num);
   return textarr;
 }
 

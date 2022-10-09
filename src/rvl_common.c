@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "rvl.h"
 
@@ -17,6 +18,7 @@ RVL *
 rvl_create_writer (const char *filename)
 {
   RVL *rvl = rvl_create (filename, RVLIoState_Write);
+  memset (&rvl->data, 0, sizeof (RVLData));
   rvl->writeData = rvl_write_data_default;
   return rvl;
 }
@@ -25,6 +27,7 @@ RVL *
 rvl_create_reader (const char *filename)
 {
   RVL *rvl = rvl_create (filename, RVLIoState_Read);
+  memset (&rvl->data, 0, sizeof (RVLData));
   rvl->readData = rvl_read_data_default;
   return rvl;
 }
