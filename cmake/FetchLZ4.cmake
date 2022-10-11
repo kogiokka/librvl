@@ -7,8 +7,9 @@ FetchContent_Declare(
     TLS_VERIFY TRUE
 )
 
-set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
-set(FETCHCONTENT_QUIET FALSE)
-FetchContent_MakeAvailable(lz4)
-
-add_subdirectory("${lz4_SOURCE_DIR}/build/cmake/")
+if(NOT lz4_POPULATED)
+    set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
+    set(FETCHCONTENT_QUIET FALSE)
+    FetchContent_MakeAvailable(lz4)
+    add_subdirectory("${lz4_SOURCE_DIR}/build/cmake/")
+endif()
