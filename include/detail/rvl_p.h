@@ -59,9 +59,9 @@ struct RVL
   /* INFO chunk */
   RVLGridType gridType;
   RVLGridUnit gridUnit;
-  RVLDataFormat dataFormat;
-  RVLBitDepth bitDepth;
-  RVLDataDimen dataDimen;
+  RVLVoxelFormat dataFormat;
+  RVLVoxelBitDepth bitDepth;
+  RVLVoxelDimen dataDimen;
   RVLEndian endian;
   u32 resolution[3];
   f32 voxelSize[3];

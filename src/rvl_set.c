@@ -17,19 +17,19 @@ rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit)
 }
 
 void
-rvl_set_data_format (RVL *self, RVLDataFormat format)
+rvl_set_voxel_format (RVL *self, RVLVoxelFormat format)
 {
   self->dataFormat = format;
 }
 
 void
-rvl_set_data_dimensions (RVL *self, RVLDataDimen dimen)
+rvl_set_voxel_dimension (RVL *self, RVLVoxelDimen dimen)
 {
   self->dataDimen = dimen;
 }
 
 void
-rvl_set_data_bit_depth (RVL *self, RVLBitDepth bitDepth)
+rvl_set_voxel_bit_depth (RVL *self, RVLVoxelBitDepth bitDepth)
 {
   self->bitDepth = bitDepth;
 }

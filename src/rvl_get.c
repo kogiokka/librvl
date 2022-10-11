@@ -14,20 +14,20 @@ rvl_get_grid_type (RVL *self)
   return self->gridUnit;
 }
 
-RVLDataDimen
-rvl_get_data_dimensions (RVL *self)
+RVLVoxelDimen
+rvl_get_voxel_dimension (RVL *self)
 {
   return self->dataDimen;
 }
 
-RVLDataFormat
-rvl_get_data_format (RVL *self)
+RVLVoxelFormat
+rvl_get_voxel_format (RVL *self)
 {
   return self->dataFormat;
 }
 
-RVLBitDepth
-rvl_get_data_bit_depth (RVL *self)
+RVLVoxelBitDepth
+rvl_get_voxel_bit_depth (RVL *self)
 {
   return self->bitDepth;
 }

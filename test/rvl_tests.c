@@ -25,9 +25,9 @@ rvl_test_read_INFO ()
 
   RVLGridType gridType = rvl_get_grid_type (rvl);
   RVLGridUnit unit = rvl_get_grid_unit (rvl);
-  RVLDataFormat format = rvl_get_data_format (rvl);
-  RVLBitDepth bitDepth = rvl_get_data_bit_depth (rvl);
-  RVLDataDimen dimen = rvl_get_data_dimensions (rvl);
+  RVLVoxelFormat format = rvl_get_voxel_format (rvl);
+  RVLVoxelBitDepth bitDepth = rvl_get_voxel_bit_depth (rvl);
+  RVLVoxelDimen dimen = rvl_get_voxel_dimension (rvl);
   RVLEndian endian = rvl_get_endian (rvl);
   int x, y, z;
   float vx, vy, vz;
@@ -132,9 +132,9 @@ init_info (RVL *rvl)
 {
   rvl_set_grid_type (rvl, RVLGridType_Cartesian);
   rvl_set_grid_unit (rvl, RVLGridUnit_NA);
-  rvl_set_data_format (rvl, RVLDataFormat_Unsigned);
-  rvl_set_data_bit_depth (rvl, RVLBitDepth_8Bits);
-  rvl_set_data_dimensions (rvl, RVLDataDimen_Scalar);
+  rvl_set_voxel_format (rvl, RVLVoxelFormat_Unsigned);
+  rvl_set_voxel_bit_depth (rvl, RVLVoxelBitDepth_8);
+  rvl_set_voxel_dimension (rvl, RVLVoxelDimen_Scalar);
   rvl_set_endian (rvl, RVLEndian_Little);
   rvl_set_resolution (rvl, 20, 20, 20);
   rvl_set_voxel_size (rvl, 1.0f, 1.0f, 1.0f);
