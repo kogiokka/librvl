@@ -75,3 +75,46 @@ rvl_get_text (RVL *self, RVLText **text, int *numText)
   *text = self->text;
   *numText = self->numText;
 }
+
+RVLSize
+rvl_get_voxel_byte_count (RVL *self)
+{
+  RVLSize count = 1;
+
+  switch (self->bitDepth)
+    {
+    case RVLVoxelBitDepth_8:
+      count *= 1;
+      break;
+    case RVLVoxelBitDepth_16:
+      count *= 2;
+      break;
+    case RVLVoxelBitDepth_32:
+      count *= 3;
+      break;
+    case RVLVoxelBitDepth_64:
+      count *= 4;
+      break;
+    case RVLVoxelBitDepth_128:
+      count *= 5;
+      break;
+    }
+
+  switch (self->dataDimen)
+    {
+    case RVLVoxelDimen_Scalar:
+      count *= 1;
+      break;
+    case RVLVoxelDimen_Vec2:
+      count *= 2;
+      break;
+    case RVLVoxelDimen_Vec3:
+      count *= 3;
+      break;
+    case RVLVoxelDimen_Vec4:
+      count *= 4;
+      break;
+    }
+
+  return count;
+}

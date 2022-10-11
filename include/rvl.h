@@ -66,7 +66,7 @@ typedef uint8_t RVLEndian;
 #define RVLVoxelDimen_Scalar 1
 #define RVLVoxelDimen_Vec2 2
 #define RVLVoxelDimen_Vec3 3
-#define RVLVoxelDimen_Vec4 3
+#define RVLVoxelDimen_Vec4 4
 
 #define RVLVoxelBitDepth_8 8
 #define RVLVoxelBitDepth_16 16
@@ -116,6 +116,8 @@ RVLEndian rvl_get_endian (RVL *self);
 void rvl_get_resolution (RVL *self, int *x, int *y, int *z);
 void rvl_get_voxel_size (RVL *self, float *x, float *y, float *z);
 void rvl_get_position (RVL *self, float *x, float *y, float *z);
+
+RVLSize rvl_get_voxel_byte_count (RVL *self);
 
 RVLText *rvl_text_create_array (int num);
 void rvl_text_destroy_array (RVLText **self);

@@ -75,9 +75,11 @@ void
 rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size)
 {
   const u32 *res = self->resolution;
-  *size = res[0] * res[1] * res[2];
+  const u32 numVoxel = res[0] * res[1] * res[2];
+  const RVLSize bufferSize = numVoxel * rvl_get_voxel_byte_count (self);
 
-  *buffer = (RVLByte *)malloc (*size);
+  *buffer = (RVLByte *)malloc (bufferSize);
+  *size = bufferSize;
 }
 
 void
