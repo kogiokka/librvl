@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
 project("rvl"
     DESCRIPTION "The Regular VoLumetric format reference library"
+    VERSION 0.1.0
     LANGUAGES C)
 
 option(RVL_BUILD_TEST "Build the unit tests for librvl" ON)
@@ -11,7 +12,9 @@ add_library(rvl::rvl ALIAS rvl)
 
 include(GNUInstallDirs)
 include(FetchContent)
+
 include("cmake/FetchLZ4.cmake")
+include("cmake/PackageSource.cmake")
 
 set_target_properties(rvl PROPERTIES
     C_STANDARD 99
