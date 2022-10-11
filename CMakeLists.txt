@@ -1,23 +1,28 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
-project("librvl"
+project("rvl"
     DESCRIPTION "The Regular VoLumetric format reference library"
     LANGUAGES C)
 
-add_library(librvl SHARED)
+option(RVL_BUILD_TEST "Build the unit tests for librvl" ON)
 
+add_library(rvl SHARED)
+add_library(rvl::rvl ALIAS rvl)
+
+include(GNUInstallDirs)
+include(FetchContent)
 include("cmake/FetchLZ4.cmake")
 
-set_target_properties(librvl PROPERTIES
+set_target_properties(rvl PROPERTIES
     C_STANDARD 99
     C_STANDARD_REQUIRED ON
 )
 
-target_compile_options(librvl PRIVATE
+target_compile_options(rvl PRIVATE
     $<$<C_COMPILER_ID:GNU,CLANG>:-Wall -Wextra -pedantic-errors>
 )
 
-target_sources(librvl PRIVATE
+target_sources(rvl PRIVATE
     "src/rvl_write.c"
     "src/rvl_read.c"
     "src/rvl_common.c"
@@ -29,14 +34,34 @@ target_sources(librvl PRIVATE
     "src/detail/rvl_read_p.c"
 )
 
-target_include_directories(librvl PRIVATE "include/")
+target_include_directories(rvl PRIVATE "include/")
 
-target_link_libraries(librvl
-PRIVATE
-    lz4_static
+add_custom_target(rvl-copy-public-header
+    COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/rvl.h"
+            "${CMAKE_CURRENT_BINARY_DIR}/include/rvl.h"
+)
+add_dependencies(rvl rvl-copy-public-header)
+
+set(RVL_PUBLIC_HEADERS_EXPORT_DIR "${CMAKE_CURRENT_BINARY_DIR}/include")
+target_include_directories(rvl INTERFACE "${RVL_PUBLIC_HEADERS_EXPORT_DIR}")
+target_link_libraries(rvl PRIVATE lz4_static)
+
+install(TARGETS rvl
+    EXPORT rvlTargets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-# CTest
-include(CTest)
-enable_testing()
-add_subdirectory(test)
+export(EXPORT rvlTargets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/rvlTargets.cmake"
+    NAMESPACE rvl::
+)
+
+if (RVL_BUILD_TEST)
+    include(CTest)
+    enable_testing()
+    add_subdirectory(test)
+endif()
