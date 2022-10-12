@@ -52,27 +52,27 @@ typedef uint8_t RVLByte;
 typedef const uint8_t RVLConstByte;
 typedef uint32_t RVLSize;
 
-typedef uint8_t RVLVoxelFormat;
-typedef uint8_t RVLVoxelBitDepth;
-typedef uint8_t RVLVoxelDimen;
+typedef uint8_t RVLValueFormat;
+typedef uint8_t RVLValueBitDepth;
+typedef uint8_t RVLValueDimen;
 typedef uint8_t RVLGridType;
 typedef int8_t RVLGridUnit;
 typedef uint8_t RVLEndian;
 
-#define RVLVoxelFormat_Unsigned 0
-#define RVLVoxelFormat_Signed 1
-#define RVLVoxelFormat_IEEE754 2
+#define RVLValueFormat_Unsigned 0
+#define RVLValueFormat_Signed 1
+#define RVLValueFormat_IEEE754 2
 
-#define RVLVoxelDimen_Scalar 1
-#define RVLVoxelDimen_Vec2 2
-#define RVLVoxelDimen_Vec3 3
-#define RVLVoxelDimen_Vec4 4
+#define RVLValueDimen_Scalar 1
+#define RVLValueDimen_Vec2 2
+#define RVLValueDimen_Vec3 3
+#define RVLValueDimen_Vec4 4
 
-#define RVLVoxelBitDepth_8 8
-#define RVLVoxelBitDepth_16 16
-#define RVLVoxelBitDepth_32 32
-#define RVLVoxelBitDepth_64 64
-#define RVLVoxelBitDepth_128 128
+#define RVLValueBitDepth_8 8
+#define RVLValueBitDepth_16 16
+#define RVLValueBitDepth_32 32
+#define RVLValueBitDepth_64 64
+#define RVLValueBitDepth_128 128
 
 #define RVLEndian_Big 0
 #define RVLEndian_Little 1
@@ -97,9 +97,9 @@ void rvl_read (RVL *self);
 
 void rvl_set_grid_type (RVL *self, RVLGridType gridType);
 void rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit);
-void rvl_set_voxel_format (RVL *self, RVLVoxelFormat format);
-void rvl_set_voxel_dimension (RVL *self, RVLVoxelDimen dimen);
-void rvl_set_voxel_bit_depth (RVL *self, RVLVoxelBitDepth bitDepth);
+void rvl_set_value_format (RVL *self, RVLValueFormat format);
+void rvl_set_value_dimension (RVL *self, RVLValueDimen dimen);
+void rvl_set_value_bit_depth (RVL *self, RVLValueBitDepth bitDepth);
 void rvl_set_endian (RVL *self, RVLEndian endian);
 
 void rvl_set_resolution (RVL *self, int x, int y, int z);
@@ -108,9 +108,9 @@ void rvl_set_position (RVL *self, float x, float y, float z);
 
 RVLGridType rvl_get_grid_type (RVL *self);
 RVLGridUnit rvl_get_grid_unit (RVL *self);
-RVLVoxelDimen rvl_get_voxel_dimension (RVL *self);
-RVLVoxelFormat rvl_get_voxel_format (RVL *self);
-RVLVoxelBitDepth rvl_get_voxel_bit_depth (RVL *self);
+RVLValueDimen rvl_get_value_dimension (RVL *self);
+RVLValueFormat rvl_get_value_format (RVL *self);
+RVLValueBitDepth rvl_get_value_bit_depth (RVL *self);
 RVLEndian rvl_get_endian (RVL *self);
 
 void rvl_get_resolution (RVL *self, int *x, int *y, int *z);

@@ -17,9 +17,9 @@ rvl_write_INFO_chunk (RVL *self)
   memcpy (&buf[0], self->version, 2);
   buf[2] = self->gridType;
   buf[3] = self->gridUnit;
-  buf[4] = self->dataFormat;
-  buf[5] = self->bitDepth;
-  buf[6] = self->dataDimen;
+  buf[4] = self->valueFormat;
+  buf[5] = self->valueBitDepth;
+  buf[6] = self->valueDimen;
   buf[7] = self->endian;
   memcpy (&buf[8], &self->resolution[0], 12);
   memcpy (&buf[20], &self->voxelSize[0], 12);

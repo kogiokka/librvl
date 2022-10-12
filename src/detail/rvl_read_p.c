@@ -25,9 +25,9 @@ rvl_read_INFO_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 {
   self->gridType = buffer[2];
   self->gridUnit = buffer[3];
-  self->dataFormat = buffer[4];
-  self->bitDepth = buffer[5];
-  self->dataDimen = buffer[6];
+  self->valueFormat = buffer[4];
+  self->valueBitDepth = buffer[5];
+  self->valueDimen = buffer[6];
   self->endian = buffer[7];
 
   memcpy (&self->resolution, &buffer[8], 12);

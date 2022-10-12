@@ -14,22 +14,22 @@ rvl_get_grid_type (RVL *self)
   return self->gridUnit;
 }
 
-RVLVoxelDimen
-rvl_get_voxel_dimension (RVL *self)
+RVLValueDimen
+rvl_get_value_dimension (RVL *self)
 {
-  return self->dataDimen;
+  return self->valueDimen;
 }
 
-RVLVoxelFormat
-rvl_get_voxel_format (RVL *self)
+RVLValueFormat
+rvl_get_value_format (RVL *self)
 {
-  return self->dataFormat;
+  return self->valueFormat;
 }
 
-RVLVoxelBitDepth
-rvl_get_voxel_bit_depth (RVL *self)
+RVLValueBitDepth
+rvl_get_value_bit_depth (RVL *self)
 {
-  return self->bitDepth;
+  return self->valueBitDepth;
 }
 
 RVLEndian
@@ -81,37 +81,37 @@ rvl_get_voxel_byte_count (RVL *self)
 {
   RVLSize count = 1;
 
-  switch (self->bitDepth)
+  switch (self->valueBitDepth)
     {
-    case RVLVoxelBitDepth_8:
+    case RVLValueBitDepth_8:
       count *= 1;
       break;
-    case RVLVoxelBitDepth_16:
+    case RVLValueBitDepth_16:
       count *= 2;
       break;
-    case RVLVoxelBitDepth_32:
+    case RVLValueBitDepth_32:
       count *= 3;
       break;
-    case RVLVoxelBitDepth_64:
+    case RVLValueBitDepth_64:
       count *= 4;
       break;
-    case RVLVoxelBitDepth_128:
+    case RVLValueBitDepth_128:
       count *= 5;
       break;
     }
 
-  switch (self->dataDimen)
+  switch (self->valueDimen)
     {
-    case RVLVoxelDimen_Scalar:
+    case RVLValueDimen_Scalar:
       count *= 1;
       break;
-    case RVLVoxelDimen_Vec2:
+    case RVLValueDimen_Vec2:
       count *= 2;
       break;
-    case RVLVoxelDimen_Vec3:
+    case RVLValueDimen_Vec3:
       count *= 3;
       break;
-    case RVLVoxelDimen_Vec4:
+    case RVLValueDimen_Vec4:
       count *= 4;
       break;
     }
