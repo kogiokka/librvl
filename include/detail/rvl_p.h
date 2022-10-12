@@ -32,10 +32,10 @@ typedef struct
   (SHIFT32 (b4, 24) | SHIFT32 (b3, 16) | SHIFT32 (b2, 8) | b1)
 
 typedef uint32_t RVLChunkCode;
-#define RVLChunkCode_INFO CHUNK_CODE (73, 78, 70, 79)
+#define RVLChunkCode_VHDR CHUNK_CODE (86, 72, 68, 82)
 #define RVLChunkCode_DATA CHUNK_CODE (68, 65, 84, 65)
 #define RVLChunkCode_TEXT CHUNK_CODE (84, 69, 88, 84)
-#define RVLChunkCode_END CHUNK_CODE (69, 78, 68, 32)
+#define RVLChunkCode_VEND CHUNK_CODE (86, 69, 78, 68)
 
 // RVL File Signature: .RVL FORMAT\0
 #define RVL_FILE_SIG_SIZE 12
@@ -56,7 +56,7 @@ struct RVL
   u8 version[2]; // major, minor
   RVLIoState ioState;
 
-  /* INFO chunk */
+  /* VHDR chunk */
   RVLGridType gridType;
   RVLGridUnit gridUnit;
   RVLValueFormat valueFormat;

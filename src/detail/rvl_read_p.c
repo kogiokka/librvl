@@ -21,7 +21,7 @@ rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size)
 }
 
 void
-rvl_read_INFO_chunk (RVL *self, RVLSize size)
+rvl_read_VHDR_chunk (RVL *self, RVLSize size)
 {
   RVLByte *buffer = rvl_alloc (self, size);
   rvl_read_chunk_payload (self, buffer, size);

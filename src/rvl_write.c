@@ -14,7 +14,7 @@ rvl_write_rvl (RVL *self)
   rvl_write_file_sig (self);
 
   // Required
-  rvl_write_INFO_chunk (self);
+  rvl_write_VHDR_chunk (self);
 
   if (self->text != NULL)
     {
@@ -26,5 +26,5 @@ rvl_write_rvl (RVL *self)
       rvl_write_DATA_chunk (self);
     }
 
-  rvl_write_END_chunk (self);
+  rvl_write_VEND_chunk (self);
 }

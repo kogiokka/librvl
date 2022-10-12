@@ -7,11 +7,11 @@ target_sources(unit_tests PRIVATE
 
 target_link_libraries(unit_tests PRIVATE rvl::rvl)
 
-add_test(NAME "Write INFO" COMMAND unit_tests 1)
+add_test(NAME "Write VHDR" COMMAND unit_tests 1)
 add_test(NAME "Write DATA" COMMAND unit_tests 2)
 add_test(NAME "Write TEXT" COMMAND unit_tests 3)
 
-add_test(NAME "Read INFO" COMMAND unit_tests 4)
+add_test(NAME "Read VHDR" COMMAND unit_tests 4)
 add_test(NAME "Read DATA" COMMAND unit_tests 5)
 add_test(NAME "Read TEXT" COMMAND unit_tests 6)
 add_test(NAME "Test write" COMMAND unit_tests 7)

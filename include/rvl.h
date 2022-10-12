@@ -13,12 +13,12 @@
  * Chunk Codes
  * ===========
  *
- * Currently, there are 4 types of chunk: INFO, DATA, TEXT, END.
+ * Currently, there are 4 types of chunk: VHDR, DATA, TEXT, VEND.
  *
- * INFO Chunk
+ * VHDR Chunk
  * ++++++++++
  *
- * INFO chunk holds the information on how to interpret the DATA chunk. The
+ * VHDR chunk holds the information on how to interpret the DATA chunk. The
  * layout of the chunk payload is as follow:
  *
  * +00 1B    librvl major version

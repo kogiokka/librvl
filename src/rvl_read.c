@@ -28,8 +28,8 @@ rvl_read_rvl (RVL *self)
 
       switch (code)
         {
-        case RVLChunkCode_INFO:
-          rvl_read_INFO_chunk (self, size);
+        case RVLChunkCode_VHDR:
+          rvl_read_VHDR_chunk (self, size);
           break;
         case RVLChunkCode_DATA:
           rvl_alloc_data_buffer (self, &self->data.rbuf, &self->data.size);
@@ -38,7 +38,7 @@ rvl_read_rvl (RVL *self)
         case RVLChunkCode_TEXT:
           rvl_read_TEXT_chunk (self, size);
           break;
-        case RVLChunkCode_END:
+        case RVLChunkCode_VEND:
           break;
         default:
           {
@@ -49,7 +49,7 @@ rvl_read_rvl (RVL *self)
           break;
         }
     }
-  while (code != RVLChunkCode_END);
+  while (code != RVLChunkCode_VEND);
 }
 
 void
@@ -68,8 +68,8 @@ rvl_read_info (RVL *self)
 
       switch (code)
         {
-        case RVLChunkCode_INFO:
-          rvl_read_INFO_chunk (self, size);
+        case RVLChunkCode_VHDR:
+          rvl_read_VHDR_chunk (self, size);
           break;
         case RVLChunkCode_TEXT:
           rvl_read_TEXT_chunk (self, size);
@@ -79,7 +79,7 @@ rvl_read_info (RVL *self)
           break;
         }
     }
-  while (code != RVLChunkCode_END);
+  while (code != RVLChunkCode_VEND);
   fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);
 }
 
@@ -107,7 +107,7 @@ rvl_read_data_buffer (RVL *self, RVLByte **data)
           fseek (self->io, size, SEEK_CUR);
         }
     }
-  while (code != RVLChunkCode_END);
+  while (code != RVLChunkCode_VEND);
 
   self->data.rbuf = NULL;
   fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);

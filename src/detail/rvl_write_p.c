@@ -9,7 +9,7 @@
 #include "detail/rvl_text_p.h"
 
 void
-rvl_write_INFO_chunk (RVL *self)
+rvl_write_VHDR_chunk (RVL *self)
 {
   u32 byteSize = 44;
   u8 *buf = calloc (1, byteSize);
@@ -25,7 +25,7 @@ rvl_write_INFO_chunk (RVL *self)
   memcpy (&buf[20], &self->voxelSize[0], 12);
   memcpy (&buf[32], &self->position[0], 12);
 
-  rvl_write_chunk_header (self, RVLChunkCode_INFO, byteSize);
+  rvl_write_chunk_header (self, RVLChunkCode_VHDR, byteSize);
   rvl_write_chunk_payload (self, buf, byteSize);
   rvl_write_chunk_end (self);
 }
@@ -71,9 +71,9 @@ rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr, int numText)
 }
 
 void
-rvl_write_END_chunk (RVL *self)
+rvl_write_VEND_chunk (RVL *self)
 {
-  rvl_write_chunk_header (self, RVLChunkCode_END, 0);
+  rvl_write_chunk_header (self, RVLChunkCode_VEND, 0);
   rvl_write_chunk_payload (self, NULL, 0);
   rvl_write_chunk_end (self);
 }
