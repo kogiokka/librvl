@@ -21,8 +21,11 @@ rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size)
 }
 
 void
-rvl_read_INFO_chunk (RVL *self, RVLByte *buffer, RVLSize size)
+rvl_read_INFO_chunk (RVL *self, RVLSize size)
 {
+  RVLByte *buffer = rvl_alloc (self, size);
+  rvl_read_chunk_payload (self, buffer, size);
+
   self->gridType = buffer[2];
   self->gridUnit = buffer[3];
   self->valueFormat = buffer[4];
@@ -36,11 +39,16 @@ rvl_read_INFO_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 
   const u32 *res = self->resolution;
   self->data.size = res[0] * res[1] * res[2] * rvl_get_value_byte_count (self);
+
+  rvl_dealloc (self, &buffer);
 }
 
 void
-rvl_read_DATA_chunk (RVL *self, RVLByte *buffer, RVLSize size)
+rvl_read_DATA_chunk (RVL *self, RVLSize size)
 {
+  RVLByte *buffer = rvl_alloc (self, size);
+  rvl_read_chunk_payload (self, buffer, size);
+
   char *const src = (char *)buffer;
   char *const dst = (char *)self->data.rbuf;
   const RVLSize srcSize = size;
@@ -53,11 +61,16 @@ rvl_read_DATA_chunk (RVL *self, RVLByte *buffer, RVLSize size)
       fprintf (stderr, "[ERROR] Data decompression error!");
       exit (EXIT_FAILURE);
     }
+
+  rvl_dealloc (self, &buffer);
 }
 
 void
-rvl_read_TEXT_chunk (RVL *self, RVLByte *buffer, RVLSize size)
+rvl_read_TEXT_chunk (RVL *self, RVLSize size)
 {
+  RVLByte *buffer = rvl_alloc (self, size);
+  rvl_read_chunk_payload (self, buffer, size);
+
   RVLText *newArr = rvl_text_create_array (self->numText + 1);
   int numText = self->numText + 1;
 
@@ -87,6 +100,8 @@ rvl_read_TEXT_chunk (RVL *self, RVLByte *buffer, RVLSize size)
 
   self->text = newArr;
   self->numText = numText;
+
+  rvl_dealloc (self, &buffer);
 }
 
 void
