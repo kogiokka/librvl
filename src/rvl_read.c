@@ -71,6 +71,10 @@ rvl_read_info (RVL *self)
           rvl_read_INFO_chunk (self, size);
           break;
         }
+      else
+        {
+          fseek (self->io, size, SEEK_CUR);
+        }
     }
   while (code != RVLChunkCode_END);
 }
@@ -90,6 +94,10 @@ rvl_read_data_buffer (RVL *self, RVLByte **data)
         {
           rvl_read_DATA_chunk (self, size);
           break;
+        }
+      else
+        {
+          fseek (self->io, size, SEEK_CUR);
         }
     }
   while (code != RVLChunkCode_END);
