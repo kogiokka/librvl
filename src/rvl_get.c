@@ -77,7 +77,7 @@ rvl_get_text (RVL *self, RVLText **text, int *numText)
 }
 
 RVLSize
-rvl_get_voxel_byte_count (RVL *self)
+rvl_get_value_byte_count (RVL *self)
 {
   RVLSize count = 1;
 

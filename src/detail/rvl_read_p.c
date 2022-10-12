@@ -35,7 +35,7 @@ rvl_read_INFO_chunk (RVL *self, RVLByte *buffer, RVLSize size)
   memcpy (&self->position, &buffer[32], 12);
 
   const u32 *res = self->resolution;
-  self->data.size = res[0] * res[1] * res[2] * rvl_get_voxel_byte_count (self);
+  self->data.size = res[0] * res[1] * res[2] * rvl_get_value_byte_count (self);
 }
 
 void

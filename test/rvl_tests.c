@@ -137,7 +137,7 @@ rvl_test_read_parts()
   int x, y, z;
   rvl_get_resolution(rvl, &x, &y, &z);
 
-  RVLSize size = x * y * z * rvl_get_voxel_byte_count(rvl);
+  RVLSize size = x * y * z * rvl_get_value_byte_count (rvl);
   RVLByte* buffer = (RVLByte*) malloc(size);
 
   rvl_read_data_buffer(rvl, &buffer);
