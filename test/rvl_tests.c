@@ -145,8 +145,8 @@ rvl_test_write ()
   rvl_alloc_data_buffer (rvl, &buffer, &size);
   memset (buffer, 'A', size);
   rvl_set_data_buffer (rvl, buffer, size);
-  rvl_write_rvl (rvl);
   rvl_dealloc_data_buffer (rvl, &buffer);
+
   rvl_write_rvl (rvl);
 
   rvl_destroy (&rvl);
