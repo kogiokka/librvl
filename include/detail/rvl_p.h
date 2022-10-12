@@ -77,5 +77,7 @@ struct RVL
 
 RVLText *rvl_text_create_array (int num);
 void rvl_text_destroy_array (RVLText **self);
+RVLByte *rvl_alloc (RVL *self, RVLSize size);
+void rvl_dealloc (RVL *self, RVLByte **ptr);
 
 #endif

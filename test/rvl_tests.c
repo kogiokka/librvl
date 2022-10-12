@@ -65,7 +65,7 @@ rvl_test_write_DATA ()
   memset (buffer, 'A', size);
   rvl_set_data_buffer(rvl, buffer, size);
   rvl_write_rvl (rvl);
-  rvl_dealloc_data_buffer(&buffer);
+  rvl_dealloc_data_buffer(rvl, &buffer);
 
   rvl_destroy (&rvl);
 }
@@ -134,16 +134,14 @@ rvl_test_read_parts()
 
   rvl_read_info(rvl);
 
-  int x, y, z;
-  rvl_get_resolution(rvl, &x, &y, &z);
-
-  RVLSize size = x * y * z * rvl_get_value_byte_count (rvl);
-  RVLByte* buffer = (RVLByte*) malloc(size);
-
+  RVLByte* buffer;
+  RVLSize size;
+  rvl_alloc_data_buffer(rvl, &buffer, &size);
   rvl_read_data_buffer(rvl, &buffer);
+
   fwrite (buffer, 1, size, stdout);
 
-  free(buffer);
+  rvl_dealloc_data_buffer(rvl, &buffer);
 
   rvl_destroy (&rvl);
 }

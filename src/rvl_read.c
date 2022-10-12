@@ -26,7 +26,7 @@ rvl_read_rvl (RVL *self)
               size, ch[0], ch[1], ch[2], ch[3]);
 #endif
 
-      RVLByte *buffer = (RVLByte *)malloc (size);
+      RVLByte *buffer = rvl_alloc (self, size);
       rvl_read_chunk_payload (self, buffer, size);
 
       switch (code)
@@ -51,7 +51,7 @@ rvl_read_rvl (RVL *self)
           }
           break;
         }
-      free (buffer);
+      rvl_dealloc (self, &buffer);
     }
   while (code != RVLChunkCode_END);
 }
@@ -72,10 +72,10 @@ rvl_read_info (RVL *self)
 
       if (code == RVLChunkCode_INFO)
         {
-          RVLByte *buffer = (RVLByte *)malloc (size);
+          RVLByte *buffer = rvl_alloc (self, size);
           rvl_read_chunk_payload (self, buffer, size);
           rvl_read_INFO_chunk (self, buffer, size);
-          free (buffer);
+          rvl_dealloc (self, &buffer);
           break;
         }
     }
@@ -93,10 +93,10 @@ rvl_read_data_buffer (RVL *self, RVLByte **data)
       rvl_read_chunk_header (self, &size, &code);
       if (code == RVLChunkCode_DATA)
         {
-          RVLByte *buffer = (RVLByte *)malloc (size);
+          RVLByte *buffer = rvl_alloc (self, size);
           rvl_read_chunk_payload (self, buffer, size);
           rvl_read_DATA_chunk (self, buffer, size);
-          free (buffer);
+          rvl_dealloc (self, &buffer);
           break;
         }
     }

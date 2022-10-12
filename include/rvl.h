@@ -139,7 +139,7 @@ void rvl_text_get (RVLText *textArr, int index, const char **key,
                    const char **value);
 
 void rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size);
-void rvl_dealloc_data_buffer (RVLByte **buffer);
+void rvl_dealloc_data_buffer (RVL *self, RVLByte **buffer);
 void rvl_set_data_buffer (RVL *self, RVLConstByte *buffer, RVLSize size);
 void rvl_get_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size);
 
