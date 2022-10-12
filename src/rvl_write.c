@@ -9,7 +9,7 @@
 #include "detail/rvl_write_p.h"
 
 void
-rvl_write (RVL *self)
+rvl_write_rvl (RVL *self)
 {
   rvl_write_file_sig (self);
 

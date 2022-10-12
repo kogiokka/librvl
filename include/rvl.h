@@ -92,8 +92,19 @@ RVL *rvl_create_writer (const char *filename);
 RVL *rvl_create_reader (const char *filename);
 void rvl_destroy (RVL **self);
 
-void rvl_write (RVL *self);
-void rvl_read (RVL *self);
+// Write the entire rvl file
+void rvl_write_rvl (RVL *self);
+
+// Read the entire rvl file
+void rvl_read_rvl (RVL *self);
+
+// Read the information without the actual volumetric data
+// Use rvl_get_* to retrieve information.
+void rvl_read_info (RVL *self);
+
+// Read the entire volumetric data into a 1D buffer. The data allocation and
+// deallocation is managed by the user.
+void rvl_read_data (RVL *self, RVLByte **data, RVLSize *size);
 
 void rvl_set_grid_type (RVL *self, RVLGridType gridType);
 void rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit);
