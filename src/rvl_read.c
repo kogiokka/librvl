@@ -66,22 +66,29 @@ rvl_read_info (RVL *self)
       RVLSize size;
       rvl_read_chunk_header (self, &size, &code);
 
-      if (code == RVLChunkCode_INFO)
+      switch (code)
         {
+        case RVLChunkCode_INFO:
           rvl_read_INFO_chunk (self, size);
           break;
-        }
-      else
-        {
+        case RVLChunkCode_TEXT:
+          rvl_read_TEXT_chunk (self, size);
+          break;
+        default:
           fseek (self->io, size, SEEK_CUR);
+          break;
         }
     }
   while (code != RVLChunkCode_END);
+  fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);
 }
 
 void
 rvl_read_data_buffer (RVL *self, RVLByte **data)
 {
+  if (self == NULL)
+    return;
+
   self->data.rbuf = *data;
 
   RVLChunkCode_t code;
@@ -103,4 +110,5 @@ rvl_read_data_buffer (RVL *self, RVLByte **data)
   while (code != RVLChunkCode_END);
 
   self->data.rbuf = NULL;
+  fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);
 }

@@ -58,14 +58,14 @@ rvl_test_write_DATA ()
   RVL *rvl = rvl_create_writer ("test_DATA.rvl");
   init_info (rvl);
 
-  RVLByte* buffer;
+  RVLByte *buffer;
   RVLSize size;
 
   rvl_alloc_data_buffer (rvl, &buffer, &size);
   memset (buffer, 'A', size);
-  rvl_set_data_buffer(rvl, buffer, size);
+  rvl_set_data_buffer (rvl, buffer, size);
   rvl_write_rvl (rvl);
-  rvl_dealloc_data_buffer(rvl, &buffer);
+  rvl_dealloc_data_buffer (rvl, &buffer);
 
   rvl_destroy (&rvl);
 }
@@ -75,11 +75,11 @@ rvl_test_read_DATA ()
 {
   RVL *rvl = rvl_create_reader ("test_DATA.rvl");
 
-  RVLByte* buffer;
+  RVLByte *buffer;
   RVLSize size;
 
   rvl_read_rvl (rvl);
-  rvl_get_data_buffer(rvl, &buffer, &size);
+  rvl_get_data_buffer (rvl, &buffer, &size);
 
   fwrite (buffer, 1, size, stdout);
 
@@ -128,20 +128,54 @@ rvl_test_read_TEXT ()
 }
 
 void
-rvl_test_read_parts()
+rvl_test_write ()
 {
-  RVL *rvl = rvl_create_reader ("test_DATA.rvl");
+  RVL *rvl = rvl_create_writer ("test.rvl");
+  init_info (rvl);
 
-  rvl_read_info(rvl);
+  int numText = 2;
+  RVLText *textArr = rvl_text_create_array (numText);
+  rvl_text_set (textArr, 0, "Title", "librvl");
+  rvl_text_set (textArr, 1, "Description",
+                "The Regular VoLumetric format reference library");
+  rvl_set_text (rvl, &textArr, numText);
 
-  RVLByte* buffer;
+  RVLByte *buffer;
   RVLSize size;
-  rvl_alloc_data_buffer(rvl, &buffer, &size);
-  rvl_read_data_buffer(rvl, &buffer);
+  rvl_alloc_data_buffer (rvl, &buffer, &size);
+  memset (buffer, 'A', size);
+  rvl_set_data_buffer (rvl, buffer, size);
+  rvl_write_rvl (rvl);
+  rvl_dealloc_data_buffer (rvl, &buffer);
+  rvl_write_rvl (rvl);
 
-  fwrite (buffer, 1, size, stdout);
+  rvl_destroy (&rvl);
+}
 
-  rvl_dealloc_data_buffer(rvl, &buffer);
+void
+rvl_test_read_parts ()
+{
+  RVL *rvl = rvl_create_reader ("test.rvl");
+
+  // Read INFO and TEXT
+  RVLText *textArr;
+  int numText;
+  const char *key = NULL;
+  const char *value = NULL;
+
+  rvl_read_info (rvl);
+  rvl_get_text (rvl, &textArr, &numText);
+  for (int i = 0; i < numText; i++)
+    {
+      rvl_text_get (textArr, i, &key, &value);
+      fprintf (stdout, "%s: %s\n", key, value);
+    }
+
+  RVLByte *buffer;
+  RVLSize size;
+  rvl_alloc_data_buffer (rvl, &buffer, &size);
+  rvl_read_data_buffer (rvl, &buffer);
+  rvl_dealloc_data_buffer (rvl, &buffer);
 
   rvl_destroy (&rvl);
 }
@@ -157,5 +191,5 @@ init_info (RVL *rvl)
   rvl_set_endian (rvl, RVLEndian_Little);
   rvl_set_resolution (rvl, 20, 20, 20);
   rvl_set_voxel_size (rvl, 1.0f, 1.0f, 1.0f);
-  rvl_set_position(rvl, 0.0f, 0.0f, 0.0f);
+  rvl_set_position (rvl, 0.0f, 0.0f, 0.0f);
 }

@@ -7,6 +7,8 @@ void rvl_test_write_DATA ();
 void rvl_test_read_DATA ();
 void rvl_test_write_TEXT ();
 void rvl_test_read_TEXT ();
+
+void rvl_test_write();
 void rvl_test_read_parts ();
 
 int
@@ -37,6 +39,10 @@ main (int argc, char *argv[])
       rvl_test_read_TEXT ();
     }
   else if (strcmp (argv[1], "7") == 0)
+    {
+      rvl_test_write();
+    }
+  else if (strcmp (argv[1], "8") == 0)
     {
       rvl_test_read_parts();
     }
