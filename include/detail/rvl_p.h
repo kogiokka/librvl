@@ -31,7 +31,7 @@ typedef struct
 #define CHUNK_CODE(b1, b2, b3, b4)                                            \
   (SHIFT32 (b4, 24) | SHIFT32 (b3, 16) | SHIFT32 (b2, 8) | b1)
 
-typedef uint32_t RVLChunkCode_t;
+typedef uint32_t RVLChunkCode;
 #define RVLChunkCode_INFO CHUNK_CODE (73, 78, 70, 79)
 #define RVLChunkCode_DATA CHUNK_CODE (68, 65, 84, 65)
 #define RVLChunkCode_TEXT CHUNK_CODE (84, 69, 88, 84)

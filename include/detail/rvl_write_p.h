@@ -3,7 +3,7 @@
 
 #include "rvl_p.h"
 
-void rvl_write_chunk_header (RVL *self, RVLChunkCode_t code, RVLSize size);
+void rvl_write_chunk_header (RVL *self, RVLChunkCode code, RVLSize size);
 void rvl_write_chunk_payload (RVL *self, RVLConstByte *data, RVLSize size);
 void rvl_write_chunk_end (RVL *self);
 

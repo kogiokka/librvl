@@ -8,7 +8,7 @@
 #include "detail/rvl_text_p.h"
 
 void
-rvl_read_chunk_header (RVL *self, RVLSize *size, RVLChunkCode_t *code)
+rvl_read_chunk_header (RVL *self, RVLSize *size, RVLChunkCode *code)
 {
   rvl_read_data (self, (RVLByte *)size, 4);
   rvl_read_data (self, (RVLByte *)code, 4);

@@ -13,7 +13,7 @@ rvl_read_rvl (RVL *self)
 
   rvl_read_file_sig (self);
 
-  RVLChunkCode_t code;
+  RVLChunkCode code;
   do
     {
       RVLSize size;
@@ -60,7 +60,7 @@ rvl_read_info (RVL *self)
 
   rvl_read_file_sig (self);
 
-  RVLChunkCode_t code;
+  RVLChunkCode code;
   do
     {
       RVLSize size;
@@ -91,7 +91,7 @@ rvl_read_data_buffer (RVL *self, RVLByte **data)
 
   self->data.rbuf = *data;
 
-  RVLChunkCode_t code;
+  RVLChunkCode code;
   do
     {
       RVLSize size;

@@ -79,7 +79,7 @@ rvl_write_END_chunk (RVL *self)
 }
 
 void
-rvl_write_chunk_header (RVL *self, RVLChunkCode_t code, RVLSize size)
+rvl_write_chunk_header (RVL *self, RVLChunkCode code, RVLSize size)
 {
   u8 buf[8];
 
