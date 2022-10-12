@@ -35,6 +35,7 @@ rvl_read_rvl (RVL *self)
           rvl_read_INFO_chunk (self, buffer, size);
           break;
         case RVLChunkCode_DATA:
+          rvl_alloc_data_buffer (self, &self->data.rbuf, &self->data.size);
           rvl_read_DATA_chunk (self, buffer, size);
           break;
         case RVLChunkCode_TEXT:
@@ -82,9 +83,10 @@ rvl_read_info (RVL *self)
 }
 
 void
-rvl_read_data (RVL *self, RVLByte **data, RVLSize* size)
+rvl_read_data_buffer (RVL *self, RVLByte **data)
 {
   RVLChunkCode_t code;
+  self->data.rbuf = *data;
   do
     {
       RVLSize size;
@@ -99,7 +101,5 @@ rvl_read_data (RVL *self, RVLByte **data, RVLSize* size)
         }
     }
   while (code != RVLChunkCode_END);
-
-  *data = self->data.rbuf;
-  *size = self->data.size;
+  self->data.rbuf = NULL;
 }

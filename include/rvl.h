@@ -104,7 +104,7 @@ void rvl_read_info (RVL *self);
 
 // Read the entire volumetric data into a 1D buffer. The data allocation and
 // deallocation is managed by the user.
-void rvl_read_data (RVL *self, RVLByte **data, RVLSize *size);
+void rvl_read_data_buffer (RVL *self, RVLByte **data);
 
 void rvl_set_grid_type (RVL *self, RVLGridType gridType);
 void rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit);

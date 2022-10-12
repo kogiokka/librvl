@@ -128,6 +128,27 @@ rvl_test_read_TEXT ()
 }
 
 void
+rvl_test_read_parts()
+{
+  RVL *rvl = rvl_create_reader ("test_DATA.rvl");
+
+  rvl_read_info(rvl);
+
+  int x, y, z;
+  rvl_get_resolution(rvl, &x, &y, &z);
+
+  RVLSize size = x * y * z * rvl_get_voxel_byte_count(rvl);
+  RVLByte* buffer = (RVLByte*) malloc(size);
+
+  rvl_read_data_buffer(rvl, &buffer);
+  fwrite (buffer, 1, size, stdout);
+
+  free(buffer);
+
+  rvl_destroy (&rvl);
+}
+
+void
 init_info (RVL *rvl)
 {
   rvl_set_grid_type (rvl, RVLGridType_Cartesian);
