@@ -38,7 +38,7 @@ rvl_read_VHDR_chunk (RVL *self, RVLSize size)
   memcpy (&self->position, &buffer[32], 12);
 
   const u32 *res  = self->resolution;
-  self->data.size = res[0] * res[1] * res[2] * rvl_get_value_byte_count (self);
+  self->data.size = res[0] * res[1] * res[2] * rvl_get_primitive_byte_count (self);
 
   rvl_dealloc (self, &buffer);
 }

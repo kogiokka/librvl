@@ -184,7 +184,7 @@ extern "C"
   void rvl_get_voxel_size (RVL *self, float *x, float *y, float *z);
   void rvl_get_position (RVL *self, float *x, float *y, float *z);
 
-  RVLSize rvl_get_value_byte_count (RVL *self);
+  RVLSize rvl_get_primitive_byte_count (RVL *self);
 
   RVLText *rvl_text_create_array (int num);
   void     rvl_text_destroy_array (RVLText **self);

@@ -65,7 +65,7 @@ rvl_get_text (RVL *self, RVLText **text, int *numText)
 }
 
 RVLSize
-rvl_get_value_byte_count (RVL *self)
+rvl_get_primitive_byte_count (RVL *self)
 {
   switch (self->primitive)
     {
