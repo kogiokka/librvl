@@ -28,10 +28,10 @@ rvl_read_VHDR_chunk (RVL *self, RVLSize size)
 
   self->gridType      = buffer[2];
   self->gridUnit      = buffer[3];
-  self->valueFormat   = buffer[4];
-  self->valueBitDepth = buffer[5];
-  self->valueDimen    = buffer[6];
-  self->endian        = buffer[7];
+
+  memcpy(&self->primitive, &buffer[4], 2);
+
+  self->endian        = buffer[6];
 
   memcpy (&self->resolution, &buffer[8], 12);
   memcpy (&self->voxelSize, &buffer[20], 12);

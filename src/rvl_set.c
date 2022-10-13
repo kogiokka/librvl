@@ -17,21 +17,9 @@ rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit)
 }
 
 void
-rvl_set_value_format (RVL *self, RVLValueFormat format)
+rvl_set_primitive(RVL *self, RVLPrimitive primitive)
 {
-  self->valueFormat = format;
-}
-
-void
-rvl_set_value_dimension (RVL *self, RVLValueDimen dimen)
-{
-  self->valueDimen = dimen;
-}
-
-void
-rvl_set_value_bit_depth (RVL *self, RVLValueBitDepth bitDepth)
-{
-  self->valueBitDepth = bitDepth;
+  self->primitive = primitive;
 }
 
 void

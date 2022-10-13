@@ -8,6 +8,7 @@
 
 typedef float    f32;
 typedef uint8_t  u8;
+typedef uint16_t u16;
 typedef uint32_t u32;
 
 typedef void (*RVLWriteFn) (RVL *, RVLConstByte *, RVLSize);
@@ -57,15 +58,13 @@ struct RVL
   RVLIoState ioState;
 
   /* VHDR chunk */
-  RVLGridType      gridType;
-  RVLGridUnit      gridUnit;
-  RVLValueFormat   valueFormat;
-  RVLValueBitDepth valueBitDepth;
-  RVLValueDimen    valueDimen;
-  RVLEndian        endian;
-  u32              resolution[3];
-  f32              voxelSize[3];
-  f32              position[3];
+  RVLGridType  gridType;
+  RVLGridUnit  gridUnit;
+  RVLPrimitive primitive;
+  RVLEndian    endian;
+  u32          resolution[3];
+  f32          voxelSize[3];
+  f32          position[3];
 
   /* TEXT chunk */
   RVLText *text;
