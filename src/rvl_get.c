@@ -11,7 +11,7 @@ rvl_get_grid_unit (RVL *self)
 RVLGridType
 rvl_get_grid_type (RVL *self)
 {
-  return self->gridUnit;
+  return self->gridType;
 }
 
 RVLPrimitive
