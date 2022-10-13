@@ -12,7 +12,7 @@ void
 rvl_write_VHDR_chunk (RVL *self)
 {
   u32 byteSize = 44;
-  u8 *buf = calloc (1, byteSize);
+  u8 *buf      = calloc (1, byteSize);
 
   memcpy (&buf[0], self->version, 2);
   buf[2] = self->gridType;
@@ -33,7 +33,7 @@ rvl_write_VHDR_chunk (RVL *self)
 void
 rvl_write_DATA_chunk (RVL *self)
 {
-  char *compressedBuf = (char *)malloc (self->data.size);
+  char     *compressedBuf = (char *)malloc (self->data.size);
   const int compressedSize
       = LZ4_compress_HC ((char *)self->data.wbuf, compressedBuf,
                          self->data.size, self->data.size, LZ4HC_CLEVEL_MIN);
@@ -50,9 +50,9 @@ rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr, int numText)
 {
   for (int i = 0; i < numText; i++)
     {
-      const RVLText *const text = &textArr[i];
-      const RVLSize keySize = strlen (text->key);
-      const RVLSize valueSize = strlen (text->value);
+      const RVLText *const text      = &textArr[i];
+      const RVLSize        keySize   = strlen (text->key);
+      const RVLSize        valueSize = strlen (text->value);
 
       rvl_write_chunk_header (self, RVLChunkCode_TEXT,
                               keySize + valueSize + 1);

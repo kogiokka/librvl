@@ -66,13 +66,13 @@ void
 rvl_get_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size)
 {
   *buffer = self->data.rbuf;
-  *size = self->data.size;
+  *size   = self->data.size;
 }
 
 void
 rvl_get_text (RVL *self, RVLText **text, int *numText)
 {
-  *text = self->text;
+  *text    = self->text;
   *numText = self->numText;
 }
 
