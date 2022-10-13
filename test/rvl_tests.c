@@ -34,12 +34,16 @@ rvl_test_read_INFO ()
   rvl_get_voxel_size (rvl, &vx, &vy, &vz);
   rvl_get_position (rvl, &px, &py, &pz);
 
+  char sep[81];
+  memset (sep, '-', 80);
+  fprintf (stdout, "%s\n", sep);
   fprintf (stdout, "Width: %d, Length: %d, Height: %d\n", x, y, z);
   fprintf (stdout, "Grid - type: %d, unit: %d\n", gridType, unit);
-  fprintf (stdout, "Data format: %.4x\n", format);
+  fprintf (stdout, "Data format: 0x%.4x\n", format);
   fprintf (stdout, "Endian - %d\n", endian);
   fprintf (stdout, "Voxel Size - x: %.3f, y: %.3f, z: %.3f\n", vx, vy, vz);
   fprintf (stdout, "Position - x: %.3f, y: %.3f, z: %.3f\n", px, py, pz);
+  fprintf (stdout, "%s\n", sep);
 
   if (unit != RVLGridUnit_NA)
     {
@@ -184,7 +188,7 @@ init_info (RVL *rvl)
   rvl_set_grid_unit (rvl, RVLGridUnit_NA);
   rvl_set_primitive (rvl, RVLPrimitive_u8);
   rvl_set_endian (rvl, RVLEndian_Little);
-  rvl_set_resolution (rvl, 20, 20, 20);
+  rvl_set_resolution (rvl, 10, 10, 10);
   rvl_set_voxel_size (rvl, 1.0f, 1.0f, 1.0f);
   rvl_set_position (rvl, 0.0f, 0.0f, 0.0f);
 }
