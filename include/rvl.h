@@ -13,7 +13,9 @@
  * Chunk Codes
  * ===========
  *
- * Currently, there are 4 types of chunk: VHDR, DATA, TEXT, VEND.
+ * Currently, there are 5 types of chunk: VHDR, GRID, DATA, TEXT, VEND.
+ * A valid RVL file must contain an VHDR chunk, an GRID chunk, one or more DATA
+ * chunks, and an VEND chunk.
  *
  * VHDR Chunk
  * ++++++++++
@@ -23,16 +25,22 @@
  *
  * +00 1B    librvl major version
  * +01 1B    librvl minor version
- * +02 1B    grid type
- * +03 1B    grid unit
- * +04 2B    primitive
- * +06 1B    endianness
- * +07 1B    padding byte
- * +08 12B   resolution
- * +20 12B   voxel size
- * +32 12B   coordinates of the lower corner of the dataset
+ * +02 12B   resolution
+ * +14 2B    primitive
+ * +16 1B    compression type
+ * +17 1B    padding byte
  *
- * Total 44 bytes
+ * Total 18 bytes
+ *
+ *
+ * GRID Chunk
+ * ++++++++++
+ * +00 1B    grid type
+ * +01 1B    grid unit
+ * +02 12B   coordinates of the lower corner of the dataset
+ * +14 [voxel size(s) in x-direction]
+ * +xx [voxel size(s) in y-direction]
+ * +xx [voxel size(s) in z-direction]
  *
  */
 
