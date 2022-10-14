@@ -44,8 +44,7 @@ rvl_write_DATA_chunk (RVL *self)
   if (compSize == 0)
     {
       dstCapacity = LZ4_compressBound (self->data.size);
-      free (dst);
-      dst = malloc (dstCapacity);
+      dst = realloc (dst, dstCapacity);
 
       compSize = LZ4_compress_HC (src, dst, self->data.size, dstCapacity,
                                   LZ4HC_CLEVEL_MIN);
@@ -54,6 +53,8 @@ rvl_write_DATA_chunk (RVL *self)
   rvl_write_chunk_header (self, RVLChunkCode_DATA, compSize);
   rvl_write_chunk_payload (self, (RVLConstByte *)dst, compSize);
   rvl_write_chunk_end (self);
+
+  free(dst);
 }
 
 // Strip off the null terminator at the end of the value string.
