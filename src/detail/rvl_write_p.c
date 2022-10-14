@@ -32,14 +32,27 @@ rvl_write_VHDR_chunk (RVL *self)
 void
 rvl_write_DATA_chunk (RVL *self)
 {
-  char     *compressedBuf = (char *)malloc (self->data.size);
-  const int compressedSize
-      = LZ4_compress_HC ((char *)self->data.wbuf, compressedBuf,
-                         self->data.size, self->data.size, LZ4HC_CLEVEL_MIN);
+  int         srcSize     = self->data.size;
+  int         dstCapacity = self->data.size;
+  const char *src         = (char *)self->data.wbuf;
+  char       *dst         = (char *)malloc (dstCapacity);
 
-  rvl_write_chunk_header (self, RVLChunkCode_DATA, compressedSize);
-  rvl_write_chunk_payload (self, (RVLConstByte *)compressedBuf,
-                           compressedSize);
+  int compSize
+      = LZ4_compress_HC (src, dst, srcSize, dstCapacity, LZ4HC_CLEVEL_MIN);
+
+  // When the compressed size is greater than the uncompressed one.
+  if (compSize == 0)
+    {
+      dstCapacity = LZ4_compressBound (self->data.size);
+      free (dst);
+      dst = malloc (dstCapacity);
+
+      compSize = LZ4_compress_HC (src, dst, self->data.size, dstCapacity,
+                                  LZ4HC_CLEVEL_MIN);
+    }
+
+  rvl_write_chunk_header (self, RVLChunkCode_DATA, compSize);
+  rvl_write_chunk_payload (self, (RVLConstByte *)dst, compSize);
   rvl_write_chunk_end (self);
 }
 
