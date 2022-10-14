@@ -27,17 +27,18 @@
  * +01 1B    librvl minor version
  * +02 12B   resolution
  * +14 2B    primitive
- * +16 1B    compression type
- * +17 1B    padding byte
+ * +16 1B    endian
+ * +17 1B    compression type
  *
  * Total 18 bytes
  *
  *
  * GRID Chunk
  * ++++++++++
+ *
  * +00 1B    grid type
  * +01 1B    grid unit
- * +02 12B   coordinates of the lower corner of the dataset
+ * +02 12B   position of the lower corner of the grid
  * +14 [voxel size(s) in x-direction]
  * +xx [voxel size(s) in y-direction]
  * +xx [voxel size(s) in z-direction]
