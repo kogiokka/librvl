@@ -37,7 +37,7 @@ rvl_write_GRID_chunk (RVL *self)
   wbuf[0] = self->grid.type;
   wbuf[1] = self->grid.unit;
   memcpy (&wbuf[2], self->grid.position, 12);
-  memcpy (&wbuf[14], self->grid.vxDimData.wbuf, self->grid.vxDimData.size);
+  memcpy (&wbuf[14], self->grid.vxDimBuf, self->grid.vxDimBufSize);
 
   rvl_write_chunk_header (self, RVLChunkCode_GRID, size);
   rvl_write_chunk_payload (self, wbuf, size);

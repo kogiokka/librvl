@@ -26,7 +26,14 @@ typedef struct
   RVLGridType type;
   RVLGridUnit unit;
   f32         position[3];
-  RVLData     vxDimData;
+
+  /**
+   * Voxel dimensions buffer
+   *
+   * The buffer is managed by RVL struct.
+   */
+  RVLByte *vxDimBuf;
+  RVLSize  vxDimBufSize;
 } RVLGrid;
 
 /**
@@ -87,5 +94,7 @@ RVLText *rvl_text_create_array (int num);
 void     rvl_text_destroy_array (RVLText **self);
 RVLByte *rvl_alloc (RVL *self, RVLSize size);
 void     rvl_dealloc (RVL *self, RVLByte **ptr);
+
+RVLSize rvl_get_voxel_dimensions_byte_count (RVL *self);
 
 #endif

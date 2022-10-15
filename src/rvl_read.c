@@ -30,8 +30,6 @@ rvl_read_rvl (RVL *self)
           rvl_read_VHDR_chunk (self, size);
           break;
         case RVLChunkCode_GRID:
-          rvl_alloc_voxel_dimensions_buffer (self, &self->grid.vxDimData.rbuf,
-                                             &self->grid.vxDimData.size);
           rvl_read_GRID_chunk (self, size);
           break;
         case RVLChunkCode_DATA:

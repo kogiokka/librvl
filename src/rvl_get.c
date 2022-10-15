@@ -37,7 +37,7 @@ rvl_get_resolution (RVL *self, int *x, int *y, int *z)
 void
 rvl_get_voxel_dimensions (RVL *self, const float **dimensions)
 {
-  *dimensions = (float *)self->grid.vxDimData.rbuf;
+  *dimensions = (const float *)self->grid.vxDimBuf;
 }
 
 void
@@ -73,7 +73,6 @@ rvl_get_primitive_byte_count (RVL *self)
   return dimen * bytes;
 }
 
-#include <stdlib.h>
 RVLSize
 rvl_get_voxel_dimensions_byte_count (RVL *self)
 {

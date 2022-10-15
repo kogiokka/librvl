@@ -202,11 +202,8 @@ extern "C"
   void     rvl_text_get (RVLText *textArr, int index, const char **key,
                          const char **value);
 
-  void rvl_alloc_voxel_dimensions_buffer (RVL *self, RVLByte **buffer, RVLSize* size);
-  void rvl_dealloc_voxel_dimensions_buffer (RVL *self, RVLByte **buffer);
   void rvl_set_voxel_dimensions (RVL *self, const float *dimensions);
-  void    rvl_get_voxel_dimensions (RVL *self, const float **dim);
-  RVLSize rvl_get_voxel_dimensions_byte_count (RVL *self);
+  void rvl_get_voxel_dimensions (RVL *self, const float **dimensions);
 
   void rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size);
   void rvl_dealloc_data_buffer (RVL *self, RVLByte **buffer);

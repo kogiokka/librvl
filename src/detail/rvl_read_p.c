@@ -40,19 +40,20 @@ rvl_read_VHDR_chunk (RVL *self, RVLSize size)
 void
 rvl_read_GRID_chunk (RVL *self, RVLSize size)
 {
-  RVLByte *rbuf             = rvl_alloc (self, size);
-  self->grid.vxDimData.rbuf = (RVLByte *)malloc (size - 14);
+  RVLByte *rbuf       = rvl_alloc (self, size);
+  self->grid.vxDimBuf = rvl_alloc (self, (size - 14));
 
   rvl_read_chunk_payload (self, rbuf, size);
 
   self->grid.type = rbuf[0];
 
   // After grid type
-  self->grid.vxDimData.size = rvl_get_voxel_dimensions_byte_count (self);
+  RVLSize vxDimBufSize = rvl_get_voxel_dimensions_byte_count (self);
 
   self->grid.unit = rbuf[1];
   memcpy (self->grid.position, &rbuf[2], 12);
-  memcpy (self->grid.vxDimData.rbuf, &rbuf[14], self->grid.vxDimData.size);
+  memcpy (self->grid.vxDimBuf, &rbuf[14], vxDimBufSize);
+  self->grid.vxDimBufSize = vxDimBufSize;
 
   rvl_dealloc (self, &rbuf);
 }

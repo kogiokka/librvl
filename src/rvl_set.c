@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "rvl.h"
 
@@ -47,8 +48,11 @@ rvl_set_position (RVL *self, float x, float y, float z)
 void
 rvl_set_voxel_dimensions (RVL *self, const float *dimensions)
 {
-  self->grid.vxDimData.wbuf = (RVLConstByte *)dimensions;
-  self->grid.vxDimData.size = rvl_get_voxel_dimensions_byte_count (self);
+  RVLSize size = rvl_get_voxel_dimensions_byte_count (self);
+
+  self->grid.vxDimBuf     = rvl_alloc (self, size);
+  self->grid.vxDimBufSize = size;
+  memcpy (self->grid.vxDimBuf, dimensions, size);
 }
 
 void

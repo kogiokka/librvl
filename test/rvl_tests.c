@@ -6,8 +6,6 @@
 
 static void init_info (RVL *rvl);
 
-static float *vxDimBuf;
-
 void
 rvl_test_write_INFO ()
 {
@@ -206,13 +204,13 @@ init_info (RVL *rvl)
   rvl_set_resolution (rvl, 6, 6, 3);
   rvl_set_position (rvl, 0.0f, 0.0f, 0.0f);
 
-  RVLSize size;
-  rvl_alloc_voxel_dimensions_buffer (rvl, (RVLByte **)&vxDimBuf, &size);
+  int   numDim = 6 + 6 + 3;
+  float dims[numDim];
 
-  for (int i = 0; i < 6 + 6 + 3; i++)
+  for (int i = 0; i < numDim; i++)
     {
-      vxDimBuf[i] = i * 2.0f;
+      dims[i] = i * 2.0f;
     }
 
-  rvl_set_voxel_dimensions (rvl, (float *)vxDimBuf);
+  rvl_set_voxel_dimensions (rvl, dims);
 }
