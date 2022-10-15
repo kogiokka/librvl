@@ -7,17 +7,17 @@
 void
 rvl_set_grid_type (RVL *self, RVLGridType gridType)
 {
-  self->gridType = gridType;
+  self->grid.type = gridType;
 }
 
 void
 rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit)
 {
-  self->gridUnit = gridUnit;
+  self->grid.unit = gridUnit;
 }
 
 void
-rvl_set_primitive(RVL *self, RVLPrimitive primitive)
+rvl_set_primitive (RVL *self, RVLPrimitive primitive)
 {
   self->primitive = primitive;
 }
@@ -39,17 +39,16 @@ rvl_set_resolution (RVL *self, int x, int y, int z)
 void
 rvl_set_position (RVL *self, float x, float y, float z)
 {
-  self->position[0] = x;
-  self->position[1] = y;
-  self->position[2] = z;
+  self->grid.position[0] = x;
+  self->grid.position[1] = y;
+  self->grid.position[2] = z;
 }
 
 void
-rvl_set_voxel_size (RVL *self, float x, float y, float z)
+rvl_set_voxel_dimensions (RVL *self, const float *dimensions)
 {
-  self->voxelSize[0] = x;
-  self->voxelSize[1] = y;
-  self->voxelSize[2] = z;
+  self->grid.vxDimData.wbuf = (RVLConstByte *)dimensions;
+  self->grid.vxDimData.size = rvl_get_voxel_dimensions_byte_count (self);
 }
 
 void

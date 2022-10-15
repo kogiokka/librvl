@@ -5,13 +5,13 @@
 RVLGridUnit
 rvl_get_grid_unit (RVL *self)
 {
-  return self->gridUnit;
+  return self->grid.unit;
 }
 
 RVLGridType
 rvl_get_grid_type (RVL *self)
 {
-  return self->gridType;
+  return self->grid.type;
 }
 
 RVLPrimitive
@@ -35,19 +35,17 @@ rvl_get_resolution (RVL *self, int *x, int *y, int *z)
 }
 
 void
-rvl_get_voxel_size (RVL *self, float *x, float *y, float *z)
+rvl_get_voxel_dimensions (RVL *self, const float **dimensions)
 {
-  *x = self->voxelSize[0];
-  *y = self->voxelSize[1];
-  *z = self->voxelSize[2];
+  *dimensions = (float *)self->grid.vxDimData.rbuf;
 }
 
 void
 rvl_get_position (RVL *self, float *x, float *y, float *z)
 {
-  *x = self->position[0];
-  *y = self->position[1];
-  *z = self->position[2];
+  *x = self->grid.position[0];
+  *y = self->grid.position[1];
+  *z = self->grid.position[2];
 }
 
 void
@@ -73,4 +71,29 @@ rvl_get_primitive_byte_count (RVL *self)
   u8 bytes = (1 << (p[0] & 0x0f)) / 8;
 
   return dimen * bytes;
+}
+
+#include <stdlib.h>
+RVLSize
+rvl_get_voxel_dimensions_byte_count (RVL *self)
+{
+  RVLSize numVoxelDimen;
+
+  switch (self->grid.type)
+    {
+    case RVLGridType_Cartesian:
+      numVoxelDimen = 3;
+      break;
+    case RVLGridType_Regular:
+      numVoxelDimen = 3;
+      break;
+    case RVLGridType_Rectilinear:
+      {
+        const u32 *res = self->resolution;
+        numVoxelDimen  = res[0] + res[1] + res[2];
+        break;
+      }
+    }
+
+  return numVoxelDimen * sizeof (f32);
 }

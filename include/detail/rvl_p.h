@@ -21,6 +21,14 @@ typedef struct
   RVLSize       size;
 } RVLData;
 
+typedef struct
+{
+  RVLGridType type;
+  RVLGridUnit unit;
+  f32         position[3];
+  RVLData     vxDimData;
+} RVLGrid;
+
 /**
  * Chunk code constants
  *
@@ -33,10 +41,13 @@ typedef struct
   (SHIFT32 (b4, 24) | SHIFT32 (b3, 16) | SHIFT32 (b2, 8) | b1)
 
 typedef uint32_t RVLChunkCode;
+
 #define RVLChunkCode_VHDR CHUNK_CODE (86, 72, 68, 82)
+#define RVLChunkCode_GRID CHUNK_CODE (71, 82, 73, 68)
 #define RVLChunkCode_DATA CHUNK_CODE (68, 65, 84, 65)
-#define RVLChunkCode_TEXT CHUNK_CODE (84, 69, 88, 84)
 #define RVLChunkCode_VEND CHUNK_CODE (86, 69, 78, 68)
+
+#define RVLChunkCode_TEXT CHUNK_CODE (84, 69, 88, 84)
 
 // RVL File Signature: .RVL FORMAT\0
 #define RVL_FILE_SIG_SIZE 12
@@ -51,27 +62,25 @@ typedef enum
 struct RVL
 {
   FILE      *io;
+  RVLIoState ioState;
   RVLWriteFn writeData;
   RVLReadFn  readData;
 
-  u8         version[2]; // major, minor
-  RVLIoState ioState;
-
   /* VHDR chunk */
-  RVLGridType  gridType;
-  RVLGridUnit  gridUnit;
+  u8           version[2]; // major, minor
+  u32          resolution[3];
   RVLPrimitive primitive;
   RVLEndian    endian;
-  u32          resolution[3];
-  f32          voxelSize[3];
-  f32          position[3];
+
+  /* GRID chunk */
+  RVLGrid grid;
+
+  /* DATA chunk */
+  RVLData data;
 
   /* TEXT chunk */
   RVLText *text;
   int      numText;
-
-  /* DATA chunk */
-  RVLData data;
 };
 
 RVLText *rvl_text_create_array (int num);

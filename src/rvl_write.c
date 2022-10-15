@@ -15,6 +15,7 @@ rvl_write_rvl (RVL *self)
 
   // Required
   rvl_write_VHDR_chunk (self);
+  rvl_write_GRID_chunk (self);
 
   if (self->text != NULL)
     {

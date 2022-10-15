@@ -41,6 +41,7 @@ rvl_destroy (RVL **self)
   // Dealloc read buffer. Writer buffer pointer is non-owning so the user is
   // responsible for calling this dealloc function.
   rvl_dealloc_data_buffer (ptr, &ptr->data.rbuf);
+  rvl_dealloc_voxel_dimensions_buffer (ptr, &ptr->grid.vxDimData.rbuf);
 
   fclose (ptr->io);
   free (ptr);
@@ -103,6 +104,21 @@ rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size)
 
 void
 rvl_dealloc_data_buffer (RVL *self, RVLByte **buffer)
+{
+  rvl_dealloc (self, buffer);
+}
+
+void
+rvl_alloc_voxel_dimensions_buffer (RVL *self, RVLByte **buffer, RVLSize *size)
+{
+  RVLSize bufferSize = rvl_get_voxel_dimensions_byte_count (self);
+
+  *buffer = rvl_alloc (self, bufferSize);
+  *size   = bufferSize;
+}
+
+void
+rvl_dealloc_voxel_dimensions_buffer (RVL *self, RVLByte **buffer)
 {
   rvl_dealloc (self, buffer);
 }
