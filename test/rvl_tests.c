@@ -52,10 +52,10 @@ rvl_test_read_regular_grid ()
   RVLPrimitive format   = rvl_get_primitive (rvl);
   RVLEndian    endian   = rvl_get_endian (rvl);
   int          x, y, z;
-  const float *vsize;
+  float        dx, dy, dz;
   float        px, py, pz;
   rvl_get_resolution (rvl, &x, &y, &z);
-  rvl_get_voxel_dimensions (rvl, &vsize);
+  rvl_get_voxel_dimensions (rvl, &dx, &dy, &dz);
   rvl_get_position (rvl, &px, &py, &pz);
 
   char sep[81];
@@ -65,8 +65,7 @@ rvl_test_read_regular_grid ()
   fprintf (stdout, "Grid - type: %d, unit: %d\n", gridType, unit);
   fprintf (stdout, "Data format: 0x%.4x\n", format);
   fprintf (stdout, "Endian - %d\n", endian);
-  fprintf (stdout, "Voxel Dim - x: %.3f, y: %.3f, z: %.3f\n", vsize[0],
-           vsize[1], vsize[2]);
+  fprintf (stdout, "Voxel Dim - x: %.3f, y: %.3f, z: %.3f\n", dx, dy, dz);
   fprintf (stdout, "Position - x: %.3f, y: %.3f, z: %.3f\n", px, py, pz);
   fprintf (stdout, "%s\n", sep);
 
@@ -145,7 +144,7 @@ rvl_test_read_rectilinear_grid ()
   const float *vsize;
   float        px, py, pz;
   rvl_get_resolution (rvl, &x, &y, &z);
-  rvl_get_voxel_dimensions (rvl, &vsize);
+  rvl_get_voxel_dimensions_v (rvl, &vsize);
   rvl_get_position (rvl, &px, &py, &pz);
 
   char sep[81];
@@ -233,8 +232,7 @@ init_regular_grid (RVL *rvl)
   rvl_set_resolution (rvl, 2, 2, 2);
   rvl_set_position (rvl, 3.0f, 2.0f, 1.0f);
 
-  float dims[3] = { 0.1f, 0.1f, 0.1f };
-  rvl_set_voxel_dimensions (rvl, dims);
+  rvl_set_voxel_dimensions (rvl, 0.1f, 0.2f, 0.3f);
 }
 
 void
@@ -256,5 +254,5 @@ init_rectilinear_grid (RVL *rvl)
       dims[i] = i * 2.0f;
     }
 
-  rvl_set_voxel_dimensions (rvl, dims);
+  rvl_set_voxel_dimensions_v (rvl, dims);
 }
