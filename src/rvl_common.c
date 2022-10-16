@@ -103,5 +103,11 @@ rvl_create (const char *filename, RVLIoState ioState)
       break;
     }
 
+  log_set_level(LOG_INFO);
+
+#ifndef NDEBUG
+  log_set_level(LOG_TRACE);
+#endif
+
   return self;
 }
