@@ -193,6 +193,7 @@ extern "C"
   void rvl_get_position (RVL *self, float *x, float *y, float *z);
 
   RVLSize rvl_get_primitive_byte_count (RVL *self);
+  RVLSize rvl_get_data_byte_count (RVL *self);
 
   RVLText *rvl_text_create_array (int num);
   void     rvl_text_destroy_array (RVLText **self);
@@ -205,13 +206,11 @@ extern "C"
   void rvl_set_voxel_dimensions (RVL *self, float x, float y, float z);
   void rvl_get_voxel_dimensions (RVL *self, float *x, float *y, float *z);
 
-  void rvl_set_voxel_dimensions_v (RVL *self, int n, const float *dimensions);
+  void rvl_set_voxel_dimensions_v (RVL *self, const float *dimensions);
   void rvl_get_voxel_dimensions_v (RVL *self, const float **dimensions);
 
-  void rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size);
-  void rvl_dealloc_data_buffer (RVL *self, RVLByte **buffer);
-  void rvl_set_data_buffer (RVL *self, RVLConstByte *buffer, RVLSize size);
-  void rvl_get_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size);
+  void rvl_set_data_buffer (RVL *self, RVLConstByte *buffer);
+  void rvl_get_data_buffer (RVL *self, RVLByte **buffer);
 
 #ifdef __cplusplus
 }

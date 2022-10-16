@@ -6,6 +6,8 @@
 
 static void init_regular_grid (RVL *rvl);
 static void init_rectilinear_grid (RVL *rvl);
+static void print_data_buffer (int x, int y, int z, RVLConstByte *buffer,
+                               RVLSize primSize);
 
 void
 rvl_test_write_regular_grid ()
@@ -16,13 +18,12 @@ rvl_test_write_regular_grid ()
   init_regular_grid (rvl);
 
   // DATA chunk
-  RVLByte *buffer;
-  RVLSize  size;
-  rvl_alloc_data_buffer (rvl, &buffer, &size);
+  RVLSize  size   = rvl_get_data_byte_count (rvl);
+  RVLByte *buffer = (RVLByte *)malloc (size);
   memset (buffer, 'A', size);
-  rvl_set_data_buffer (rvl, buffer, size);
+  rvl_set_data_buffer (rvl, buffer);
   rvl_write_rvl (rvl);
-  rvl_dealloc_data_buffer (rvl, &buffer);
+  free (buffer);
 
   // TEXT chunk
   int      numText = 2;
@@ -76,9 +77,8 @@ rvl_test_read_regular_grid ()
 
   // DATA chunk
   RVLByte *buffer;
-  RVLSize  size;
-  rvl_get_data_buffer (rvl, &buffer, &size);
-  fwrite (buffer, 1, size, stdout);
+  rvl_get_data_buffer (rvl, &buffer);
+  print_data_buffer (x, y, z, buffer, rvl_get_primitive_byte_count (rvl));
 
   // TEXT chunk
   RVLText *textArr;
@@ -105,13 +105,12 @@ rvl_test_write_rectilinear_grid ()
   init_rectilinear_grid (rvl);
 
   // DATA chunk
-  RVLByte *buffer;
-  RVLSize  size;
-  rvl_alloc_data_buffer (rvl, &buffer, &size);
+  RVLSize  size   = rvl_get_data_byte_count (rvl);
+  RVLByte *buffer = (RVLByte *)malloc (size);
   memset (buffer, 'A', size);
-  rvl_set_data_buffer (rvl, buffer, size);
+  rvl_set_data_buffer (rvl, buffer);
   rvl_write_rvl (rvl);
-  rvl_dealloc_data_buffer (rvl, &buffer);
+  free (buffer);
 
   // TEXT chunk
   int      numText = 2;
@@ -172,9 +171,8 @@ rvl_test_read_rectilinear_grid ()
 
   // DATA chunk
   RVLByte *buffer;
-  RVLSize  size;
-  rvl_get_data_buffer (rvl, &buffer, &size);
-  fwrite (buffer, 1, size, stdout);
+  rvl_get_data_buffer (rvl, &buffer);
+  print_data_buffer (x, y, z, buffer, rvl_get_primitive_byte_count (rvl));
 
   // TEXT chunk
   RVLText *textArr;
@@ -225,7 +223,8 @@ rvl_test_partially_read ()
   fprintf (stdout, "Grid - type: %d, unit: %d\n", gridType, unit);
   fprintf (stdout, "Data format: 0x%.4x\n", format);
   fprintf (stdout, "Endian - %d\n", endian);
-  fprintf (stdout, "Voxel Dim - x: %.3f, y: %.3f, z: %.3f\n", vsize[0], vsize[1], vsize[2]);
+  fprintf (stdout, "Voxel Dim - x: %.3f, y: %.3f, z: %.3f\n", vsize[0],
+           vsize[1], vsize[2]);
   for (int i = 0; i < numText; i++)
     {
       rvl_text_get (textArr, i, &key, &value);
@@ -233,12 +232,10 @@ rvl_test_partially_read ()
     }
 
   // Read DATA
-  RVLByte *buffer = NULL;
-  RVLSize  size;
-  rvl_alloc_data_buffer (rvl, &buffer, &size);
+  RVLByte *buffer = (RVLByte *)malloc (rvl_get_data_byte_count (rvl));
   rvl_read_data_buffer (rvl, &buffer);
-  fwrite (buffer, 1, size, stdout);
-  rvl_dealloc_data_buffer (rvl, &buffer);
+  print_data_buffer (x, y, z, buffer, rvl_get_primitive_byte_count (rvl));
+  free (buffer);
 
   rvl_destroy (&rvl);
 }
@@ -263,7 +260,7 @@ init_rectilinear_grid (RVL *rvl)
   rvl_set_grid_type (rvl, RVLGridType_Rectilinear);
   rvl_set_grid_unit (rvl, RVLGridUnit_NA);
 
-  rvl_set_primitive (rvl, RVLPrimitive_u8);
+  rvl_set_primitive (rvl, RVLPrimitive_f8);
   rvl_set_endian (rvl, RVLEndian_Little);
   rvl_set_resolution (rvl, 6, 6, 3);
   rvl_set_position (rvl, 1.0f, 2.0f, 3.0f);
@@ -276,5 +273,25 @@ init_rectilinear_grid (RVL *rvl)
       dims[i] = i * 2.0f;
     }
 
-  rvl_set_voxel_dimensions_v (rvl, numDim, dims);
+  rvl_set_voxel_dimensions_v (rvl, dims);
+}
+
+void
+print_data_buffer (int x, int y, int z, RVLConstByte *buffer, RVLSize primSize)
+{
+  fprintf (stdout, "Prim size: %d\n", primSize);
+  for (int k = 0; k < z; k++)
+    {
+      for (int j = 0; j < y; j++)
+        {
+          for (int i = 0; i < x - 1; i++)
+            {
+              fwrite (&buffer[i + j * x + k * x * y], 1, primSize, stdout);
+              fprintf (stdout, "|");
+            }
+          fwrite (&buffer[x - 1 + j * x + k * x * y], 1, primSize, stdout);
+          fprintf (stdout, "\n");
+        }
+      fprintf (stdout, "\n");
+    }
 }

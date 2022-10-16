@@ -38,7 +38,7 @@ rvl_read_rvl (RVL *self)
           rvl_read_GRID_chunk (self, rbuf, size);
           break;
         case RVLChunkCode_DATA:
-          rvl_alloc_data_buffer (self, &self->data.rbuf, &self->data.size);
+          rvl_alloc (self, &self->data.rbuf, self->data.size);
           rvl_read_chunk_payload (self, rbuf, size);
           rvl_read_DATA_chunk (self, rbuf, size);
           break;

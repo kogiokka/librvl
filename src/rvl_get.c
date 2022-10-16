@@ -59,10 +59,9 @@ rvl_get_position (RVL *self, float *x, float *y, float *z)
 }
 
 void
-rvl_get_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size)
+rvl_get_data_buffer (RVL *self, RVLByte **buffer)
 {
   *buffer = self->data.rbuf;
-  *size   = self->data.size;
 }
 
 void

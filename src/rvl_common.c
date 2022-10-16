@@ -41,7 +41,7 @@ rvl_destroy (RVL **self)
 
   // Dealloc read buffer. Writer buffer pointer is non-owning so the user is
   // responsible for calling this dealloc function.
-  rvl_dealloc_data_buffer (ptr, &ptr->data.rbuf);
+  rvl_dealloc (ptr, &ptr->data.rbuf);
   rvl_dealloc (ptr, &ptr->grid.vxDimBuf);
 
   fclose (ptr->io);
@@ -102,17 +102,4 @@ rvl_create (const char *filename, RVLIoState ioState)
     }
 
   return self;
-}
-
-void
-rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size)
-{
-  *size = rvl_get_data_byte_count (self);
-  rvl_alloc (self, buffer, *size);
-}
-
-void
-rvl_dealloc_data_buffer (RVL *self, RVLByte **buffer)
-{
-  rvl_dealloc (self, buffer);
 }

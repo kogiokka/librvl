@@ -35,6 +35,10 @@ rvl_set_resolution (RVL *self, int x, int y, int z)
   self->resolution[0] = x;
   self->resolution[1] = y;
   self->resolution[2] = z;
+
+  // Init resolution-related variables
+  self->data.size         = rvl_get_data_byte_count (self);
+  self->grid.vxDimBufSize = rvl_get_voxel_dimensions_byte_count (self);
 }
 
 void
@@ -48,30 +52,26 @@ rvl_set_position (RVL *self, float x, float y, float z)
 void
 rvl_set_voxel_dimensions (RVL *self, float x, float y, float z)
 {
-  RVLSize size = 3 * sizeof (float);
+  RVLSize size = self->grid.vxDimBufSize;
 
   rvl_alloc (self, &self->grid.vxDimBuf, size);
-  self->grid.vxDimBufSize = size;
-
   f32 arr[3] = { x, y, z };
   memcpy (self->grid.vxDimBuf, arr, size);
 }
 
 void
-rvl_set_voxel_dimensions_v (RVL *self, int n, const float *dimensions)
+rvl_set_voxel_dimensions_v (RVL *self, const float *dimensions)
 {
-  RVLSize size = n * sizeof (f32);
+  RVLSize size = self->grid.vxDimBufSize;
 
   rvl_alloc (self, &self->grid.vxDimBuf, size);
-  self->grid.vxDimBufSize = size;
   memcpy (self->grid.vxDimBuf, dimensions, size);
 }
 
 void
-rvl_set_data_buffer (RVL *self, RVLConstByte *buffer, RVLSize size)
+rvl_set_data_buffer (RVL *self, RVLConstByte *buffer)
 {
   self->data.wbuf = buffer;
-  self->data.size = size;
 }
 
 void

@@ -27,6 +27,7 @@ rvl_read_VHDR_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
   memcpy (&self->primitive, &rbuf[14], 2);
   self->endian = rbuf[15];
 
+  // Init resolution-related variable
   self->data.size = rvl_get_data_byte_count (self);
 }
 
@@ -39,6 +40,8 @@ rvl_read_GRID_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
   self->grid.unit = rbuf[1];
   memcpy (self->grid.position, &rbuf[2], 12);
   memcpy (self->grid.vxDimBuf, &rbuf[14], vxDimBufSize);
+
+  // Init resolution-related variable
   self->grid.vxDimBufSize = vxDimBufSize;
 }
 

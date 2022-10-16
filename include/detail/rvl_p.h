@@ -96,6 +96,5 @@ void     rvl_alloc (RVL *self, RVLByte **ptr, RVLSize size);
 void     rvl_dealloc (RVL *self, RVLByte **ptr);
 
 RVLSize rvl_get_voxel_dimensions_byte_count (RVL *self);
-RVLSize rvl_get_data_byte_count (RVL *self);
 
 #endif
