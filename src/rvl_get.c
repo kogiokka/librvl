@@ -1,3 +1,5 @@
+#include <log.h>
+
 #include "rvl.h"
 
 #include "detail/rvl_p.h"
@@ -79,36 +81,26 @@ rvl_get_primitive_nbytes (RVL *self)
   u8 dimen = p[1];
   u8 bytes = (1 << (p[0] & 0x0f)) / 8;
 
-  return dimen * bytes;
-}
+  RVLSize nbytes = dimen * bytes;
 
-RVLSize
-rvl_get_voxel_dims_nbytes (RVL *self)
-{
-  RVLSize nVoxelDim;
-
-  switch (self->grid.type)
+  if (nbytes <= 0)
     {
-    case RVLGridType_Cartesian:
-      nVoxelDim = 3;
-      break;
-    case RVLGridType_Regular:
-      nVoxelDim = 3;
-      break;
-    case RVLGridType_Rectilinear:
-      {
-        const u32 *res = self->resolution;
-        nVoxelDim      = res[0] + res[1] + res[2];
-        break;
-      }
+      log_error ("[librvl get] Invalid primitive: %.4x", self->primitive);
     }
 
-  return nVoxelDim * sizeof (f32);
+  return nbytes;
 }
 
 RVLSize
 rvl_get_data_nbytes (RVL *self)
 {
   const u32 *res = self->resolution;
+
+  if (res[0] <= 0 || res[1] <= 0 | res[2] <= 0)
+    {
+      log_error ("[librvl get] Invalid resolution: %d, %d, %d", res[0], res[1],
+                 res[2]);
+    }
+
   return res[0] * res[1] * res[2] * rvl_get_primitive_nbytes (self);
 }

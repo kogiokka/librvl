@@ -21,7 +21,7 @@ rvl_test_write_regular_grid ()
   RVLSize  size   = rvl_get_data_nbytes (rvl);
   RVLByte *buffer = (RVLByte *)malloc (size);
   memset (buffer, 'A', size);
-  rvl_set_data_buffer (rvl, buffer);
+  rvl_set_data_buffer (rvl, size, buffer);
   rvl_write_rvl (rvl);
   free (buffer);
 
@@ -108,7 +108,7 @@ rvl_test_write_rectilinear_grid ()
   RVLSize  size   = rvl_get_data_nbytes (rvl);
   RVLByte *buffer = (RVLByte *)malloc (size);
   memset (buffer, 'A', size);
-  rvl_set_data_buffer (rvl, buffer);
+  rvl_set_data_buffer (rvl, size, buffer);
   rvl_write_rvl (rvl);
   free (buffer);
 
@@ -273,7 +273,7 @@ init_rectilinear_grid (RVL *rvl)
       dims[i] = i * 2.0f;
     }
 
-  rvl_set_voxel_dims_v (rvl, dims);
+  rvl_set_voxel_dims_v (rvl, numDim, dims);
 }
 
 void

@@ -189,7 +189,7 @@ extern "C"
   void        rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit);
   void        rvl_set_grid_position (RVL *self, float x, float y, float z);
   void        rvl_set_voxel_dims (RVL *self, float x, float y, float z);
-  void        rvl_set_voxel_dims_v (RVL *self, const float *dimensions);
+  void        rvl_set_voxel_dims_v (RVL *self, int n, const float *dimensions);
   RVLGridType rvl_get_grid_type (RVL *self);
   RVLGridUnit rvl_get_grid_unit (RVL *self);
   void        rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
@@ -197,7 +197,7 @@ extern "C"
   void        rvl_get_voxel_dims_v (RVL *self, const float **dimensions);
 
   /* DATA chunk functions */
-  void rvl_set_data_buffer (RVL *self, RVLConstByte *buffer);
+  void rvl_set_data_buffer (RVL *self, RVLSize size, RVLConstByte *buffer);
   void rvl_get_data_buffer (RVL *self, RVLByte **buffer);
 
   /* TEXT chunk functions */

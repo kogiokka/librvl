@@ -95,6 +95,4 @@ void     rvl_text_destroy_array (RVLText **self);
 void     rvl_alloc (RVL *self, RVLByte **ptr, RVLSize size);
 void     rvl_dealloc (RVL *self, RVLByte **ptr);
 
-RVLSize rvl_get_voxel_dims_nbytes (RVL *self);
-
 #endif
