@@ -48,7 +48,7 @@ rvl_set_position (RVL *self, float x, float y, float z)
 void
 rvl_set_voxel_dimensions (RVL *self, float x, float y, float z)
 {
-  RVLSize size = rvl_get_voxel_dimensions_byte_count (self);
+  RVLSize size = 3 * sizeof (float);
 
   if (self->grid.vxDimBuf != NULL)
     {
