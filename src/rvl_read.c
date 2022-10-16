@@ -82,6 +82,11 @@ rvl_read_info (RVL *self)
           rvl_read_chunk_payload (self, rbuf, size);
           rvl_read_VHDR_chunk (self, rbuf, size);
           break;
+        case RVLChunkCode_GRID:
+          rvl_alloc (self, &self->grid.vxDimBuf, (size - 14));
+          rvl_read_chunk_payload (self, rbuf, size);
+          rvl_read_GRID_chunk (self, rbuf, size);
+          break;
         case RVLChunkCode_TEXT:
           rvl_read_chunk_payload (self, rbuf, size);
           rvl_read_TEXT_chunk (self, rbuf, size);

@@ -197,21 +197,43 @@ rvl_test_partially_read ()
 {
   RVL *rvl = rvl_create_reader ("test_regular.rvl");
 
-  // Read INFO and TEXT
-  RVLText    *textArr;
-  int         numText;
-  const char *key   = NULL;
-  const char *value = NULL;
-
+  // Read VHDR, GRID and TEXT
   rvl_read_info (rvl);
+
+  int          x, y, z;
+  const float *vsize;
+  float        px, py, pz;
+  RVLText     *textArr;
+  int          numText;
+  const char  *key   = NULL;
+  const char  *value = NULL;
+
+  RVLGridType  gridType = rvl_get_grid_type (rvl);
+  RVLGridUnit  unit     = rvl_get_grid_unit (rvl);
+  RVLPrimitive format   = rvl_get_primitive (rvl);
+  RVLEndian    endian   = rvl_get_endian (rvl);
+  rvl_get_resolution (rvl, &x, &y, &z);
+  rvl_get_voxel_dimensions_v (rvl, &vsize);
+  rvl_get_position (rvl, &px, &py, &pz);
   rvl_get_text (rvl, &textArr, &numText);
+
+  // Print RVL information
+  char sep[81];
+  memset (sep, '-', 80);
+  fprintf (stdout, "%s\n", sep);
+  fprintf (stdout, "Width: %d, Length: %d, Height: %d\n", x, y, z);
+  fprintf (stdout, "Grid - type: %d, unit: %d\n", gridType, unit);
+  fprintf (stdout, "Data format: 0x%.4x\n", format);
+  fprintf (stdout, "Endian - %d\n", endian);
+  fprintf (stdout, "Voxel Dim - x: %.3f, y: %.3f, z: %.3f\n", vsize[0], vsize[1], vsize[2]);
   for (int i = 0; i < numText; i++)
     {
       rvl_text_get (textArr, i, &key, &value);
       fprintf (stdout, "%s: %s\n", key, value);
     }
 
-  RVLByte *buffer;
+  // Read DATA
+  RVLByte *buffer = NULL;
   RVLSize  size;
   rvl_alloc_data_buffer (rvl, &buffer, &size);
   rvl_read_data_buffer (rvl, &buffer);
