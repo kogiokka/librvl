@@ -11,21 +11,36 @@
 void
 rvl_write_VHDR_chunk (RVL *self)
 {
-  u32 byteSize = 44;
-  u8 *buf      = calloc (1, byteSize);
+  RVLSize size = 18;
+  u8     *buf  = calloc (1, size);
 
   memcpy (&buf[0], self->version, 2);
-  buf[2] = self->gridType;
-  buf[3] = self->gridUnit;
-  memcpy (&buf[4], &self->primitive, 2);
-  buf[6] = self->endian;
-  buf[7] = 0; // padding
-  memcpy (&buf[8], &self->resolution[0], 12);
-  memcpy (&buf[20], &self->voxelSize[0], 12);
-  memcpy (&buf[32], &self->position[0], 12);
+  memcpy (&buf[2], &self->resolution[0], 12);
+  memcpy (&buf[14], &self->primitive, 2);
+  buf[16] = self->endian;
+  buf[17] = 0; // padding
 
-  rvl_write_chunk_header (self, RVLChunkCode_VHDR, byteSize);
-  rvl_write_chunk_payload (self, buf, byteSize);
+  rvl_write_chunk_header (self, RVLChunkCode_VHDR, size);
+  rvl_write_chunk_payload (self, buf, size);
+  rvl_write_chunk_end (self);
+}
+
+void
+rvl_write_GRID_chunk (RVL *self)
+{
+  int vxDimBufSize = rvl_get_voxel_dimensions_byte_count (self);
+
+  RVLSize  size = 14 + vxDimBufSize;
+  RVLByte *wbuf = calloc (1, size);
+
+  // Grid info
+  wbuf[0] = self->grid.type;
+  wbuf[1] = self->grid.unit;
+  memcpy (&wbuf[2], self->grid.position, 12);
+  memcpy (&wbuf[14], self->grid.vxDimBuf, self->grid.vxDimBufSize);
+
+  rvl_write_chunk_header (self, RVLChunkCode_GRID, size);
+  rvl_write_chunk_payload (self, wbuf, size);
   rvl_write_chunk_end (self);
 }
 
@@ -44,7 +59,7 @@ rvl_write_DATA_chunk (RVL *self)
   if (compSize == 0)
     {
       dstCapacity = LZ4_compressBound (self->data.size);
-      dst = realloc (dst, dstCapacity);
+      dst         = realloc (dst, dstCapacity);
 
       compSize = LZ4_compress_HC (src, dst, self->data.size, dstCapacity,
                                   LZ4HC_CLEVEL_MIN);
@@ -54,7 +69,7 @@ rvl_write_DATA_chunk (RVL *self)
   rvl_write_chunk_payload (self, (RVLConstByte *)dst, compSize);
   rvl_write_chunk_end (self);
 
-  free(dst);
+  free (dst);
 }
 
 // Strip off the null terminator at the end of the value string.

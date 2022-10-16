@@ -7,6 +7,7 @@ void rvl_read_chunk_header (RVL *self, RVLSize *size, RVLChunkCode *code);
 void rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size);
 
 void rvl_read_VHDR_chunk (RVL *self, RVLSize size);
+void rvl_read_GRID_chunk (RVL *self, RVLSize size);
 void rvl_read_DATA_chunk (RVL *self, RVLSize size);
 void rvl_read_TEXT_chunk (RVL *self, RVLSize size);
 

@@ -26,21 +26,36 @@ rvl_read_VHDR_chunk (RVL *self, RVLSize size)
   RVLByte *buffer = rvl_alloc (self, size);
   rvl_read_chunk_payload (self, buffer, size);
 
-  self->gridType      = buffer[2];
-  self->gridUnit      = buffer[3];
+  memcpy (&self->resolution, &buffer[2], 12);
+  memcpy (&self->primitive, &buffer[14], 2);
+  self->endian = buffer[15];
 
-  memcpy(&self->primitive, &buffer[4], 2);
-
-  self->endian        = buffer[6];
-
-  memcpy (&self->resolution, &buffer[8], 12);
-  memcpy (&self->voxelSize, &buffer[20], 12);
-  memcpy (&self->position, &buffer[32], 12);
-
-  const u32 *res  = self->resolution;
-  self->data.size = res[0] * res[1] * res[2] * rvl_get_primitive_byte_count (self);
+  const u32 *res = self->resolution;
+  self->data.size
+      = res[0] * res[1] * res[2] * rvl_get_primitive_byte_count (self);
 
   rvl_dealloc (self, &buffer);
+}
+
+void
+rvl_read_GRID_chunk (RVL *self, RVLSize size)
+{
+  RVLByte *rbuf       = rvl_alloc (self, size);
+  self->grid.vxDimBuf = rvl_alloc (self, (size - 14));
+
+  rvl_read_chunk_payload (self, rbuf, size);
+
+  self->grid.type = rbuf[0];
+
+  // After grid type
+  RVLSize vxDimBufSize = rvl_get_voxel_dimensions_byte_count (self);
+
+  self->grid.unit = rbuf[1];
+  memcpy (self->grid.position, &rbuf[2], 12);
+  memcpy (self->grid.vxDimBuf, &rbuf[14], vxDimBufSize);
+  self->grid.vxDimBufSize = vxDimBufSize;
+
+  rvl_dealloc (self, &rbuf);
 }
 
 void

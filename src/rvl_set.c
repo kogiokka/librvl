@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "rvl.h"
 
@@ -7,17 +8,17 @@
 void
 rvl_set_grid_type (RVL *self, RVLGridType gridType)
 {
-  self->gridType = gridType;
+  self->grid.type = gridType;
 }
 
 void
 rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit)
 {
-  self->gridUnit = gridUnit;
+  self->grid.unit = gridUnit;
 }
 
 void
-rvl_set_primitive(RVL *self, RVLPrimitive primitive)
+rvl_set_primitive (RVL *self, RVLPrimitive primitive)
 {
   self->primitive = primitive;
 }
@@ -39,17 +40,41 @@ rvl_set_resolution (RVL *self, int x, int y, int z)
 void
 rvl_set_position (RVL *self, float x, float y, float z)
 {
-  self->position[0] = x;
-  self->position[1] = y;
-  self->position[2] = z;
+  self->grid.position[0] = x;
+  self->grid.position[1] = y;
+  self->grid.position[2] = z;
 }
 
 void
-rvl_set_voxel_size (RVL *self, float x, float y, float z)
+rvl_set_voxel_dimensions (RVL *self, float x, float y, float z)
 {
-  self->voxelSize[0] = x;
-  self->voxelSize[1] = y;
-  self->voxelSize[2] = z;
+  RVLSize size = rvl_get_voxel_dimensions_byte_count (self);
+
+  if (self->grid.vxDimBuf != NULL)
+    {
+      free (self->grid.vxDimBuf);
+    }
+
+  self->grid.vxDimBuf     = rvl_alloc (self, size);
+  self->grid.vxDimBufSize = size;
+
+  f32 arr[3] = { x, y, z };
+  memcpy (self->grid.vxDimBuf, arr, size);
+}
+
+void
+rvl_set_voxel_dimensions_v (RVL *self, int n, const float *dimensions)
+{
+  RVLSize size = n * sizeof (f32);
+
+  if (self->grid.vxDimBuf != NULL)
+    {
+      free (self->grid.vxDimBuf);
+    }
+
+  self->grid.vxDimBuf     = rvl_alloc (self, size);
+  self->grid.vxDimBufSize = size;
+  memcpy (self->grid.vxDimBuf, dimensions, size);
 }
 
 void

@@ -13,7 +13,9 @@
  * Chunk Codes
  * ===========
  *
- * Currently, there are 4 types of chunk: VHDR, DATA, TEXT, VEND.
+ * Currently, there are 5 types of chunk: VHDR, GRID, DATA, TEXT, VEND.
+ * A valid RVL file must contain an VHDR chunk, an GRID chunk, one or more DATA
+ * chunks, and an VEND chunk.
  *
  * VHDR Chunk
  * ++++++++++
@@ -23,16 +25,23 @@
  *
  * +00 1B    librvl major version
  * +01 1B    librvl minor version
- * +02 1B    grid type
- * +03 1B    grid unit
- * +04 2B    primitive
- * +06 1B    endianness
- * +07 1B    padding byte
- * +08 12B   resolution
- * +20 12B   voxel size
- * +32 12B   coordinates of the lower corner of the dataset
+ * +02 12B   resolution
+ * +14 2B    primitive
+ * +16 1B    endian
+ * +17 1B    padding byte
  *
- * Total 44 bytes
+ * Total 18 bytes
+ *
+ *
+ * GRID Chunk
+ * ++++++++++
+ *
+ * +00 1B    grid type
+ * +01 1B    grid unit
+ * +02 12B   position of the lower corner of the grid
+ * +14 [voxel size(s) in x-direction]
+ * +xx [voxel size(s) in y-direction]
+ * +xx [voxel size(s) in z-direction]
  *
  */
 
@@ -55,6 +64,7 @@ typedef uint16_t RVLPrimitive;
 typedef uint8_t  RVLGridType;
 typedef int8_t   RVLGridUnit;
 typedef uint8_t  RVLEndian;
+typedef uint8_t  RVLCompressionType;
 
 #define RVLPrimitive_u8   0x0103
 #define RVLPrimitive_u16  0x0104
@@ -172,7 +182,6 @@ extern "C"
   void rvl_set_endian (RVL *self, RVLEndian endian);
 
   void rvl_set_resolution (RVL *self, int x, int y, int z);
-  void rvl_set_voxel_size (RVL *self, float x, float y, float z);
   void rvl_set_position (RVL *self, float x, float y, float z);
 
   RVLGridType  rvl_get_grid_type (RVL *self);
@@ -181,7 +190,6 @@ extern "C"
   RVLEndian    rvl_get_endian (RVL *self);
 
   void rvl_get_resolution (RVL *self, int *x, int *y, int *z);
-  void rvl_get_voxel_size (RVL *self, float *x, float *y, float *z);
   void rvl_get_position (RVL *self, float *x, float *y, float *z);
 
   RVLSize rvl_get_primitive_byte_count (RVL *self);
@@ -193,6 +201,12 @@ extern "C"
   void     rvl_text_set (RVLText *textArr, int index, char *key, char *value);
   void     rvl_text_get (RVLText *textArr, int index, const char **key,
                          const char **value);
+
+  void rvl_set_voxel_dimensions (RVL *self, float x, float y, float z);
+  void rvl_get_voxel_dimensions (RVL *self, float *x, float *y, float *z);
+
+  void rvl_set_voxel_dimensions_v (RVL *self, int n, const float *dimensions);
+  void rvl_get_voxel_dimensions_v (RVL *self, const float **dimensions);
 
   void rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size);
   void rvl_dealloc_data_buffer (RVL *self, RVLByte **buffer);
