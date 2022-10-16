@@ -182,7 +182,7 @@ extern "C"
   void rvl_set_endian (RVL *self, RVLEndian endian);
 
   void rvl_set_resolution (RVL *self, int x, int y, int z);
-  void rvl_set_position (RVL *self, float x, float y, float z);
+  void rvl_set_grid_position (RVL *self, float x, float y, float z);
 
   RVLGridType  rvl_get_grid_type (RVL *self);
   RVLGridUnit  rvl_get_grid_unit (RVL *self);

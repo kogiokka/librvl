@@ -42,7 +42,7 @@ rvl_set_resolution (RVL *self, int x, int y, int z)
 }
 
 void
-rvl_set_position (RVL *self, float x, float y, float z)
+rvl_set_grid_position (RVL *self, float x, float y, float z)
 {
   self->grid.position[0] = x;
   self->grid.position[1] = y;

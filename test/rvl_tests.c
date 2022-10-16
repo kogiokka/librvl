@@ -249,7 +249,7 @@ init_regular_grid (RVL *rvl)
   rvl_set_primitive (rvl, RVLPrimitive_vec2u8);
   rvl_set_endian (rvl, RVLEndian_Little);
   rvl_set_resolution (rvl, 2, 2, 2);
-  rvl_set_position (rvl, 3.0f, 2.0f, 1.0f);
+  rvl_set_grid_position (rvl, 3.0f, 2.0f, 1.0f);
 
   rvl_set_voxel_dimensions (rvl, 0.1f, 0.2f, 0.3f);
 }
@@ -263,7 +263,7 @@ init_rectilinear_grid (RVL *rvl)
   rvl_set_primitive (rvl, RVLPrimitive_f8);
   rvl_set_endian (rvl, RVLEndian_Little);
   rvl_set_resolution (rvl, 6, 6, 3);
-  rvl_set_position (rvl, 1.0f, 2.0f, 3.0f);
+  rvl_set_grid_position (rvl, 1.0f, 2.0f, 3.0f);
 
   int   numDim = 6 + 6 + 3;
   float dims[numDim];
