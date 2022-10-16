@@ -254,5 +254,5 @@ init_rectilinear_grid (RVL *rvl)
       dims[i] = i * 2.0f;
     }
 
-  rvl_set_voxel_dimensions_v (rvl, dims);
+  rvl_set_voxel_dimensions_v (rvl, numDim, dims);
 }

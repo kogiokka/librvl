@@ -58,9 +58,14 @@ rvl_set_voxel_dimensions (RVL *self, float x, float y, float z)
 }
 
 void
-rvl_set_voxel_dimensions_v (RVL *self, const float *dimensions)
+rvl_set_voxel_dimensions_v (RVL *self, int n, const float *dimensions)
 {
-  RVLSize size = rvl_get_voxel_dimensions_byte_count (self);
+  RVLSize size = n * sizeof (f32);
+
+  if (self->grid.vxDimBuf != NULL)
+    {
+      free (self->grid.vxDimBuf);
+    }
 
   self->grid.vxDimBuf     = rvl_alloc (self, size);
   self->grid.vxDimBufSize = size;

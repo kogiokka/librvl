@@ -204,7 +204,8 @@ extern "C"
 
   void rvl_set_voxel_dimensions (RVL *self, float x, float y, float z);
   void rvl_get_voxel_dimensions (RVL *self, float *x, float *y, float *z);
-  void rvl_set_voxel_dimensions_v (RVL *self, const float *dimensions);
+
+  void rvl_set_voxel_dimensions_v (RVL *self, int n, const float *dimensions);
   void rvl_get_voxel_dimensions_v (RVL *self, const float **dimensions);
 
   void rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size);
