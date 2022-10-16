@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <log.h>
+
 #include "rvl.h"
 
 #include "detail/rvl_p.h"
@@ -64,7 +66,7 @@ rvl_alloc (RVL *self, RVLByte **ptr, RVLSize size)
 
   if (*ptr == NULL)
     {
-      fprintf (stderr, "[librvl] Memory allocation failure.\n");
+      log_fatal ("[librvl alloc] Memory allocation failure.\n");
       exit (EXIT_FAILURE);
     }
 }

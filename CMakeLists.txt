@@ -15,6 +15,7 @@ include(FetchContent)
 
 include("cmake/FetchLZ4.cmake")
 include("cmake/PackageSource.cmake")
+add_subdirectory("external/")
 
 set_target_properties(rvl PROPERTIES
     C_STANDARD 99
@@ -48,7 +49,7 @@ add_dependencies(rvl rvl-copy-public-header)
 
 set(RVL_PUBLIC_HEADERS_EXPORT_DIR "${CMAKE_CURRENT_BINARY_DIR}/include")
 target_include_directories(rvl INTERFACE "${RVL_PUBLIC_HEADERS_EXPORT_DIR}")
-target_link_libraries(rvl PRIVATE lz4_static)
+target_link_libraries(rvl PRIVATE lz4_static log.c)
 
 install(TARGETS rvl
     EXPORT rvlTargets

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <log.h>
+
 #include "rvl.h"
 
 #include "detail/rvl_read_p.h"
@@ -19,11 +21,9 @@ rvl_read_rvl (RVL *self)
       RVLSize size;
       rvl_read_chunk_header (self, &size, &code);
 
-#ifndef NDEBUG
       char *ch = (char *)&code;
-      printf ("[librvl] Reading chunk header: size %d, code: %c%c%c%c\n", size,
-              ch[0], ch[1], ch[2], ch[3]);
-#endif
+      log_debug ("[librvl read] Reading chunk header: size %d, code: %c%c%c%c",
+                 size, ch[0], ch[1], ch[2], ch[3]);
 
       RVLByte *rbuf = (RVLByte *)malloc (size);
       switch (code)
@@ -50,9 +50,8 @@ rvl_read_rvl (RVL *self)
           break;
         default:
           {
-            RVLConstByte *ch = (RVLConstByte *)&code;
-            fprintf (stderr, "Unknown chunk code: %c%c%c%c", ch[0], ch[1],
-                     ch[2], ch[3]);
+            log_warn ("[librvl read] Unknown chunk code: %c%c%c%c", ch[0],
+                      ch[1], ch[2], ch[3]);
           }
           break;
         }

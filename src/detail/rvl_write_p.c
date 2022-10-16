@@ -1,8 +1,10 @@
-#include <lz4.h>
-#include <lz4hc.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <log.h>
+#include <lz4.h>
+#include <lz4hc.h>
 
 #include "detail/rvl_write_p.h"
 
@@ -143,10 +145,8 @@ rvl_write_data (RVL *self, RVLConstByte *data, RVLSize size)
 {
   if (self->writeData == NULL)
     {
-      fprintf (
-          stderr,
-          "[ERROR] The write data function is NULL. Might be due to wrong "
-          "read/write instance of RVL_t.\n");
+      log_fatal ("[librvl write] The write function is NULL. Please check if "
+                 "the RVL instance is a writer.");
       exit (EXIT_FAILURE);
     }
 
@@ -158,7 +158,7 @@ rvl_write_data_default (RVL *self, RVLConstByte *data, RVLSize size)
 {
   if (self->io == NULL)
     {
-      fprintf (stderr, "[ERROR] RVL_t is not initialized!");
+      log_fatal ("[librvl write] RVL is not initialized.");
       exit (EXIT_FAILURE);
     }
 
@@ -166,7 +166,7 @@ rvl_write_data_default (RVL *self, RVLConstByte *data, RVLSize size)
 
   if (count != size)
     {
-      fprintf (stderr, "[ERROR] Write error occured!");
+      log_fatal ("[librvl write] fwrite failure.");
       exit (EXIT_FAILURE);
     }
 }

@@ -1,7 +1,9 @@
-#include <lz4.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <log.h>
+#include <lz4.h>
 
 #include "detail/rvl_read_p.h"
 
@@ -57,7 +59,7 @@ rvl_read_DATA_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 
   if (numBytes != self->data.size)
     {
-      fprintf (stderr, "[ERROR] Data decompression error!");
+      log_fatal ("[librvl read] Data decompression error!");
       exit (EXIT_FAILURE);
     }
 }
@@ -106,7 +108,7 @@ rvl_read_file_sig (RVL *self)
     {
       if (sig[i] != RVL_FILE_SIG[i])
         {
-          fprintf (stderr, "%s\n", "Not an RVL file!");
+          log_fatal ("[librvl read] Not an RVL file.");
           exit (EXIT_FAILURE);
         }
     }
@@ -117,9 +119,8 @@ rvl_read_data (RVL *self, RVLByte *data, RVLSize size)
 {
   if (self->readData == NULL)
     {
-      fprintf (stderr,
-               "[ERROR] The read data function is NULL. Might be due to wrong "
-               "read/write instance of RVL_t.\n");
+      log_fatal ("[librvl read] The read function is NULL. Please check if "
+                 "the RVL instance is a reader.");
       exit (EXIT_FAILURE);
     }
 
@@ -131,7 +132,7 @@ rvl_read_data_default (RVL *self, RVLByte *data, RVLSize size)
 {
   if (self->io == NULL)
     {
-      fprintf (stderr, "[ERROR] RVL_t is not initialized!");
+      log_fatal ("[librvl read] RVL is not intialized.");
       exit (EXIT_FAILURE);
     }
 
@@ -139,7 +140,7 @@ rvl_read_data_default (RVL *self, RVLByte *data, RVLSize size)
 
   if (count != size)
     {
-      fprintf (stderr, "[ERROR] Read error occured!\n");
+      log_fatal ("[librvl read] fread failure.");
       exit (EXIT_FAILURE);
     }
 }
