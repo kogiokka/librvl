@@ -21,47 +21,30 @@ rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size)
 }
 
 void
-rvl_read_VHDR_chunk (RVL *self, RVLSize size)
+rvl_read_VHDR_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 {
-  RVLByte *rbuf = (RVLByte *)malloc (size);
-
-  rvl_read_chunk_payload (self, rbuf, size);
-
   memcpy (&self->resolution, &rbuf[2], 12);
   memcpy (&self->primitive, &rbuf[14], 2);
-  self->endian    = rbuf[15];
-  self->data.size = rvl_get_data_byte_count (self);
+  self->endian = rbuf[15];
 
-  free (rbuf);
+  self->data.size = rvl_get_data_byte_count (self);
 }
 
 void
-rvl_read_GRID_chunk (RVL *self, RVLSize size)
+rvl_read_GRID_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 {
-  RVLByte *rbuf = (RVLByte *)malloc (size);
-
-  rvl_read_chunk_payload (self, rbuf, size);
+  RVLSize vxDimBufSize = size - 14;
 
   self->grid.type = rbuf[0];
-
-  // After grid type
-  RVLSize vxDimBufSize = rvl_get_voxel_dimensions_byte_count (self);
-
   self->grid.unit = rbuf[1];
   memcpy (self->grid.position, &rbuf[2], 12);
   memcpy (self->grid.vxDimBuf, &rbuf[14], vxDimBufSize);
   self->grid.vxDimBufSize = vxDimBufSize;
-
-  free (rbuf);
 }
 
 void
-rvl_read_DATA_chunk (RVL *self, RVLSize size)
+rvl_read_DATA_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 {
-  RVLByte *rbuf = (RVLByte *)malloc (size);
-
-  rvl_read_chunk_payload (self, rbuf, size);
-
   char *const   src     = (char *)rbuf;
   char *const   dst     = (char *)self->data.rbuf;
   const RVLSize srcSize = size;
@@ -74,17 +57,11 @@ rvl_read_DATA_chunk (RVL *self, RVLSize size)
       fprintf (stderr, "[ERROR] Data decompression error!");
       exit (EXIT_FAILURE);
     }
-
-  free (rbuf);
 }
 
 void
-rvl_read_TEXT_chunk (RVL *self, RVLSize size)
+rvl_read_TEXT_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 {
-  RVLByte *rbuf = (RVLByte *)malloc (size);
-
-  rvl_read_chunk_payload (self, rbuf, size);
-
   RVLText *newArr  = rvl_text_create_array (self->numText + 1);
   int      numText = self->numText + 1;
 
@@ -114,8 +91,6 @@ rvl_read_TEXT_chunk (RVL *self, RVLSize size)
 
   self->text    = newArr;
   self->numText = numText;
-
-  free (rbuf);
 }
 
 void
