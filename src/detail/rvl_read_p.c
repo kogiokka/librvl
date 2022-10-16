@@ -28,7 +28,7 @@ rvl_read_VHDR_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
   self->endian = rbuf[15];
 
   // Init resolution-related variable
-  self->data.size = rvl_get_data_byte_count (self);
+  self->data.size = rvl_get_data_nbytes (self);
 }
 
 void

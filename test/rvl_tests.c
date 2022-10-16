@@ -18,7 +18,7 @@ rvl_test_write_regular_grid ()
   init_regular_grid (rvl);
 
   // DATA chunk
-  RVLSize  size   = rvl_get_data_byte_count (rvl);
+  RVLSize  size   = rvl_get_data_nbytes (rvl);
   RVLByte *buffer = (RVLByte *)malloc (size);
   memset (buffer, 'A', size);
   rvl_set_data_buffer (rvl, buffer);
@@ -56,7 +56,7 @@ rvl_test_read_regular_grid ()
   float        dx, dy, dz;
   float        px, py, pz;
   rvl_get_resolution (rvl, &x, &y, &z);
-  rvl_get_voxel_dimensions (rvl, &dx, &dy, &dz);
+  rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
 
   char sep[81];
@@ -78,7 +78,7 @@ rvl_test_read_regular_grid ()
   // DATA chunk
   RVLByte *buffer;
   rvl_get_data_buffer (rvl, &buffer);
-  print_data_buffer (x, y, z, buffer, rvl_get_primitive_byte_count (rvl));
+  print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
 
   // TEXT chunk
   RVLText *textArr;
@@ -105,7 +105,7 @@ rvl_test_write_rectilinear_grid ()
   init_rectilinear_grid (rvl);
 
   // DATA chunk
-  RVLSize  size   = rvl_get_data_byte_count (rvl);
+  RVLSize  size   = rvl_get_data_nbytes (rvl);
   RVLByte *buffer = (RVLByte *)malloc (size);
   memset (buffer, 'A', size);
   rvl_set_data_buffer (rvl, buffer);
@@ -143,7 +143,7 @@ rvl_test_read_rectilinear_grid ()
   const float *vsize;
   float        px, py, pz;
   rvl_get_resolution (rvl, &x, &y, &z);
-  rvl_get_voxel_dimensions_v (rvl, &vsize);
+  rvl_get_voxel_dims_v (rvl, &vsize);
   rvl_get_grid_position (rvl, &px, &py, &pz);
 
   char sep[81];
@@ -172,7 +172,7 @@ rvl_test_read_rectilinear_grid ()
   // DATA chunk
   RVLByte *buffer;
   rvl_get_data_buffer (rvl, &buffer);
-  print_data_buffer (x, y, z, buffer, rvl_get_primitive_byte_count (rvl));
+  print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
 
   // TEXT chunk
   RVLText *textArr;
@@ -211,7 +211,7 @@ rvl_test_partially_read ()
   RVLPrimitive format   = rvl_get_primitive (rvl);
   RVLEndian    endian   = rvl_get_endian (rvl);
   rvl_get_resolution (rvl, &x, &y, &z);
-  rvl_get_voxel_dimensions_v (rvl, &vsize);
+  rvl_get_voxel_dims_v (rvl, &vsize);
   rvl_get_grid_position (rvl, &px, &py, &pz);
   rvl_get_text (rvl, &textArr, &numText);
 
@@ -232,9 +232,9 @@ rvl_test_partially_read ()
     }
 
   // Read DATA
-  RVLByte *buffer = (RVLByte *)malloc (rvl_get_data_byte_count (rvl));
+  RVLByte *buffer = (RVLByte *)malloc (rvl_get_data_nbytes (rvl));
   rvl_read_data_buffer (rvl, &buffer);
-  print_data_buffer (x, y, z, buffer, rvl_get_primitive_byte_count (rvl));
+  print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
   free (buffer);
 
   rvl_destroy (&rvl);
@@ -251,7 +251,7 @@ init_regular_grid (RVL *rvl)
   rvl_set_resolution (rvl, 2, 2, 2);
   rvl_set_grid_position (rvl, 3.0f, 2.0f, 1.0f);
 
-  rvl_set_voxel_dimensions (rvl, 0.1f, 0.2f, 0.3f);
+  rvl_set_voxel_dims (rvl, 0.1f, 0.2f, 0.3f);
 }
 
 void
@@ -273,7 +273,7 @@ init_rectilinear_grid (RVL *rvl)
       dims[i] = i * 2.0f;
     }
 
-  rvl_set_voxel_dimensions_v (rvl, dims);
+  rvl_set_voxel_dims_v (rvl, dims);
 }
 
 void

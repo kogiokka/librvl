@@ -188,13 +188,13 @@ extern "C"
   void        rvl_set_grid_type (RVL *self, RVLGridType gridType);
   void        rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit);
   void        rvl_set_grid_position (RVL *self, float x, float y, float z);
-  void        rvl_set_voxel_dimensions (RVL *self, float x, float y, float z);
-  void        rvl_set_voxel_dimensions_v (RVL *self, const float *dimensions);
+  void        rvl_set_voxel_dims (RVL *self, float x, float y, float z);
+  void        rvl_set_voxel_dims_v (RVL *self, const float *dimensions);
   RVLGridType rvl_get_grid_type (RVL *self);
   RVLGridUnit rvl_get_grid_unit (RVL *self);
   void        rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
-  void rvl_get_voxel_dimensions (RVL *self, float *x, float *y, float *z);
-  void rvl_get_voxel_dimensions_v (RVL *self, const float **dimensions);
+  void        rvl_get_voxel_dims (RVL *self, float *x, float *y, float *z);
+  void        rvl_get_voxel_dims_v (RVL *self, const float **dimensions);
 
   /* DATA chunk functions */
   void rvl_set_data_buffer (RVL *self, RVLConstByte *buffer);
@@ -210,8 +210,8 @@ extern "C"
                          const char **value);
 
   /* Helpers */
-  RVLSize rvl_get_primitive_byte_count (RVL *self);
-  RVLSize rvl_get_data_byte_count (RVL *self);
+  RVLSize rvl_get_primitive_nbytes (RVL *self);
+  RVLSize rvl_get_data_nbytes (RVL *self);
 
 #ifdef __cplusplus
 }
