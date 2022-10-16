@@ -51,7 +51,7 @@ rvl_get_voxel_dimensions_v (RVL *self, const float **dimensions)
 }
 
 void
-rvl_get_position (RVL *self, float *x, float *y, float *z)
+rvl_get_grid_position (RVL *self, float *x, float *y, float *z)
 {
   *x = self->grid.position[0];
   *y = self->grid.position[1];

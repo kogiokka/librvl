@@ -57,7 +57,7 @@ rvl_test_read_regular_grid ()
   float        px, py, pz;
   rvl_get_resolution (rvl, &x, &y, &z);
   rvl_get_voxel_dimensions (rvl, &dx, &dy, &dz);
-  rvl_get_position (rvl, &px, &py, &pz);
+  rvl_get_grid_position (rvl, &px, &py, &pz);
 
   char sep[81];
   memset (sep, '-', 80);
@@ -144,7 +144,7 @@ rvl_test_read_rectilinear_grid ()
   float        px, py, pz;
   rvl_get_resolution (rvl, &x, &y, &z);
   rvl_get_voxel_dimensions_v (rvl, &vsize);
-  rvl_get_position (rvl, &px, &py, &pz);
+  rvl_get_grid_position (rvl, &px, &py, &pz);
 
   char sep[81];
   memset (sep, '-', 80);
@@ -212,7 +212,7 @@ rvl_test_partially_read ()
   RVLEndian    endian   = rvl_get_endian (rvl);
   rvl_get_resolution (rvl, &x, &y, &z);
   rvl_get_voxel_dimensions_v (rvl, &vsize);
-  rvl_get_position (rvl, &px, &py, &pz);
+  rvl_get_grid_position (rvl, &px, &py, &pz);
   rvl_get_text (rvl, &textArr, &numText);
 
   // Print RVL information
