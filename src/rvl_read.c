@@ -102,7 +102,7 @@ rvl_read_info (RVL *self)
 }
 
 void
-rvl_read_volumetric_data (RVL *self, RVLByte **buffer)
+rvl_read_data_buffer (RVL *self, RVLByte **buffer)
 {
   if (self == NULL)
     return;
