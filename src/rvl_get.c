@@ -106,3 +106,10 @@ rvl_get_voxel_dimensions_byte_count (RVL *self)
 
   return numVoxelDimen * sizeof (f32);
 }
+
+RVLSize
+rvl_get_data_byte_count (RVL *self)
+{
+  const u32 *res = self->resolution;
+  return res[0] * res[1] * res[2] * rvl_get_primitive_byte_count (self);
+}

@@ -23,25 +23,22 @@ rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size)
 void
 rvl_read_VHDR_chunk (RVL *self, RVLSize size)
 {
-  RVLByte *buffer = rvl_alloc (self, size);
-  rvl_read_chunk_payload (self, buffer, size);
+  RVLByte *rbuf = (RVLByte *)malloc (size);
 
-  memcpy (&self->resolution, &buffer[2], 12);
-  memcpy (&self->primitive, &buffer[14], 2);
-  self->endian = buffer[15];
+  rvl_read_chunk_payload (self, rbuf, size);
 
-  const u32 *res = self->resolution;
-  self->data.size
-      = res[0] * res[1] * res[2] * rvl_get_primitive_byte_count (self);
+  memcpy (&self->resolution, &rbuf[2], 12);
+  memcpy (&self->primitive, &rbuf[14], 2);
+  self->endian    = rbuf[15];
+  self->data.size = rvl_get_data_byte_count (self);
 
-  rvl_dealloc (self, &buffer);
+  free (rbuf);
 }
 
 void
 rvl_read_GRID_chunk (RVL *self, RVLSize size)
 {
-  RVLByte *rbuf       = rvl_alloc (self, size);
-  self->grid.vxDimBuf = rvl_alloc (self, (size - 14));
+  RVLByte *rbuf = (RVLByte *)malloc (size);
 
   rvl_read_chunk_payload (self, rbuf, size);
 
@@ -55,16 +52,17 @@ rvl_read_GRID_chunk (RVL *self, RVLSize size)
   memcpy (self->grid.vxDimBuf, &rbuf[14], vxDimBufSize);
   self->grid.vxDimBufSize = vxDimBufSize;
 
-  rvl_dealloc (self, &rbuf);
+  free (rbuf);
 }
 
 void
 rvl_read_DATA_chunk (RVL *self, RVLSize size)
 {
-  RVLByte *buffer = rvl_alloc (self, size);
-  rvl_read_chunk_payload (self, buffer, size);
+  RVLByte *rbuf = (RVLByte *)malloc (size);
 
-  char *const   src     = (char *)buffer;
+  rvl_read_chunk_payload (self, rbuf, size);
+
+  char *const   src     = (char *)rbuf;
   char *const   dst     = (char *)self->data.rbuf;
   const RVLSize srcSize = size;
   const RVLSize dstCap  = self->data.size;
@@ -77,14 +75,15 @@ rvl_read_DATA_chunk (RVL *self, RVLSize size)
       exit (EXIT_FAILURE);
     }
 
-  rvl_dealloc (self, &buffer);
+  free (rbuf);
 }
 
 void
 rvl_read_TEXT_chunk (RVL *self, RVLSize size)
 {
-  RVLByte *buffer = rvl_alloc (self, size);
-  rvl_read_chunk_payload (self, buffer, size);
+  RVLByte *rbuf = (RVLByte *)malloc (size);
+
+  rvl_read_chunk_payload (self, rbuf, size);
 
   RVLText *newArr  = rvl_text_create_array (self->numText + 1);
   int      numText = self->numText + 1;
@@ -101,22 +100,22 @@ rvl_read_TEXT_chunk (RVL *self, RVLSize size)
   RVLSize nullPos = 0;
   for (RVLSize i = 0; i < size; i++)
     {
-      if (buffer[i] == '\0')
+      if (rbuf[i] == '\0')
         {
           nullPos = i;
         }
     }
-  memcpy (newText->key, buffer, nullPos + 1);
+  memcpy (newText->key, rbuf, nullPos + 1);
 
   RVLSize valueSize = size - (nullPos + 1);
   newText->value    = (char *)malloc (valueSize + 1);
-  memcpy (newText->value, buffer + nullPos + 1, valueSize);
+  memcpy (newText->value, rbuf + nullPos + 1, valueSize);
   newText->value[valueSize + 1] = '\0';
 
   self->text    = newArr;
   self->numText = numText;
 
-  rvl_dealloc (self, &buffer);
+  free (rbuf);
 }
 
 void

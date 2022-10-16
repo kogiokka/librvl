@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -49,19 +50,31 @@ rvl_destroy (RVL **self)
   *self = NULL;
 }
 
-RVLByte *
-rvl_alloc (RVL *self, RVLSize size)
+void
+rvl_alloc (RVL *self, RVLByte **ptr, RVLSize size)
 {
-  if (self == NULL)
-    return NULL;
+  assert (self != NULL || ptr != NULL);
 
-  return (RVLByte *)malloc (size);
+  if (*ptr != NULL)
+    {
+      free (*ptr);
+    }
+
+  *ptr = (RVLByte *)calloc (1, size);
+
+  if (*ptr == NULL)
+    {
+      fprintf (stderr, "[librvl] Memory allocation failure.\n");
+      exit (EXIT_FAILURE);
+    }
 }
 
 void
 rvl_dealloc (RVL *self, RVLByte **ptr)
 {
-  if (self == NULL || ptr == NULL || *ptr == NULL)
+  assert (self != NULL || ptr != NULL);
+
+  if (*ptr == NULL)
     return;
 
   free (*ptr);
@@ -94,43 +107,12 @@ rvl_create (const char *filename, RVLIoState ioState)
 void
 rvl_alloc_data_buffer (RVL *self, RVLByte **buffer, RVLSize *size)
 {
-  const u32    *res        = self->resolution;
-  const u32     numVoxel   = res[0] * res[1] * res[2];
-  const RVLSize bufferSize = numVoxel * rvl_get_primitive_byte_count (self);
-
-  *buffer = rvl_alloc (self, bufferSize);
-  *size   = bufferSize;
+  *size = rvl_get_data_byte_count (self);
+  rvl_alloc (self, buffer, *size);
 }
 
 void
 rvl_dealloc_data_buffer (RVL *self, RVLByte **buffer)
 {
   rvl_dealloc (self, buffer);
-}
-
-void
-rvl_alloc_voxel_dimensions_buffer (RVL *self, RVLByte **buffer, RVLSize *size)
-{
-  RVLSize numVoxelDimen;
-
-  switch (self->grid.type)
-    {
-    case RVLGridType_Cartesian:
-      numVoxelDimen = 3;
-      break;
-    case RVLGridType_Regular:
-      numVoxelDimen = 3;
-      break;
-    case RVLGridType_Rectilinear:
-      {
-        const u32 *res = self->resolution;
-        numVoxelDimen  = res[0] + res[1] + res[2];
-        break;
-      }
-    }
-
-  RVLSize bufferSize = numVoxelDimen * sizeof (f32);
-
-  *buffer = rvl_alloc (self, bufferSize);
-  *size   = bufferSize;
 }

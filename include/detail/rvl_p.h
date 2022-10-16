@@ -92,9 +92,10 @@ struct RVL
 
 RVLText *rvl_text_create_array (int num);
 void     rvl_text_destroy_array (RVLText **self);
-RVLByte *rvl_alloc (RVL *self, RVLSize size);
+void     rvl_alloc (RVL *self, RVLByte **ptr, RVLSize size);
 void     rvl_dealloc (RVL *self, RVLByte **ptr);
 
 RVLSize rvl_get_voxel_dimensions_byte_count (RVL *self);
+RVLSize rvl_get_data_byte_count (RVL *self);
 
 #endif

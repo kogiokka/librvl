@@ -28,10 +28,8 @@ rvl_write_VHDR_chunk (RVL *self)
 void
 rvl_write_GRID_chunk (RVL *self)
 {
-  int vxDimBufSize = rvl_get_voxel_dimensions_byte_count (self);
-
-  RVLSize  size = 14 + vxDimBufSize;
-  RVLByte *wbuf = calloc (1, size);
+  RVLSize  wbufSize = 14 + self->grid.vxDimBufSize;
+  RVLByte *wbuf     = (RVLByte *)malloc (wbufSize);
 
   // Grid info
   wbuf[0] = self->grid.type;
@@ -39,37 +37,37 @@ rvl_write_GRID_chunk (RVL *self)
   memcpy (&wbuf[2], self->grid.position, 12);
   memcpy (&wbuf[14], self->grid.vxDimBuf, self->grid.vxDimBufSize);
 
-  rvl_write_chunk_header (self, RVLChunkCode_GRID, size);
-  rvl_write_chunk_payload (self, wbuf, size);
+  rvl_write_chunk_header (self, RVLChunkCode_GRID, wbufSize);
+  rvl_write_chunk_payload (self, wbuf, wbufSize);
   rvl_write_chunk_end (self);
 }
 
 void
 rvl_write_DATA_chunk (RVL *self)
 {
-  int         srcSize     = self->data.size;
-  int         dstCapacity = self->data.size;
-  const char *src         = (char *)self->data.wbuf;
-  char       *dst         = (char *)malloc (dstCapacity);
+  RVLSize wbufSize = self->data.size;
+  char   *wbuf     = (char *)malloc (wbufSize);
+
+  int         srcSize = self->data.size;
+  const char *src     = (char *)self->data.wbuf;
 
   int compSize
-      = LZ4_compress_HC (src, dst, srcSize, dstCapacity, LZ4HC_CLEVEL_MIN);
+      = LZ4_compress_HC (src, wbuf, srcSize, wbufSize, LZ4HC_CLEVEL_MIN);
 
   // When the compressed size is greater than the uncompressed one.
   if (compSize == 0)
     {
-      dstCapacity = LZ4_compressBound (self->data.size);
-      dst         = realloc (dst, dstCapacity);
-
-      compSize = LZ4_compress_HC (src, dst, self->data.size, dstCapacity,
+      wbufSize = LZ4_compressBound (self->data.size);
+      wbuf     = realloc (wbuf, wbufSize);
+      compSize = LZ4_compress_HC (src, wbuf, self->data.size, wbufSize,
                                   LZ4HC_CLEVEL_MIN);
     }
 
   rvl_write_chunk_header (self, RVLChunkCode_DATA, compSize);
-  rvl_write_chunk_payload (self, (RVLConstByte *)dst, compSize);
+  rvl_write_chunk_payload (self, (RVLConstByte *)wbuf, compSize);
   rvl_write_chunk_end (self);
 
-  free (dst);
+  free (wbuf);
 }
 
 // Strip off the null terminator at the end of the value string.

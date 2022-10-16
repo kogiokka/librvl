@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,10 +16,10 @@ rvl_text_create_array (int num)
 void
 rvl_text_destroy_array (RVLText **self)
 {
+  assert (self != NULL);
+
   if (*self == NULL)
-    {
-      return;
-    }
+    return;
 
   free ((*self)->value);
   free (*self);

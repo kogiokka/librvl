@@ -50,12 +50,7 @@ rvl_set_voxel_dimensions (RVL *self, float x, float y, float z)
 {
   RVLSize size = 3 * sizeof (float);
 
-  if (self->grid.vxDimBuf != NULL)
-    {
-      free (self->grid.vxDimBuf);
-    }
-
-  self->grid.vxDimBuf     = rvl_alloc (self, size);
+  rvl_alloc (self, &self->grid.vxDimBuf, size);
   self->grid.vxDimBufSize = size;
 
   f32 arr[3] = { x, y, z };
@@ -67,12 +62,7 @@ rvl_set_voxel_dimensions_v (RVL *self, int n, const float *dimensions)
 {
   RVLSize size = n * sizeof (f32);
 
-  if (self->grid.vxDimBuf != NULL)
-    {
-      free (self->grid.vxDimBuf);
-    }
-
-  self->grid.vxDimBuf     = rvl_alloc (self, size);
+  rvl_alloc (self, &self->grid.vxDimBuf, size);
   self->grid.vxDimBufSize = size;
   memcpy (self->grid.vxDimBuf, dimensions, size);
 }
@@ -87,11 +77,7 @@ rvl_set_data_buffer (RVL *self, RVLConstByte *buffer, RVLSize size)
 void
 rvl_set_text (RVL *self, RVLText **text, int numText)
 {
-  if (self->text != NULL)
-    {
-      self->numText = 0;
-      rvl_text_destroy_array (&self->text);
-    }
+  rvl_text_destroy_array (&self->text);
 
   self->text    = *text;
   self->numText = numText;
