@@ -86,7 +86,7 @@ rvl_dealloc (RVL *self, RVLByte **ptr)
 RVL *
 rvl_create (const char *filename, RVLIoState ioState)
 {
-  RVL *self        = (RVL *)malloc (sizeof (RVL));
+  RVL *self        = (RVL *)calloc (1, sizeof (RVL));
   self->version[0] = RVL_VERSION_MAJOR;
   self->version[1] = RVL_VERSION_MINOR;
   self->ioState    = ioState;
