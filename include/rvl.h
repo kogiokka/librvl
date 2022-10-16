@@ -172,9 +172,9 @@ extern "C"
   // Use rvl_get_* to retrieve information.
   void rvl_read_info (RVL *self);
 
-  // Read the entire volumetric data into a 1D buffer. The data allocation and
+  // Read the entire volumetric data into the buffer. The buffer allocation and
   // deallocation is managed by the user.
-  void rvl_read_data_buffer (RVL *self, RVLByte **data);
+  void rvl_read_data_buffer (RVL *self, RVLByte **buffer);
 
   /* VHDR chunk functions */
   void         rvl_set_resolution (RVL *self, int x, int y, int z);

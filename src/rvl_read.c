@@ -102,12 +102,12 @@ rvl_read_info (RVL *self)
 }
 
 void
-rvl_read_data_buffer (RVL *self, RVLByte **data)
+rvl_read_volumetric_data (RVL *self, RVLByte **buffer)
 {
   if (self == NULL)
     return;
 
-  self->data.rbuf = *data;
+  self->data.rbuf = *buffer;
 
   RVLChunkCode code;
   do
