@@ -27,16 +27,13 @@ static void rvl_write_file_sig (RVL *self);
 static void rvl_fwrite (RVL *self, RVLConstByte *data, RVLSize size);
 
 static void check_grid (RVL *self);
+static void check_data (RVL *self);
 
 void
 rvl_write_rvl (RVL *self)
 {
+  check_data (self);
   check_grid (self);
-  if (self->data.size <= 0)
-    {
-      log_fatal ("[librvl write] DATA size is less than 0.");
-      exit (EXIT_FAILURE);
-    }
 
   rvl_write_file_sig (self);
 
@@ -210,6 +207,23 @@ rvl_fwrite_default (RVL *self, RVLConstByte *data, RVLSize size)
   if (count != size)
     {
       log_fatal ("[librvl write] fwrite failure.");
+      exit (EXIT_FAILURE);
+    }
+}
+
+void
+check_data (RVL *self)
+{
+  if (self->data.size <= 0)
+    {
+      log_fatal ("[librvl write] Data buffer size is less than 0.");
+      exit (EXIT_FAILURE);
+    }
+
+  if (self->data.size != rvl_get_data_nbytes (self))
+    {
+      log_fatal ("[librvl write] Data buffer size does not match this RVL "
+                 "configuration.");
       exit (EXIT_FAILURE);
     }
 }
