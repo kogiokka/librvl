@@ -243,7 +243,7 @@ rvl_test_partially_read ()
 void
 init_regular_grid (RVL *rvl)
 {
-  rvl_set_grid_type (rvl, RVLGridType_Cartesian);
+  rvl_set_grid_type (rvl, RVLGridType_Regular);
   rvl_set_grid_unit (rvl, RVLGridUnit_NA);
 
   rvl_set_primitive (rvl, RVLPrimitive_vec2u8);
