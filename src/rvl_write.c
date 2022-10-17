@@ -26,15 +26,12 @@ static void rvl_write_VEND_chunk (RVL *self);
 static void rvl_write_file_sig (RVL *self);
 static void rvl_fwrite (RVL *self, RVLConstByte *data, RVLSize size);
 
+static void check_grid (RVL *self);
+
 void
 rvl_write_rvl (RVL *self)
 {
-  if (self->grid.vxDimBufSize <= 0)
-    {
-      log_fatal ("[librvl write] Missing voxel dimensions.");
-      exit (EXIT_FAILURE);
-    }
-
+  check_grid (self);
   if (self->data.size <= 0)
     {
       log_fatal ("[librvl write] DATA size is less than 0.");
@@ -214,5 +211,53 @@ rvl_fwrite_default (RVL *self, RVLConstByte *data, RVLSize size)
     {
       log_fatal ("[librvl write] fwrite failure.");
       exit (EXIT_FAILURE);
+    }
+}
+
+void
+check_grid (RVL *self)
+{
+  if (self->grid.vxDimBufSize <= 0)
+    {
+      log_fatal ("[librvl write] Missing voxel dimensions.");
+      exit (EXIT_FAILURE);
+    }
+
+  u32 numDim = (self->grid.vxDimBufSize) / sizeof (f32);
+  switch (self->grid.type)
+    {
+    case RVLGridType_Cartesian:
+      if (numDim != 1)
+        {
+          log_fatal ("[librvl write] Number of voxel dimensions is not valid "
+                     "for Cartesian grid.");
+          exit (EXIT_FAILURE);
+        }
+
+      break;
+    case RVLGridType_Regular:
+      if (numDim != 3)
+        {
+          log_fatal ("[librvl write] Number of voxel dimensions is not valid "
+                     "for regular grid.");
+          exit (EXIT_FAILURE);
+        }
+      break;
+    case RVLGridType_Rectilinear:
+      {
+        u32 *r = self->resolution;
+        if (numDim != (r[0] + r[1] + r[2]))
+          {
+            log_fatal (
+                "[librvl write] Number of voxel dimensions do not match "
+                "the resolution.");
+            exit (EXIT_FAILURE);
+          }
+      }
+      break;
+    default:
+      log_fatal ("[librvl write] Invalid grid type: %.2x.", self->grid.type);
+      exit (EXIT_FAILURE);
+      break;
     }
 }

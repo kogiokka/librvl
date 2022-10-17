@@ -36,12 +36,31 @@
  * GRID Chunk
  * ++++++++++
  *
- * +00 1B    grid type
- * +01 1B    grid unit
- * +02 12B   position of the lower corner of the grid
- * +14 [voxel size(s) in x-direction]
- * +xx [voxel size(s) in y-direction]
- * +xx [voxel size(s) in z-direction]
+ * +00   1B   grid type
+ * +01   1B   grid unit
+ * +02  12B   position of the lower corner of the grid
+ * +14   nB   voxel dimensions
+ *
+ * Each grid type has its own voxel dimensions configuration.
+ *
+ * Cartesian Grid
+ * --------------
+ *
+ * +14   4B   one value for x, y, and z.
+ *
+ *
+ * Regular Grid
+ * ------------
+ *
+ * +14  12B   three values for x, y, and z, respectively.
+ *
+ *
+ * Rectilinear Grid
+ * ----------------
+ *
+ * +14 [voxel dimensions in x-direction]
+ * +xx [voxel dimensions in y-direction]
+ * +xx [voxel dimensions in z-direction]
  *
  */
 
@@ -188,12 +207,14 @@ extern "C"
   void        rvl_set_grid_type (RVL *self, RVLGridType gridType);
   void        rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit);
   void        rvl_set_grid_position (RVL *self, float x, float y, float z);
-  void        rvl_set_voxel_dims (RVL *self, float x, float y, float z);
+  void        rvl_set_voxel_dims_1f (RVL *self, float x);
+  void        rvl_set_voxel_dims_3f (RVL *self, float x, float y, float z);
   void        rvl_set_voxel_dims_v (RVL *self, int n, const float *dimensions);
   RVLGridType rvl_get_grid_type (RVL *self);
   RVLGridUnit rvl_get_grid_unit (RVL *self);
   void        rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
-  void        rvl_get_voxel_dims (RVL *self, float *x, float *y, float *z);
+  void        rvl_get_voxel_dims_1f (RVL *self, float *x);
+  void        rvl_get_voxel_dims_3f (RVL *self, float *x, float *y, float *z);
   void        rvl_get_voxel_dims_v (RVL *self, const float **dimensions);
 
   /* DATA chunk functions */
