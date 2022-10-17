@@ -250,7 +250,7 @@ init_regular_grid (RVL *rvl)
   rvl_set_endian (rvl, RVLEndian_Little);
   rvl_set_resolution (rvl, 2, 2, 2);
   rvl_set_grid_position (rvl, 3.0f, 2.0f, 1.0f);
-  rlv_set_voxel_dims_3f (rvl, 0.1f, 0.2f, 0.3f);
+  rvl_set_voxel_dims_3f (rvl, 0.1f, 0.2f, 0.3f);
 }
 
 void

@@ -56,7 +56,7 @@ rvl_set_voxel_dims_1f (RVL *self, float x)
 }
 
 void
-rlv_set_voxel_dims_3f (RVL *self, float x, float y, float z)
+rvl_set_voxel_dims_3f (RVL *self, float x, float y, float z)
 {
   RVLSize size = 3 * sizeof (f32);
 

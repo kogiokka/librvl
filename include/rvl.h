@@ -204,11 +204,11 @@ extern "C"
   RVLEndian    rvl_get_endian (RVL *self);
 
   /* GRID chunk functions */
-  void rvl_set_grid_type (RVL *self, RVLGridType gridType);
-  void rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit);
-  void rvl_set_grid_position (RVL *self, float x, float y, float z);
-  void rvl_set_voxel_dims_1f (RVL *self, float x);
-  void rlv_set_voxel_dims_3f (RVL *self, float x, float y, float z);
+  void        rvl_set_grid_type (RVL *self, RVLGridType gridType);
+  void        rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit);
+  void        rvl_set_grid_position (RVL *self, float x, float y, float z);
+  void        rvl_set_voxel_dims_1f (RVL *self, float x);
+  void        rvl_set_voxel_dims_3f (RVL *self, float x, float y, float z);
   void        rvl_set_voxel_dims_v (RVL *self, int n, const float *dimensions);
   RVLGridType rvl_get_grid_type (RVL *self);
   RVLGridUnit rvl_get_grid_unit (RVL *self);
