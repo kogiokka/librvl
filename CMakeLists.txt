@@ -27,15 +27,12 @@ target_compile_options(rvl PRIVATE
 )
 
 target_sources(rvl PRIVATE
-    "src/rvl_write.c"
+    "src/rvl.c"
     "src/rvl_read.c"
-    "src/rvl_common.c"
-    "src/rvl_text.c"
+    "src/rvl_write.c"
     "src/rvl_get.c"
     "src/rvl_set.c"
-
-    "src/detail/rvl_write_p.c"
-    "src/detail/rvl_read_p.c"
+    "src/rvl_text.c"
 )
 
 target_include_directories(rvl PRIVATE "include/")

@@ -94,5 +94,7 @@ RVLText *rvl_text_create_array (int num);
 void     rvl_text_destroy_array (RVLText **self);
 void     rvl_alloc (RVL *self, RVLByte **ptr, RVLSize size);
 void     rvl_dealloc (RVL *self, RVLByte **ptr);
+void     rvl_write_data_default (RVL *self, RVLConstByte *data, RVLSize size);
+void     rvl_read_data_default (RVL *self, RVLByte *data, RVLSize size);
 
 #endif

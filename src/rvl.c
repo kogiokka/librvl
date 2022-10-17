@@ -7,8 +7,6 @@
 #include "rvl.h"
 
 #include "detail/rvl_p.h"
-#include "detail/rvl_read_p.h"
-#include "detail/rvl_write_p.h"
 
 // .RVL FORMAT\0
 RVLByte RVL_FILE_SIG[RVL_FILE_SIG_SIZE] = {
