@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -84,6 +85,13 @@ rvl_dealloc (RVL *self, RVLByte **ptr)
 RVL *
 rvl_create (const char *filename, RVLIoState ioState)
 {
+
+  log_set_level (LOG_INFO);
+
+#ifndef NDEBUG
+  log_set_level (LOG_TRACE);
+#endif
+
   RVL *self        = (RVL *)calloc (1, sizeof (RVL));
   self->version[0] = RVL_VERSION_MAJOR;
   self->version[1] = RVL_VERSION_MINOR;
@@ -101,11 +109,10 @@ rvl_create (const char *filename, RVLIoState ioState)
       break;
     }
 
-  log_set_level(LOG_INFO);
-
-#ifndef NDEBUG
-  log_set_level(LOG_TRACE);
-#endif
+  if (self->io == NULL)
+    {
+      log_error ("[rvl io] %s", strerror (errno));
+    }
 
   return self;
 }
