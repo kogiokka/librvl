@@ -260,7 +260,7 @@ rvl_fread (RVL *self, RVLByte *data, RVLSize size)
 {
   if (self->readFn == NULL)
     {
-      log_fatal ("[librvl read] The read function is NULL. Please check if "
+      log_fatal ("[librvl read] Call to NULL read function. Please check if "
                  "the RVL instance is a reader.");
       exit (EXIT_FAILURE);
     }
@@ -285,3 +285,4 @@ rvl_fread_default (RVL *self, RVLByte *data, RVLSize size)
       exit (EXIT_FAILURE);
     }
 }
+

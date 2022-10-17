@@ -191,7 +191,7 @@ rvl_fwrite (RVL *self, RVLConstByte *data, RVLSize size)
 {
   if (self->writeFn == NULL)
     {
-      log_fatal ("[librvl write] The write function is NULL. Please check if "
+      log_fatal ("[librvl write] Call to NULL write function. Please check if "
                  "the RVL instance is a writer.");
       exit (EXIT_FAILURE);
     }
