@@ -70,7 +70,7 @@
 #include <stdint.h>
 
 #define RVL_VERSION_MAJOR 0
-#define RVL_VERSION_MINOR 2
+#define RVL_VERSION_MINOR 3
 
 typedef struct RVL     RVL;
 typedef struct RVLText RVLText;
