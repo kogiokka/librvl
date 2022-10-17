@@ -24,7 +24,7 @@ static void rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr,
 static void rvl_write_VEND_chunk (RVL *self);
 
 static void rvl_write_file_sig (RVL *self);
-static void rvl_write_data (RVL *self, RVLConstByte *data, RVLSize size);
+static void rvl_fwrite (RVL *self, RVLConstByte *data, RVLSize size);
 
 void
 rvl_write_rvl (RVL *self)
@@ -162,7 +162,7 @@ rvl_write_chunk_header (RVL *self, RVLChunkCode code, RVLSize size)
   // Chunk Code
   memcpy (&buf[4], &code, 4);
 
-  rvl_write_data (self, buf, 8);
+  rvl_fwrite (self, buf, 8);
 }
 
 void
@@ -170,7 +170,7 @@ rvl_write_chunk_payload (RVL *self, RVLConstByte *data, RVLSize size)
 {
   if (data != NULL && size > 0)
     {
-      rvl_write_data (self, data, size);
+      rvl_fwrite (self, data, size);
     }
 }
 
@@ -183,24 +183,24 @@ rvl_write_chunk_end (RVL *self)
 void
 rvl_write_file_sig (RVL *self)
 {
-  rvl_write_data (self, RVL_FILE_SIG, RVL_FILE_SIG_SIZE);
+  rvl_fwrite (self, RVL_FILE_SIG, RVL_FILE_SIG_SIZE);
 }
 
 void
-rvl_write_data (RVL *self, RVLConstByte *data, RVLSize size)
+rvl_fwrite (RVL *self, RVLConstByte *data, RVLSize size)
 {
-  if (self->writeData == NULL)
+  if (self->writeFn == NULL)
     {
       log_fatal ("[librvl write] The write function is NULL. Please check if "
                  "the RVL instance is a writer.");
       exit (EXIT_FAILURE);
     }
 
-  self->writeData (self, data, size);
+  self->writeFn (self, data, size);
 }
 
 void
-rvl_write_data_default (RVL *self, RVLConstByte *data, RVLSize size)
+rvl_fwrite_default (RVL *self, RVLConstByte *data, RVLSize size)
 {
   if (self->io == NULL)
     {

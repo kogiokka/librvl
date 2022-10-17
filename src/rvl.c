@@ -20,7 +20,7 @@ rvl_create_writer (const char *filename)
 {
   RVL *rvl = rvl_create (filename, RVLIoState_Write);
   memset (&rvl->data, 0, sizeof (RVLData));
-  rvl->writeData = rvl_write_data_default;
+  rvl->writeFn = rvl_fwrite_default;
   return rvl;
 }
 
@@ -29,7 +29,7 @@ rvl_create_reader (const char *filename)
 {
   RVL *rvl = rvl_create (filename, RVLIoState_Read);
   memset (&rvl->data, 0, sizeof (RVLData));
-  rvl->readData = rvl_read_data_default;
+  rvl->readFn = rvl_fread_default;
   return rvl;
 }
 

@@ -20,7 +20,7 @@ static void rvl_read_DATA_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size);
 static void rvl_read_TEXT_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size);
 
 static void rvl_read_file_sig (RVL *self);
-static void rvl_read_data (RVL *self, RVLByte *data, RVLSize size);
+static void rvl_fread (RVL *self, RVLByte *data, RVLSize size);
 
 void
 rvl_read_rvl (RVL *self)
@@ -153,14 +153,14 @@ rvl_read_data_buffer (RVL *self, RVLByte **buffer)
 void
 rvl_read_chunk_header (RVL *self, RVLSize *size, RVLChunkCode *code)
 {
-  rvl_read_data (self, (RVLByte *)size, 4);
-  rvl_read_data (self, (RVLByte *)code, 4);
+  rvl_fread (self, (RVLByte *)size, 4);
+  rvl_fread (self, (RVLByte *)code, 4);
 }
 
 void
 rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size)
 {
-  rvl_read_data (self, data, size);
+  rvl_fread (self, data, size);
 }
 
 void
@@ -243,7 +243,7 @@ void
 rvl_read_file_sig (RVL *self)
 {
   RVLByte sig[RVL_FILE_SIG_SIZE];
-  rvl_read_data (self, sig, RVL_FILE_SIG_SIZE);
+  rvl_fread (self, sig, RVL_FILE_SIG_SIZE);
 
   for (RVLSize i = 0; i < RVL_FILE_SIG_SIZE; i++)
     {
@@ -256,20 +256,20 @@ rvl_read_file_sig (RVL *self)
 }
 
 void
-rvl_read_data (RVL *self, RVLByte *data, RVLSize size)
+rvl_fread (RVL *self, RVLByte *data, RVLSize size)
 {
-  if (self->readData == NULL)
+  if (self->readFn == NULL)
     {
       log_fatal ("[librvl read] The read function is NULL. Please check if "
                  "the RVL instance is a reader.");
       exit (EXIT_FAILURE);
     }
 
-  self->readData (self, data, size);
+  self->readFn (self, data, size);
 }
 
 void
-rvl_read_data_default (RVL *self, RVLByte *data, RVLSize size)
+rvl_fread_default (RVL *self, RVLByte *data, RVLSize size)
 {
   if (self->io == NULL)
     {
