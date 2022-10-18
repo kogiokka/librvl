@@ -252,8 +252,8 @@ extern "C"
   /**
    * Helpers
    *
-   * These helper functions retrieve RVL information. Please make sure the
-   * instance has been fully configured before using them.
+   * These helper functions depend on certain RVL information. Please make sure
+   * the instance has been fully configured before using them.
    */
   RVLSize rvl_get_primitive_nbytes (RVL *self);
   RVLSize rvl_get_data_nbytes (RVL *self);
