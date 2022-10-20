@@ -48,9 +48,13 @@ rvl_read_rvl (RVL *self)
           rvl_read_VHDR_chunk (self, rbuf, size);
           break;
         case RVLChunkCode_GRID:
-          rvl_alloc (self, &self->grid.vxDimBuf, (size - 14));
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_GRID_chunk (self, rbuf, size);
+          {
+            rvl_alloc (self, &self->grid.dx, self->grid.dxSz);
+            rvl_alloc (self, &self->grid.dy, self->grid.dySz);
+            rvl_alloc (self, &self->grid.dz, self->grid.dzSz);
+            rvl_read_chunk_payload (self, rbuf, size);
+            rvl_read_GRID_chunk (self, rbuf, size);
+          }
           break;
         case RVLChunkCode_DATA:
           rvl_alloc (self, &self->data.rbuf, self->data.size);
@@ -97,9 +101,13 @@ rvl_read_info (RVL *self)
           rvl_read_VHDR_chunk (self, rbuf, size);
           break;
         case RVLChunkCode_GRID:
-          rvl_alloc (self, &self->grid.vxDimBuf, (size - 14));
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_GRID_chunk (self, rbuf, size);
+          {
+            rvl_alloc (self, &self->grid.dx, self->grid.dxSz);
+            rvl_alloc (self, &self->grid.dy, self->grid.dySz);
+            rvl_alloc (self, &self->grid.dz, self->grid.dzSz);
+            rvl_read_chunk_payload (self, rbuf, size);
+            rvl_read_GRID_chunk (self, rbuf, size);
+          }
           break;
         case RVLChunkCode_TEXT:
           rvl_read_chunk_payload (self, rbuf, size);
@@ -170,22 +178,32 @@ rvl_read_VHDR_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
   memcpy (&self->primitive, &rbuf[14], 2);
   self->endian = rbuf[15];
 
-  // Init resolution-related variable
   self->data.size = rvl_get_data_nbytes (self);
+
+  u32 *r = self->resolution;
+
+  self->grid.ndx  = r[0];
+  self->grid.ndy  = r[1];
+  self->grid.ndz  = r[2];
+  self->grid.dxSz = r[0] * sizeof (f32);
+  self->grid.dySz = r[1] * sizeof (f32);
+  self->grid.dzSz = r[2] * sizeof (f32);
 }
 
 void
 rvl_read_GRID_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 {
-  RVLSize vxDimBufSize = size - 14;
+  RVLSize offset = 14;
 
   self->grid.type = rbuf[0];
   self->grid.unit = rbuf[1];
   memcpy (self->grid.position, &rbuf[2], 12);
-  memcpy (self->grid.vxDimBuf, &rbuf[14], vxDimBufSize);
 
-  // Init resolution-related variable
-  self->grid.vxDimBufSize = vxDimBufSize;
+  memcpy (self->grid.dx, &rbuf[offset], self->grid.dxSz);
+  offset += self->grid.dxSz;
+  memcpy (self->grid.dy, &rbuf[offset], self->grid.dySz);
+  offset += self->grid.dySz;
+  memcpy (self->grid.dz, &rbuf[offset], self->grid.dzSz);
 }
 
 void
@@ -285,4 +303,3 @@ rvl_fread_default (RVL *self, RVLByte *data, RVLSize size)
       exit (EXIT_FAILURE);
     }
 }
-

@@ -204,17 +204,14 @@ extern "C"
   RVLGridUnit rvl_get_grid_unit (RVL *self);
   void        rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
 
-  // Set voxel dimensions for Regular grid type.
-  void rvl_set_voxel_dims_3f (RVL *self, float x, float y, float z);
+  void rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz);
+  void rvl_get_voxel_dims (RVL *self, float *dx, float *dy, float *dz);
 
-  // Set voxel dimensions for Rectilinear grid type.
-  void rvl_set_voxel_dims_v (RVL *self, int n, const float *dimensions);
-
-  // Get voxel dimensions for Regular grid type.
-  void rvl_get_voxel_dims_3f (RVL *self, float *x, float *y, float *z);
-
-  // Get voxel dimensions for Rectilinear grid type.
-  void rvl_get_voxel_dims_v (RVL *self, const float **dimensions);
+  void rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz, float *dx,
+                             float *dy, float *dz);
+  void rvl_get_voxel_dims_v (RVL *self, int *ndx, int *ndy, int *ndz,
+                             const float **dx, const float **dy,
+                             const float **dz);
 
   /* DATA chunk functions */
 

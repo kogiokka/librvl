@@ -70,14 +70,21 @@ rvl_write_VHDR_chunk (RVL *self)
 void
 rvl_write_GRID_chunk (RVL *self)
 {
-  RVLSize  wbufSize = 14 + self->grid.vxDimBufSize;
-  RVLByte *wbuf     = (RVLByte *)malloc (wbufSize);
+  RVLSize offset = 14;
+  RVLSize wbufSize
+      = offset + self->grid.dxSz + self->grid.dySz + self->grid.dzSz;
+  RVLByte *wbuf = (RVLByte *)malloc (wbufSize);
 
   // Grid info
   wbuf[0] = self->grid.type;
   wbuf[1] = self->grid.unit;
   memcpy (&wbuf[2], self->grid.position, 12);
-  memcpy (&wbuf[14], self->grid.vxDimBuf, self->grid.vxDimBufSize);
+
+  memcpy (&wbuf[offset], self->grid.dx, self->grid.dxSz);
+  offset += self->grid.dxSz;
+  memcpy (&wbuf[offset], self->grid.dy, self->grid.dySz);
+  offset += self->grid.dySz;
+  memcpy (&wbuf[offset], self->grid.dz, self->grid.dzSz);
 
   rvl_write_chunk_header (self, RVLChunkCode_GRID, wbufSize);
   rvl_write_chunk_payload (self, wbuf, wbufSize);
@@ -231,17 +238,16 @@ check_data (RVL *self)
 void
 check_grid (RVL *self)
 {
-  if (self->grid.vxDimBufSize <= 0)
+  if (self->grid.ndx <= 0 || self->grid.ndy <= 0 || self->grid.ndz <= 0)
     {
       log_fatal ("[librvl write] Missing voxel dimensions.");
       exit (EXIT_FAILURE);
     }
 
-  u32 numDim = (self->grid.vxDimBufSize) / sizeof (f32);
   switch (self->grid.type)
     {
     case RVLGridType_Regular:
-      if (numDim != 3)
+      if (self->grid.ndx != 1 || self->grid.ndy != 1 || self->grid.ndz != 1)
         {
           log_fatal ("[librvl write] Number of voxel dimensions is not valid "
                      "for regular grid.");
@@ -251,7 +257,8 @@ check_grid (RVL *self)
     case RVLGridType_Rectilinear:
       {
         u32 *r = self->resolution;
-        if (numDim != (r[0] + r[1] + r[2]))
+        if (self->grid.ndx != r[0] || self->grid.ndy != r[1]
+            || self->grid.ndz != r[2])
           {
             log_fatal (
                 "[librvl write] Number of voxel dimensions do not match "

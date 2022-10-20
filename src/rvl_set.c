@@ -46,37 +46,44 @@ rvl_set_grid_position (RVL *self, float x, float y, float z)
 }
 
 void
-rvl_set_voxel_dims_1f (RVL *self, float x)
+rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz)
 {
-  RVLSize size = 3 * sizeof (f32);
+  RVLSize size = 1 * sizeof (f32);
 
-  rvl_alloc (self, &self->grid.vxDimBuf, size);
+  self->grid.ndx  = 1;
+  self->grid.ndy  = 1;
+  self->grid.ndz  = 1;
+  self->grid.dxSz = size;
+  self->grid.dySz = size;
+  self->grid.dzSz = size;
+  self->grid.dx   = (RVLByte *)malloc (size);
+  self->grid.dy   = (RVLByte *)malloc (size);
+  self->grid.dz   = (RVLByte *)malloc (size);
 
-  f32 arr[3] = { x, x, x };
-  memcpy (self->grid.vxDimBuf, arr, size);
-  self->grid.vxDimBufSize = size;
+  memcpy (self->grid.dx, &dx, size);
+  memcpy (self->grid.dy, &dy, size);
+  memcpy (self->grid.dz, &dz, size);
 }
 
 void
-rvl_set_voxel_dims_3f (RVL *self, float x, float y, float z)
+rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz, float *dx,
+                      float *dy, float *dz)
 {
-  RVLSize size = 3 * sizeof (f32);
+  RVLSize sizef32 = sizeof (f32);
 
-  rvl_alloc (self, &self->grid.vxDimBuf, size);
+  self->grid.ndx  = ndx;
+  self->grid.ndy  = ndy;
+  self->grid.ndz  = ndz;
+  self->grid.dxSz = ndx * sizef32;
+  self->grid.dySz = ndy * sizef32;
+  self->grid.dzSz = ndz * sizef32;
+  self->grid.dx   = (RVLByte *)malloc (self->grid.dxSz);
+  self->grid.dy   = (RVLByte *)malloc (self->grid.dySz);
+  self->grid.dz   = (RVLByte *)malloc (self->grid.dzSz);
 
-  f32 arr[3] = { x, y, z };
-  memcpy (self->grid.vxDimBuf, arr, size);
-  self->grid.vxDimBufSize = size;
-}
-
-void
-rvl_set_voxel_dims_v (RVL *self, int n, const float *dimensions)
-{
-  RVLSize size = n * sizeof (f32);
-
-  rvl_alloc (self, &self->grid.vxDimBuf, size);
-  memcpy (self->grid.vxDimBuf, dimensions, size);
-  self->grid.vxDimBufSize = size;
+  memcpy (self->grid.dx, dx, self->grid.dxSz);
+  memcpy (self->grid.dy, dy, self->grid.dySz);
+  memcpy (self->grid.dz, dz, self->grid.dzSz);
 }
 
 void

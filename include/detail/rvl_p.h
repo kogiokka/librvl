@@ -30,10 +30,12 @@ typedef struct
   /**
    * Voxel dimensions buffer
    *
-   * The buffer is managed by RVL struct.
+   * The buffer pointer is owned by RVL struct.
    */
-  RVLByte *vxDimBuf;
-  RVLSize  vxDimBufSize;
+  RVLByte *dx, *dy, *dz;
+  RVLSize  dxSz, dySz, dzSz;
+
+  u32 ndx, ndy, ndz;
 } RVLGrid;
 
 /**
