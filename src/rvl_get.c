@@ -41,24 +41,6 @@ rvl_get_resolution (RVL *self, int *x, int *y, int *z)
 void
 rvl_get_voxel_dims_1f (RVL *self, float *x)
 {
-  switch (self->grid.type)
-    {
-    case RVLGridType_Cartesian:
-      break;
-    case RVLGridType_Regular:
-      log_error ("[librvl get] Call to wrong voxel dimensions getter for "
-                 "Regular grid type.");
-      return;
-    case RVLGridType_Rectilinear:
-      log_error ("[librvl get] Call to wrong voxel dimensions getter for "
-                 "Rectilinear grid type.");
-      return;
-    default:
-      log_fatal ("[librvl get] Invalid grid type! Why?");
-      exit (EXIT_FAILURE);
-      return;
-    }
-
   *x = ((float *)self->grid.vxDimBuf)[0];
 }
 
@@ -67,30 +49,9 @@ rvl_get_voxel_dims_3f (RVL *self, float *x, float *y, float *z)
 {
   const float *buf = (const float *)self->grid.vxDimBuf;
 
-  switch (self->grid.type)
-    {
-    case RVLGridType_Cartesian:
-      {
-        float dim = buf[0];
-        *x = *y = *z = dim;
-      }
-      break;
-    case RVLGridType_Regular:
-      {
-        *x = buf[0];
-        *y = buf[1];
-        *z = buf[2];
-      }
-      break;
-    case RVLGridType_Rectilinear:
-      log_error ("[librvl get] Call to wrong voxel dimensions getter for "
-                 "Rectilinear grid type.");
-      return;
-    default:
-      log_fatal ("[librvl get] Invalid grid type! Why?");
-      exit (EXIT_FAILURE);
-      return;
-    }
+  *x = buf[0];
+  *y = buf[1];
+  *z = buf[2];
 }
 
 void
