@@ -39,32 +39,13 @@ rvl_get_resolution (RVL *self, int *x, int *y, int *z)
 }
 
 void
-rvl_get_voxel_dims_1f (RVL *self, float *x)
-{
-  *x = ((float *)self->grid.vxDimBuf)[0];
-}
-
-void
 rvl_get_voxel_dims_3f (RVL *self, float *x, float *y, float *z)
 {
   const float *buf = (const float *)self->grid.vxDimBuf;
 
-  switch (self->grid.type)
-    {
-    case RVLGridType_Cartesian:
-      {
-        float dim = buf[0];
-        *x        = dim;
-        *y        = dim;
-        *z        = dim;
-      }
-      break;
-    case RVLGridType_Regular:
-      *x = buf[0];
-      *y = buf[1];
-      *z = buf[2];
-      break;
-    }
+  *x = buf[0];
+  *y = buf[1];
+  *z = buf[2];
 }
 
 void

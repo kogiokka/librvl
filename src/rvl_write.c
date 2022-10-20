@@ -240,15 +240,6 @@ check_grid (RVL *self)
   u32 numDim = (self->grid.vxDimBufSize) / sizeof (f32);
   switch (self->grid.type)
     {
-    case RVLGridType_Cartesian:
-      if (numDim != 1)
-        {
-          log_fatal ("[librvl write] Number of voxel dimensions is not valid "
-                     "for Cartesian grid.");
-          exit (EXIT_FAILURE);
-        }
-
-      break;
     case RVLGridType_Regular:
       if (numDim != 3)
         {
