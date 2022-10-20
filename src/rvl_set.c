@@ -60,9 +60,9 @@ rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz)
   self->grid.dy   = (RVLByte *)malloc (size);
   self->grid.dz   = (RVLByte *)malloc (size);
 
-  memcpy (self->grid.dx, &dx, size);
-  memcpy (self->grid.dy, &dy, size);
-  memcpy (self->grid.dz, &dz, size);
+  ((float*)self->grid.dx)[0] = dx;
+  ((float*)self->grid.dy)[0] = dy;
+  ((float*)self->grid.dz)[0] = dz;
 }
 
 void
@@ -102,3 +102,4 @@ rvl_set_text (RVL *self, RVLText **text, int numText)
   self->numText = numText;
   *text         = NULL;
 }
+

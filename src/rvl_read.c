@@ -179,15 +179,6 @@ rvl_read_VHDR_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
   self->endian = rbuf[15];
 
   self->data.size = rvl_get_data_nbytes (self);
-
-  u32 *r = self->resolution;
-
-  self->grid.ndx  = r[0];
-  self->grid.ndy  = r[1];
-  self->grid.ndz  = r[2];
-  self->grid.dxSz = r[0] * sizeof (f32);
-  self->grid.dySz = r[1] * sizeof (f32);
-  self->grid.dzSz = r[2] * sizeof (f32);
 }
 
 void
@@ -198,6 +189,26 @@ rvl_read_GRID_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
   self->grid.type = rbuf[0];
   self->grid.unit = rbuf[1];
   memcpy (self->grid.position, &rbuf[2], 12);
+
+  if (self->grid.type == RVLGridType_Regular)
+    {
+      self->grid.ndx  = 1;
+      self->grid.ndy  = 1;
+      self->grid.ndz  = 1;
+      self->grid.dxSz = sizeof (f32);
+      self->grid.dySz = sizeof (f32);
+      self->grid.dzSz = sizeof (f32);
+    }
+  else if (self->grid.type == RVLGridType_Rectilinear)
+    {
+      u32 *r          = self->resolution;
+      self->grid.ndx  = r[0];
+      self->grid.ndy  = r[1];
+      self->grid.ndz  = r[2];
+      self->grid.dxSz = r[0] * sizeof (f32);
+      self->grid.dySz = r[1] * sizeof (f32);
+      self->grid.dzSz = r[2] * sizeof (f32);
+    }
 
   memcpy (self->grid.dx, &rbuf[offset], self->grid.dxSz);
   offset += self->grid.dxSz;

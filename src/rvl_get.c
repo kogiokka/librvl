@@ -41,9 +41,9 @@ rvl_get_resolution (RVL *self, int *x, int *y, int *z)
 void
 rvl_get_voxel_dims (RVL *self, float *dx, float *dy, float *dz)
 {
-  *dx = *((float *)self->grid.dx);
-  *dy = *((float *)self->grid.dy);
-  *dz = *((float *)self->grid.dz);
+  *dx = ((float *)self->grid.dx)[0];
+  *dy = ((float *)self->grid.dy)[0];
+  *dz = ((float *)self->grid.dz)[0];
 }
 
 void
