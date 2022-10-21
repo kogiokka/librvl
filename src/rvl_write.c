@@ -11,9 +11,9 @@
 #include "detail/rvl_text_p.h"
 
 static void rvl_write_chunk_header (RVL *self, RVLChunkCode code,
-                                    RVLSize size);
-static void rvl_write_chunk_payload (RVL *self, RVLConstByte *data,
-                                     RVLSize size);
+                                     u32 size);
+static void rvl_write_chunk_payload (RVL *self, const BYTE *data,
+                                      u32 size);
 static void rvl_write_chunk_end (RVL *self);
 
 static void rvl_write_VHDR_chunk (RVL *self);
@@ -24,7 +24,7 @@ static void rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr,
 static void rvl_write_VEND_chunk (RVL *self);
 
 static void rvl_write_file_sig (RVL *self);
-static void rvl_fwrite (RVL *self, RVLConstByte *data, RVLSize size);
+static void rvl_fwrite (RVL *self, const BYTE *data, u32 size);
 
 static void check_grid (RVL *self);
 static void check_data (RVL *self);
@@ -53,7 +53,7 @@ rvl_write_rvl (RVL *self)
 void
 rvl_write_VHDR_chunk (RVL *self)
 {
-  RVLSize size = 18;
+  u32 size = 18;
   u8     *buf  = calloc (1, size);
 
   memcpy (&buf[0], self->version, 2);
@@ -70,18 +70,18 @@ rvl_write_VHDR_chunk (RVL *self)
 void
 rvl_write_GRID_chunk (RVL *self)
 {
-  RVLSize  offset   = 14;
-  RVLSize  wbufSize = offset + self->grid.dimBufSz;
-  RVLByte *wbuf     = (RVLByte *)malloc (wbufSize);
+  u32   offset   = 14;
+  u32     wbufSize = offset + self->grid.dimBufSz;
+  BYTE   *wbuf     = (BYTE *)malloc (wbufSize);
 
   // Grid info
   wbuf[0] = self->grid.type;
   wbuf[1] = self->grid.unit;
   memcpy (&wbuf[2], self->grid.position, 12);
 
-  RVLSize szdx = self->grid.ndx * sizeof (f32);
-  RVLSize szdy = self->grid.ndy * sizeof (f32);
-  RVLSize szdz = self->grid.ndz * sizeof (f32);
+  u32 szdx = self->grid.ndx * sizeof (f32);
+  u32     szdy = self->grid.ndy * sizeof (f32);
+  u32     szdz = self->grid.ndz * sizeof (f32);
 
   memcpy (&wbuf[offset], self->grid.dx, szdx);
   offset += szdx;
@@ -97,7 +97,7 @@ rvl_write_GRID_chunk (RVL *self)
 void
 rvl_write_DATA_chunk (RVL *self)
 {
-  RVLSize wbufSize = self->data.size;
+  u32   wbufSize = self->data.size;
   char   *wbuf     = (char *)malloc (wbufSize);
 
   int         srcSize = self->data.size;
@@ -116,7 +116,7 @@ rvl_write_DATA_chunk (RVL *self)
     }
 
   rvl_write_chunk_header (self, RVLChunkCode_DATA, compSize);
-  rvl_write_chunk_payload (self, (RVLConstByte *)wbuf, compSize);
+  rvl_write_chunk_payload (self, (const BYTE *)wbuf, compSize);
   rvl_write_chunk_end (self);
 
   free (wbuf);
@@ -129,18 +129,18 @@ rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr, int numText)
   for (int i = 0; i < numText; i++)
     {
       const RVLText *const text      = &textArr[i];
-      const RVLSize        keySize   = strlen (text->key);
-      const RVLSize        valueSize = strlen (text->value);
+      const u32            keySize   = strlen (text->key);
+      const u32            valueSize = strlen (text->value);
 
       rvl_write_chunk_header (self, RVLChunkCode_TEXT,
                               keySize + valueSize + 1);
 
       // Include the null terminator
-      rvl_write_chunk_payload (self, (RVLConstByte *)text->key, keySize + 1);
+      rvl_write_chunk_payload (self, (const BYTE *)text->key, keySize + 1);
 
       if (valueSize != 0)
         {
-          rvl_write_chunk_payload (self, (RVLConstByte *)text->value,
+          rvl_write_chunk_payload (self, (const BYTE *)text->value,
                                    valueSize);
         }
 
@@ -157,7 +157,7 @@ rvl_write_VEND_chunk (RVL *self)
 }
 
 void
-rvl_write_chunk_header (RVL *self, RVLChunkCode code, RVLSize size)
+rvl_write_chunk_header (RVL *self, RVLChunkCode code, u32 size)
 {
   u8 buf[8];
 
@@ -170,7 +170,7 @@ rvl_write_chunk_header (RVL *self, RVLChunkCode code, RVLSize size)
 }
 
 void
-rvl_write_chunk_payload (RVL *self, RVLConstByte *data, RVLSize size)
+rvl_write_chunk_payload (RVL *self, const BYTE *data, u32 size)
 {
   if (data != NULL && size > 0)
     {
@@ -191,7 +191,7 @@ rvl_write_file_sig (RVL *self)
 }
 
 void
-rvl_fwrite (RVL *self, RVLConstByte *data, RVLSize size)
+rvl_fwrite (RVL *self, const BYTE *data, u32 size)
 {
   if (self->writeFn == NULL)
     {
@@ -204,7 +204,7 @@ rvl_fwrite (RVL *self, RVLConstByte *data, RVLSize size)
 }
 
 void
-rvl_fwrite_default (RVL *self, RVLConstByte *data, RVLSize size)
+rvl_fwrite_default (RVL *self, const BYTE *data, u32 size)
 {
   if (self->io == NULL)
     {

@@ -48,10 +48,10 @@ rvl_set_grid_position (RVL *self, float x, float y, float z)
 void
 rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz)
 {
-  RVLSize size = 1 * sizeof (f32);
+  u32 size = 1 * sizeof (f32);
 
   self->grid.dimBufSz = 3 * size;
-  self->grid.dimBuf = (RVLByte *)malloc (self->grid.dimBufSz);
+  self->grid.dimBuf   = (BYTE *)malloc (self->grid.dimBufSz);
 
   self->grid.ndx = 1;
   self->grid.ndy = 1;
@@ -69,13 +69,13 @@ void
 rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz, float *dx,
                       float *dy, float *dz)
 {
-  RVLSize sizef32 = sizeof (f32);
-  RVLSize szdx    = ndx * sizeof (f32);
-  RVLSize szdy    = ndy * sizeof (f32);
-  RVLSize szdz    = ndz * sizeof (f32);
+  u32 sizef32 = sizeof (f32);
+  u32     szdx    = ndx * sizeof (f32);
+  u32     szdy    = ndy * sizeof (f32);
+  u32     szdz    = ndz * sizeof (f32);
 
   self->grid.dimBufSz = (ndx + ndy + ndz) * sizef32;
-  self->grid.dimBuf = (RVLByte *)malloc (self->grid.dimBufSz);
+  self->grid.dimBuf   = (BYTE *)malloc (self->grid.dimBufSz);
 
   self->grid.ndx = ndx;
   self->grid.ndy = ndy;
@@ -90,10 +90,10 @@ rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz, float *dx,
 }
 
 void
-rvl_set_data_buffer (RVL *self, RVLSize size, RVLConstByte *buffer)
+rvl_set_data_buffer (RVL *self, unsigned int size, const unsigned char *buffer)
 {
   self->data.size = size;
-  self->data.wbuf = buffer;
+  self->data.wbuf = (BYTE *)buffer;
 }
 
 void

@@ -6,8 +6,8 @@
 
 static void init_regular_grid (RVL *rvl);
 static void init_rectilinear_grid (RVL *rvl);
-static void print_data_buffer (int x, int y, int z, RVLConstByte *buffer,
-                               RVLSize primSize);
+static void print_data_buffer (int x, int y, int z,
+                               const unsigned char *buffer, int primSize);
 
 void
 rvl_test_write_regular_grid ()
@@ -18,8 +18,8 @@ rvl_test_write_regular_grid ()
   init_regular_grid (rvl);
 
   // DATA chunk
-  RVLSize  size   = rvl_get_data_nbytes (rvl);
-  RVLByte *buffer = (RVLByte *)malloc (size);
+  int            size   = rvl_get_data_nbytes (rvl);
+  unsigned char *buffer = (unsigned char *)malloc (size);
   memset (buffer, 'A', size);
   rvl_set_data_buffer (rvl, size, buffer);
   rvl_write_rvl (rvl);
@@ -76,7 +76,7 @@ rvl_test_read_regular_grid ()
     }
 
   // DATA chunk
-  RVLByte *buffer;
+  unsigned char *buffer;
   rvl_get_data_buffer (rvl, &buffer);
   print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
 
@@ -105,8 +105,8 @@ rvl_test_write_rectilinear_grid ()
   init_rectilinear_grid (rvl);
 
   // DATA chunk
-  RVLSize  size   = rvl_get_data_nbytes (rvl);
-  RVLByte *buffer = (RVLByte *)malloc (size);
+  int            size   = rvl_get_data_nbytes (rvl);
+  unsigned char *buffer = (unsigned char *)malloc (size);
   memset (buffer, 'A', size);
   rvl_set_data_buffer (rvl, size, buffer);
   rvl_write_rvl (rvl);
@@ -177,7 +177,7 @@ rvl_test_read_rectilinear_grid ()
   fprintf (stdout, "%s\n", sep);
 
   // DATA chunk
-  RVLByte *buffer;
+  unsigned char *buffer;
   rvl_get_data_buffer (rvl, &buffer);
   print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
 
@@ -238,7 +238,7 @@ rvl_test_partially_read ()
     }
 
   // Read DATA
-  RVLByte *buffer = (RVLByte *)malloc (rvl_get_data_nbytes (rvl));
+  unsigned char *buffer = (unsigned char *)malloc (rvl_get_data_nbytes (rvl));
   rvl_read_data_buffer (rvl, &buffer);
   print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
   free (buffer);
@@ -295,7 +295,8 @@ init_rectilinear_grid (RVL *rvl)
 }
 
 void
-print_data_buffer (int x, int y, int z, RVLConstByte *buffer, RVLSize primSize)
+print_data_buffer (int x, int y, int z, const unsigned char *buffer,
+                   int primSize)
 {
   fprintf (stdout, "Prim size: %d\n", primSize);
   for (int k = 0; k < z; k++)

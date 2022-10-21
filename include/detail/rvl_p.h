@@ -6,19 +6,20 @@
 
 #include "../rvl.h"
 
+typedef uint8_t  BYTE;
+typedef uint32_t u32;
 typedef float    f32;
 typedef uint8_t  u8;
 typedef uint16_t u16;
-typedef uint32_t u32;
 
-typedef void (*RVLWriteFn) (RVL *, RVLConstByte *, RVLSize);
-typedef void (*RVLReadFn) (RVL *, RVLByte *, RVLSize);
+typedef void (*RVLWriteFn) (RVL *, const BYTE *, u32);
+typedef void (*RVLReadFn) (RVL *, BYTE *, u32);
 
 typedef struct
 {
-  RVLConstByte *wbuf; // Non-owning pointer
-  RVLByte      *rbuf;
-  RVLSize       size;
+  const BYTE *wbuf; // Non-owning pointer
+  BYTE       *rbuf;
+  u32         size;
 } RVLData;
 
 typedef struct
@@ -32,8 +33,8 @@ typedef struct
    *
    * The buffer pointer is owned by RVL struct.
    */
-  RVLByte *dimBuf;
-  RVLSize  dimBufSz;
+  BYTE *dimBuf;
+  u32   dimBufSz;
 
   f32 *dx, *dy, *dz;
   u32  ndx, ndy, ndz;
@@ -61,7 +62,7 @@ typedef uint32_t RVLChunkCode;
 
 // RVL File Signature: .RVL FORMAT\0
 #define RVL_FILE_SIG_SIZE 12
-extern RVLByte RVL_FILE_SIG[RVL_FILE_SIG_SIZE];
+extern BYTE RVL_FILE_SIG[RVL_FILE_SIG_SIZE];
 
 typedef enum
 {
@@ -95,9 +96,9 @@ struct RVL
 
 RVLText *rvl_text_create_array (int num);
 void     rvl_text_destroy_array (RVLText **self);
-void     rvl_alloc (RVL *self, RVLByte **ptr, RVLSize size);
-void     rvl_dealloc (RVL *self, RVLByte **ptr);
-void     rvl_fwrite_default (RVL *self, RVLConstByte *data, RVLSize size);
-void     rvl_fread_default (RVL *self, RVLByte *data, RVLSize size);
+void     rvl_alloc (RVL *self, BYTE **ptr, u32 size);
+void     rvl_dealloc (RVL *self, BYTE **ptr);
+void     rvl_fwrite_default (RVL *self, const BYTE *data, u32 size);
+void     rvl_fread_default (RVL *self, BYTE *data, u32 size);
 
 #endif

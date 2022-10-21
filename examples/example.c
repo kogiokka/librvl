@@ -6,7 +6,8 @@
 
 static void write_rvl (RVL *rvl);
 static void read_rvl (RVL *rvl);
-static void print_data_buffer (int x, int y, int z, RVLConstByte *buffer);
+static void print_data_buffer (int x, int y, int z,
+                               const unsigned char *buffer);
 
 int
 main ()
@@ -28,8 +29,8 @@ write_rvl (RVL *rvl)
   int ry = 10;
   int rz = 20;
 
-  RVLSize size   = rx * ry * rz * sizeof (int);
-  int    *buffer = (int *)malloc (size);
+  unsigned int size   = rx * ry * rz * sizeof (int);
+  int         *buffer = (int *)malloc (size);
 
   for (int i = 0; i < rz; i++)
     {
@@ -50,7 +51,7 @@ write_rvl (RVL *rvl)
   rvl_set_primitive (rvl, RVLPrimitive_i32);
   rvl_set_endian (rvl, RVLEndian_Little);
 
-  rvl_set_data_buffer (rvl, size, (RVLByte *)buffer);
+  rvl_set_data_buffer (rvl, size, (unsigned char *)buffer);
 
   int      numText = 2;
   RVLText *textArr = rvl_text_create_array (numText);
@@ -94,7 +95,7 @@ read_rvl (RVL *rvl)
   fprintf (stdout, "Position - x: %.3f, y: %.3f, z: %.3f\n", px, py, pz);
   fprintf (stdout, "%s\n", sep);
 
-  RVLByte *buffer;
+  unsigned char *buffer;
   rvl_get_data_buffer (rvl, &buffer);
   print_data_buffer (x, y, z, buffer);
 
@@ -112,7 +113,7 @@ read_rvl (RVL *rvl)
 }
 
 void
-print_data_buffer (int x, int y, int z, RVLConstByte *buffer)
+print_data_buffer (int x, int y, int z, const unsigned char *buffer)
 {
   const int *data = (int *)buffer;
   for (int k = 0; k < z; k++)

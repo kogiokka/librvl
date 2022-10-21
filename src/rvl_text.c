@@ -43,11 +43,11 @@ rvl_text_set (RVLText *textArr, int index, char *key, char *value)
                 "will be truncated:\n \"%s\"");
       keySize = 79;
     }
-  if (valueSize > sizeof (RVLSize) - (keySize + 1))
+  if (valueSize > sizeof (u32) - (keySize + 1))
     {
       log_warn ("[librvl text] Value length exceeds the maximum limit and "
                 "will be truncated:\n \"%s\"");
-      valueSize = sizeof (RVLSize) - (keySize + 1);
+      valueSize = sizeof (u32) - (keySize + 1);
     }
 
   memcpy (text->key, key, keySize);

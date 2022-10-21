@@ -66,19 +66,17 @@
 #define RVL_VERSION_MAJOR 0
 #define RVL_VERSION_MINOR 4
 
+/* RVL struct types */
 typedef struct RVL     RVL;
 typedef struct RVLText RVLText;
 
-typedef uint8_t       RVLByte;
-typedef const uint8_t RVLConstByte;
-typedef uint32_t      RVLSize;
-
+/* enum types */
 typedef uint16_t RVLPrimitive;
 typedef uint8_t  RVLGridType;
 typedef int8_t   RVLGridUnit;
 typedef uint8_t  RVLEndian;
-typedef uint8_t  RVLCompressionType;
 
+/* enum definitions */
 #define RVLPrimitive_u8   0x0103
 #define RVLPrimitive_u16  0x0104
 #define RVLPrimitive_u32  0x0105
@@ -186,7 +184,7 @@ extern "C"
 
   // Read the entire volumetric data into the buffer. The buffer allocation and
   // deallocation is managed by the user.
-  void rvl_read_data_buffer (RVL *self, RVLByte **buffer);
+  void rvl_read_data_buffer (RVL *self, unsigned char **buffer);
 
   /* VHDR chunk functions */
   void         rvl_set_resolution (RVL *self, int x, int y, int z);
@@ -218,11 +216,12 @@ extern "C"
   // Set the data buffer to be written by the RVL writer. The RVL instance does
   // not own the pointer; the user should allocate the memory before writing
   // and deallocate the memory after writing.
-  void rvl_set_data_buffer (RVL *self, RVLSize size, RVLConstByte *buffer);
+  void rvl_set_data_buffer (RVL *self, unsigned int size,
+                            const unsigned char *buffer);
 
   // Get the data buffer from the RVL reader. The RVL instance owns the
   // pointer, and users should not free the memory themselves.
-  void rvl_get_data_buffer (RVL *self, RVLByte **buffer);
+  void rvl_get_data_buffer (RVL *self, unsigned char **buffer);
 
   /* TEXT chunk functions */
   RVLText *rvl_text_create_array (int num);
@@ -239,8 +238,8 @@ extern "C"
    * These helper functions depend on certain RVL information. Please make sure
    * the instance has been fully configured before using them.
    */
-  RVLSize rvl_get_primitive_nbytes (RVL *self);
-  RVLSize rvl_get_data_nbytes (RVL *self);
+  int rvl_get_primitive_nbytes (RVL *self);
+  int rvl_get_data_nbytes (RVL *self);
 
 #ifdef __cplusplus
 }

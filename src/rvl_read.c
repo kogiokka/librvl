@@ -10,17 +10,17 @@
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
 
-static void rvl_read_chunk_header (RVL *self, RVLSize *size,
+static void rvl_read_chunk_header (RVL *self, u32 *size,
                                    RVLChunkCode *code);
-static void rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size);
+static void rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size);
 
-static void rvl_read_VHDR_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size);
-static void rvl_read_GRID_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size);
-static void rvl_read_DATA_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size);
-static void rvl_read_TEXT_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size);
+static void rvl_read_VHDR_chunk (RVL *self, const BYTE *rbuf, u32 size);
+static void rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size);
+static void rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size);
+static void rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size);
 
 static void rvl_read_file_sig (RVL *self);
-static void rvl_fread (RVL *self, RVLByte *data, RVLSize size);
+static void rvl_fread (RVL *self, BYTE *data, u32 size);
 
 void
 rvl_read_rvl (RVL *self)
@@ -33,14 +33,14 @@ rvl_read_rvl (RVL *self)
   RVLChunkCode code;
   do
     {
-      RVLSize size;
+      u32 size;
       rvl_read_chunk_header (self, &size, &code);
 
       char *ch = (char *)&code;
       log_debug ("[librvl read] Reading chunk header: size %d, code: %c%c%c%c",
                  size, ch[0], ch[1], ch[2], ch[3]);
 
-      RVLByte *rbuf = (RVLByte *)malloc (size);
+      BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
         {
         case RVLChunkCode_VHDR:
@@ -88,10 +88,10 @@ rvl_read_info (RVL *self)
   RVLChunkCode code;
   do
     {
-      RVLSize size;
+      u32 size;
       rvl_read_chunk_header (self, &size, &code);
 
-      RVLByte *rbuf = (RVLByte *)malloc (size);
+      BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
         {
         case RVLChunkCode_VHDR:
@@ -120,7 +120,7 @@ rvl_read_info (RVL *self)
 }
 
 void
-rvl_read_data_buffer (RVL *self, RVLByte **buffer)
+rvl_read_data_buffer (RVL *self, unsigned char **buffer)
 {
   if (self == NULL)
     return;
@@ -130,10 +130,10 @@ rvl_read_data_buffer (RVL *self, RVLByte **buffer)
   RVLChunkCode code;
   do
     {
-      RVLSize size;
+      u32 size;
       rvl_read_chunk_header (self, &size, &code);
 
-      RVLByte *rbuf = (RVLByte *)malloc (size);
+      BYTE *rbuf = (BYTE *)malloc (size);
 
       if (code == RVLChunkCode_DATA)
         {
@@ -155,20 +155,20 @@ rvl_read_data_buffer (RVL *self, RVLByte **buffer)
 }
 
 void
-rvl_read_chunk_header (RVL *self, RVLSize *size, RVLChunkCode *code)
+rvl_read_chunk_header (RVL *self, u32 *size, RVLChunkCode *code)
 {
-  rvl_fread (self, (RVLByte *)size, 4);
-  rvl_fread (self, (RVLByte *)code, 4);
+  rvl_fread (self, (BYTE *)size, 4);
+  rvl_fread (self, (BYTE *)code, 4);
 }
 
 void
-rvl_read_chunk_payload (RVL *self, RVLByte *data, RVLSize size)
+rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size)
 {
   rvl_fread (self, data, size);
 }
 
 void
-rvl_read_VHDR_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
+rvl_read_VHDR_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
   memcpy (&self->resolution, &rbuf[2], 12);
   memcpy (&self->primitive, &rbuf[14], 2);
@@ -178,16 +178,16 @@ rvl_read_VHDR_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 }
 
 void
-rvl_read_GRID_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
+rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
-  RVLSize  offset = 14;
+  u32      offset = 14;
   RVLGrid *grid   = &self->grid;
 
   grid->type = rbuf[0];
   grid->unit = rbuf[1];
   memcpy (grid->position, &rbuf[2], 12);
 
-  RVLSize szdx = 0, szdy = 0, szdz = 0;
+  u32 szdx = 0, szdy = 0, szdz = 0;
   if (grid->type == RVLGridType_Regular)
     {
       grid->ndx = 1;
@@ -215,14 +215,14 @@ rvl_read_GRID_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 }
 
 void
-rvl_read_DATA_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
+rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
   char *const   src     = (char *)rbuf;
   char *const   dst     = (char *)self->data.rbuf;
-  const RVLSize srcSize = size;
-  const RVLSize dstCap  = self->data.size;
+  const u32   srcSize = size;
+  const u32     dstCap  = self->data.size;
 
-  const RVLSize numBytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
+  const u32 numBytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
 
   if (numBytes != self->data.size)
     {
@@ -232,7 +232,7 @@ rvl_read_DATA_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 }
 
 void
-rvl_read_TEXT_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
+rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
   RVLText *newArr  = rvl_text_create_array (self->numText + 1);
   int      numText = self->numText + 1;
@@ -246,8 +246,8 @@ rvl_read_TEXT_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
   RVLText *newText = &newArr[numText - 1];
 
   // Both the key and the value will be null-terminated.
-  RVLSize nullPos = 0;
-  for (RVLSize i = 0; i < size; i++)
+  u32 nullPos = 0;
+  for (u32 i = 0; i < size; i++)
     {
       if (rbuf[i] == '\0')
         {
@@ -256,7 +256,7 @@ rvl_read_TEXT_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
     }
   memcpy (newText->key, rbuf, nullPos + 1);
 
-  RVLSize valueSize = size - (nullPos + 1);
+  u32 valueSize = size - (nullPos + 1);
   newText->value    = (char *)malloc (valueSize + 1);
   memcpy (newText->value, rbuf + nullPos + 1, valueSize);
   newText->value[valueSize + 1] = '\0';
@@ -268,10 +268,10 @@ rvl_read_TEXT_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 void
 rvl_read_file_sig (RVL *self)
 {
-  RVLByte sig[RVL_FILE_SIG_SIZE];
+  BYTE sig[RVL_FILE_SIG_SIZE];
   rvl_fread (self, sig, RVL_FILE_SIG_SIZE);
 
-  for (RVLSize i = 0; i < RVL_FILE_SIG_SIZE; i++)
+  for (u32 i = 0; i < RVL_FILE_SIG_SIZE; i++)
     {
       if (sig[i] != RVL_FILE_SIG[i])
         {
@@ -282,7 +282,7 @@ rvl_read_file_sig (RVL *self)
 }
 
 void
-rvl_fread (RVL *self, RVLByte *data, RVLSize size)
+rvl_fread (RVL *self, BYTE *data, u32 size)
 {
   if (self->readFn == NULL)
     {
@@ -295,7 +295,7 @@ rvl_fread (RVL *self, RVLByte *data, RVLSize size)
 }
 
 void
-rvl_fread_default (RVL *self, RVLByte *data, RVLSize size)
+rvl_fread_default (RVL *self, BYTE *data, u32 size)
 {
   if (self->io == NULL)
     {

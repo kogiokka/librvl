@@ -67,9 +67,9 @@ rvl_get_grid_position (RVL *self, float *x, float *y, float *z)
 }
 
 void
-rvl_get_data_buffer (RVL *self, RVLByte **buffer)
+rvl_get_data_buffer (RVL *self, unsigned char **buffer)
 {
-  *buffer = self->data.rbuf;
+  *buffer = (unsigned char *)self->data.rbuf;
 }
 
 void
@@ -79,15 +79,15 @@ rvl_get_text (RVL *self, RVLText **text, int *numText)
   *numText = self->numText;
 }
 
-RVLSize
+int
 rvl_get_primitive_nbytes (RVL *self)
 {
-  RVLByte *p = (RVLByte *)&self->primitive;
+  BYTE *p = (BYTE *)&self->primitive;
 
   u8 dimen = p[1];
   u8 bytes = (1 << (p[0] & 0x0f)) / 8;
 
-  RVLSize nbytes = dimen * bytes;
+  u32 nbytes = dimen * bytes;
 
   if (nbytes <= 0)
     {
@@ -97,7 +97,7 @@ rvl_get_primitive_nbytes (RVL *self)
   return nbytes;
 }
 
-RVLSize
+int
 rvl_get_data_nbytes (RVL *self)
 {
   const u32 *res = self->resolution;

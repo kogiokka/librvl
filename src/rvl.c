@@ -10,7 +10,7 @@
 #include "detail/rvl_p.h"
 
 // .RVL FORMAT\0
-RVLByte RVL_FILE_SIG[RVL_FILE_SIG_SIZE] = {
+BYTE RVL_FILE_SIG[RVL_FILE_SIG_SIZE] = {
   131, 82, 86, 76, 32, 70, 79, 82, 77, 65, 84, 0,
 };
 
@@ -55,7 +55,7 @@ rvl_destroy (RVL **self)
 }
 
 void
-rvl_alloc (RVL *self, RVLByte **ptr, RVLSize size)
+rvl_alloc (RVL *self, BYTE **ptr, u32 size)
 {
   assert (self != NULL || ptr != NULL);
 
@@ -64,7 +64,7 @@ rvl_alloc (RVL *self, RVLByte **ptr, RVLSize size)
       free (*ptr);
     }
 
-  *ptr = (RVLByte *)calloc (1, size);
+  *ptr = (BYTE *)calloc (1, size);
 
   if (*ptr == NULL)
     {
@@ -74,7 +74,7 @@ rvl_alloc (RVL *self, RVLByte **ptr, RVLSize size)
 }
 
 void
-rvl_dealloc (RVL *self, RVLByte **ptr)
+rvl_dealloc (RVL *self, BYTE **ptr)
 {
   assert (self != NULL || ptr != NULL);
 
