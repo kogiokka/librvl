@@ -10,8 +10,7 @@
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
 
-static void rvl_read_chunk_header (RVL *self, u32 *size,
-                                   RVLChunkCode *code);
+static void rvl_read_chunk_header (RVL *self, u32 *size, RVLChunkCode *code);
 static void rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size);
 
 static void rvl_read_VHDR_chunk (RVL *self, const BYTE *rbuf, u32 size);
@@ -170,9 +169,15 @@ rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size)
 void
 rvl_read_VHDR_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
+  RVLPrimitive primitive;
+  RVLEndian    endian;
+
   memcpy (&self->resolution, &rbuf[2], 12);
-  memcpy (&self->primitive, &rbuf[14], 2);
-  self->endian = rbuf[15];
+  memcpy (&primitive, &rbuf[14], 2);
+  memcpy (&endian, &rbuf[16], 1);
+
+  self->primitive = primitive;
+  self->endian    = endian;
 
   self->data.size = rvl_get_data_nbytes (self);
 }
@@ -217,10 +222,10 @@ rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size)
 void
 rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
-  char *const   src     = (char *)rbuf;
-  char *const   dst     = (char *)self->data.rbuf;
+  char *const src     = (char *)rbuf;
+  char *const dst     = (char *)self->data.rbuf;
   const u32   srcSize = size;
-  const u32     dstCap  = self->data.size;
+  const u32   dstCap  = self->data.size;
 
   const u32 numBytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
 
@@ -256,8 +261,8 @@ rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size)
     }
   memcpy (newText->key, rbuf, nullPos + 1);
 
-  u32 valueSize = size - (nullPos + 1);
-  newText->value    = (char *)malloc (valueSize + 1);
+  u32 valueSize  = size - (nullPos + 1);
+  newText->value = (char *)malloc (valueSize + 1);
   memcpy (newText->value, rbuf + nullPos + 1, valueSize);
   newText->value[valueSize + 1] = '\0';
 

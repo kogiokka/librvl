@@ -72,13 +72,13 @@ read_rvl (RVL *rvl)
   // Read from file
   rvl_read_rvl (rvl);
 
-  RVLGridType  gridType = rvl_get_grid_type (rvl);
-  RVLGridUnit  unit     = rvl_get_grid_unit (rvl);
-  RVLPrimitive format   = rvl_get_primitive (rvl);
-  RVLEndian    endian   = rvl_get_endian (rvl);
-  int          x, y, z;
-  float        dx, dy, dz;
-  float        px, py, pz;
+  RVLenum gridType = rvl_get_grid_type (rvl);
+  RVLenum unit     = rvl_get_grid_unit (rvl);
+  RVLenum format   = rvl_get_primitive (rvl);
+  RVLenum endian   = rvl_get_endian (rvl);
+  int     x, y, z;
+  float   dx, dy, dz;
+  float   px, py, pz;
   rvl_get_resolution (rvl, &x, &y, &z);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);

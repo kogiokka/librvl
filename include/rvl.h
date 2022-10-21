@@ -71,10 +71,7 @@ typedef struct RVL     RVL;
 typedef struct RVLText RVLText;
 
 /* enum types */
-typedef uint16_t RVLPrimitive;
-typedef uint8_t  RVLGridType;
-typedef int8_t   RVLGridUnit;
-typedef uint8_t  RVLEndian;
+typedef int RVLenum;
 
 /* enum definitions */
 #define RVLPrimitive_u8   0x0103
@@ -187,20 +184,20 @@ extern "C"
   void rvl_read_data_buffer (RVL *self, unsigned char **buffer);
 
   /* VHDR chunk functions */
-  void         rvl_set_resolution (RVL *self, int x, int y, int z);
-  void         rvl_set_primitive (RVL *self, RVLPrimitive primitive);
-  void         rvl_set_endian (RVL *self, RVLEndian endian);
-  void         rvl_get_resolution (RVL *self, int *x, int *y, int *z);
-  RVLPrimitive rvl_get_primitive (RVL *self);
-  RVLEndian    rvl_get_endian (RVL *self);
+  void    rvl_set_resolution (RVL *self, int x, int y, int z);
+  void    rvl_set_primitive (RVL *self, RVLenum primitive);
+  void    rvl_set_endian (RVL *self, RVLenum endian);
+  void    rvl_get_resolution (RVL *self, int *x, int *y, int *z);
+  RVLenum rvl_get_primitive (RVL *self);
+  RVLenum rvl_get_endian (RVL *self);
 
   /* GRID chunk functions */
-  void        rvl_set_grid_type (RVL *self, RVLGridType gridType);
-  void        rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit);
-  void        rvl_set_grid_position (RVL *self, float x, float y, float z);
-  RVLGridType rvl_get_grid_type (RVL *self);
-  RVLGridUnit rvl_get_grid_unit (RVL *self);
-  void        rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
+  void    rvl_set_grid_type (RVL *self, RVLenum gridType);
+  void    rvl_set_grid_unit (RVL *self, RVLenum gridUnit);
+  void    rvl_set_grid_position (RVL *self, float x, float y, float z);
+  RVLenum rvl_get_grid_type (RVL *self);
+  RVLenum rvl_get_grid_unit (RVL *self);
+  void    rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
 
   void rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz);
   void rvl_get_voxel_dims (RVL *self, float *dx, float *dy, float *dz);

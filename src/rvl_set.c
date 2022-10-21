@@ -6,25 +6,25 @@
 #include "detail/rvl_p.h"
 
 void
-rvl_set_grid_type (RVL *self, RVLGridType gridType)
+rvl_set_grid_type (RVL *self, RVLenum gridType)
 {
   self->grid.type = gridType;
 }
 
 void
-rvl_set_grid_unit (RVL *self, RVLGridUnit gridUnit)
+rvl_set_grid_unit (RVL *self, RVLenum gridUnit)
 {
   self->grid.unit = gridUnit;
 }
 
 void
-rvl_set_primitive (RVL *self, RVLPrimitive primitive)
+rvl_set_primitive (RVL *self, RVLenum primitive)
 {
   self->primitive = primitive;
 }
 
 void
-rvl_set_endian (RVL *self, RVLEndian endian)
+rvl_set_endian (RVL *self, RVLenum endian)
 {
   self->endian = endian;
 }
@@ -70,9 +70,9 @@ rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz, float *dx,
                       float *dy, float *dz)
 {
   u32 sizef32 = sizeof (f32);
-  u32     szdx    = ndx * sizeof (f32);
-  u32     szdy    = ndy * sizeof (f32);
-  u32     szdz    = ndz * sizeof (f32);
+  u32 szdx    = ndx * sizeof (f32);
+  u32 szdy    = ndy * sizeof (f32);
+  u32 szdz    = ndz * sizeof (f32);
 
   self->grid.dimBufSz = (ndx + ndy + ndz) * sizef32;
   self->grid.dimBuf   = (BYTE *)malloc (self->grid.dimBufSz);

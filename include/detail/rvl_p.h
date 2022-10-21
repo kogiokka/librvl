@@ -12,6 +12,14 @@ typedef float    f32;
 typedef uint8_t  u8;
 typedef uint16_t u16;
 
+/* Part of VHDR */
+typedef uint16_t RVLPrimitive;
+typedef uint8_t  RVLEndian;
+
+/* Part of GRID */
+typedef uint8_t  RVLGridType;
+typedef int8_t   RVLGridUnit;
+
 typedef void (*RVLWriteFn) (RVL *, const BYTE *, u32);
 typedef void (*RVLReadFn) (RVL *, BYTE *, u32);
 

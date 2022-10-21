@@ -10,10 +10,8 @@
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
 
-static void rvl_write_chunk_header (RVL *self, RVLChunkCode code,
-                                     u32 size);
-static void rvl_write_chunk_payload (RVL *self, const BYTE *data,
-                                      u32 size);
+static void rvl_write_chunk_header (RVL *self, RVLChunkCode code, u32 size);
+static void rvl_write_chunk_payload (RVL *self, const BYTE *data, u32 size);
 static void rvl_write_chunk_end (RVL *self);
 
 static void rvl_write_VHDR_chunk (RVL *self);
@@ -54,12 +52,15 @@ void
 rvl_write_VHDR_chunk (RVL *self)
 {
   u32 size = 18;
-  u8     *buf  = calloc (1, size);
+  u8 *buf  = calloc (1, size);
+
+  RVLPrimitive primitive = self->primitive;
+  RVLEndian    endian    = self->endian;
 
   memcpy (&buf[0], self->version, 2);
   memcpy (&buf[2], &self->resolution[0], 12);
-  memcpy (&buf[14], &self->primitive, 2);
-  buf[16] = self->endian;
+  memcpy (&buf[14], &primitive, 2);
+  memcpy (&buf[16], &endian, 1);
   buf[17] = 0; // padding
 
   rvl_write_chunk_header (self, RVLChunkCode_VHDR, size);
@@ -71,17 +72,20 @@ void
 rvl_write_GRID_chunk (RVL *self)
 {
   u32   offset   = 14;
-  u32     wbufSize = offset + self->grid.dimBufSz;
-  BYTE   *wbuf     = (BYTE *)malloc (wbufSize);
+  u32   wbufSize = offset + self->grid.dimBufSz;
+  BYTE *wbuf     = (BYTE *)malloc (wbufSize);
+
+  RVLGridType type = self->grid.type;
+  RVLGridUnit unit = self->grid.unit;
 
   // Grid info
-  wbuf[0] = self->grid.type;
-  wbuf[1] = self->grid.unit;
+  wbuf[0] = type;
+  wbuf[1] = unit;
   memcpy (&wbuf[2], self->grid.position, 12);
 
   u32 szdx = self->grid.ndx * sizeof (f32);
-  u32     szdy = self->grid.ndy * sizeof (f32);
-  u32     szdz = self->grid.ndz * sizeof (f32);
+  u32 szdy = self->grid.ndy * sizeof (f32);
+  u32 szdz = self->grid.ndz * sizeof (f32);
 
   memcpy (&wbuf[offset], self->grid.dx, szdx);
   offset += szdx;
@@ -98,7 +102,7 @@ void
 rvl_write_DATA_chunk (RVL *self)
 {
   u32   wbufSize = self->data.size;
-  char   *wbuf     = (char *)malloc (wbufSize);
+  char *wbuf     = (char *)malloc (wbufSize);
 
   int         srcSize = self->data.size;
   const char *src     = (char *)self->data.wbuf;
@@ -140,8 +144,7 @@ rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr, int numText)
 
       if (valueSize != 0)
         {
-          rvl_write_chunk_payload (self, (const BYTE *)text->value,
-                                   valueSize);
+          rvl_write_chunk_payload (self, (const BYTE *)text->value, valueSize);
         }
 
       rvl_write_chunk_end (self);

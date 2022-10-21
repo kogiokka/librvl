@@ -6,25 +6,25 @@
 
 #include "detail/rvl_p.h"
 
-RVLGridUnit
+RVLenum
 rvl_get_grid_unit (RVL *self)
 {
   return self->grid.unit;
 }
 
-RVLGridType
+RVLenum
 rvl_get_grid_type (RVL *self)
 {
   return self->grid.type;
 }
 
-RVLPrimitive
+RVLenum
 rvl_get_primitive (RVL *self)
 {
   return self->primitive;
 }
 
-RVLEndian
+RVLenum
 rvl_get_endian (RVL *self)
 {
   return self->endian;
