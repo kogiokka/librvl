@@ -102,7 +102,7 @@ rvl_get_data_nbytes (RVL *self)
 {
   const u32 *res = self->resolution;
 
-  if (res[0] <= 0 || res[1] <= 0 | res[2] <= 0)
+  if (res[0] <= 0 || res[1] <= 0 || res[2] <= 0)
     {
       log_error ("[librvl get] Invalid resolution: %d, %d, %d", res[0], res[1],
                  res[2]);
