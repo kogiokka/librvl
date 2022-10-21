@@ -43,13 +43,13 @@ write_rvl (RVL *rvl)
         }
     }
 
-  rvl_set_grid_type (rvl, RVLGridType_Regular);
-  rvl_set_grid_unit (rvl, RVLGridUnit_NA);
+  rvl_set_grid_type (rvl, RVL_GRID_REGULAR);
+  rvl_set_grid_unit (rvl, RVL_UNIT_NA);
   rvl_set_grid_position (rvl, 0.0f, 0.0f, 0.0f);
   rvl_set_resolution (rvl, rx, ry, rz);
   rvl_set_voxel_dims (rvl, 0.1f, 0.2f, 0.1f);
-  rvl_set_primitive (rvl, RVLPrimitive_i32);
-  rvl_set_endian (rvl, RVLEndian_Little);
+  rvl_set_primitive (rvl, RVL_PRIMITIVE_I32);
+  rvl_set_endian (rvl, RVL_ENDIAN_LITTLE);
 
   rvl_set_data_buffer (rvl, size, (unsigned char *)buffer);
 

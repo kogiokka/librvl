@@ -252,7 +252,7 @@ check_grid (RVL *self)
 
   switch (self->grid.type)
     {
-    case RVLGridType_Regular:
+    case RVL_GRID_REGULAR:
       if (self->grid.ndx != 1 || self->grid.ndy != 1 || self->grid.ndz != 1)
         {
           log_fatal ("[librvl write] Number of voxel dimensions is not valid "
@@ -260,7 +260,7 @@ check_grid (RVL *self)
           exit (EXIT_FAILURE);
         }
       break;
-    case RVLGridType_Rectilinear:
+    case RVL_GRID_RECTILINEAR:
       {
         u32 *r = self->resolution;
         if (self->grid.ndx != r[0] || self->grid.ndy != r[1]

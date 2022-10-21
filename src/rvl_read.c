@@ -193,14 +193,14 @@ rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size)
   memcpy (grid->position, &rbuf[2], 12);
 
   u32 szdx = 0, szdy = 0, szdz = 0;
-  if (grid->type == RVLGridType_Regular)
+  if (grid->type == RVL_GRID_REGULAR)
     {
       grid->ndx = 1;
       grid->ndy = 1;
       grid->ndz = 1;
       szdx = szdy = szdz = sizeof (f32);
     }
-  else if (grid->type == RVLGridType_Rectilinear)
+  else if (grid->type == RVL_GRID_RECTILINEAR)
     {
       u32 *r    = self->resolution;
       grid->ndx = r[0];

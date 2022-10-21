@@ -70,7 +70,7 @@ rvl_test_read_regular_grid ()
   fprintf (stdout, "Position - x: %.3f, y: %.3f, z: %.3f\n", px, py, pz);
   fprintf (stdout, "%s\n", sep);
 
-  if (unit != RVLGridUnit_NA)
+  if (unit != RVL_UNIT_NA)
     {
       exit (EXIT_FAILURE);
     }
@@ -257,11 +257,11 @@ rvl_test_uninitialized_rvl ()
 void
 init_regular_grid (RVL *rvl)
 {
-  rvl_set_grid_type (rvl, RVLGridType_Regular);
-  rvl_set_grid_unit (rvl, RVLGridUnit_NA);
+  rvl_set_grid_type (rvl, RVL_GRID_REGULAR);
+  rvl_set_grid_unit (rvl, RVL_UNIT_NA);
 
-  rvl_set_primitive (rvl, RVLPrimitive_vec2u8);
-  rvl_set_endian (rvl, RVLEndian_Little);
+  rvl_set_primitive (rvl, RVL_PRIMITIVE_VEC2U8);
+  rvl_set_endian (rvl, RVL_ENDIAN_LITTLE);
   rvl_set_resolution (rvl, 2, 2, 2);
   rvl_set_grid_position (rvl, 3.0f, 2.0f, 1.0f);
   rvl_set_voxel_dims (rvl, 0.1f, 0.2f, 0.3f);
@@ -270,11 +270,11 @@ init_regular_grid (RVL *rvl)
 void
 init_rectilinear_grid (RVL *rvl)
 {
-  rvl_set_grid_type (rvl, RVLGridType_Rectilinear);
-  rvl_set_grid_unit (rvl, RVLGridUnit_NA);
+  rvl_set_grid_type (rvl, RVL_GRID_RECTILINEAR);
+  rvl_set_grid_unit (rvl, RVL_UNIT_NA);
 
-  rvl_set_primitive (rvl, RVLPrimitive_f8);
-  rvl_set_endian (rvl, RVLEndian_Little);
+  rvl_set_primitive (rvl, RVL_PRIMITIVE_F8);
+  rvl_set_endian (rvl, RVL_ENDIAN_LITTLE);
   rvl_set_resolution (rvl, 6, 6, 3);
   rvl_set_grid_position (rvl, 1.0f, 2.0f, 3.0f);
 

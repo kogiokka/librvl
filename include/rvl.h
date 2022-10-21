@@ -74,88 +74,80 @@ typedef struct RVLText RVLText;
 typedef unsigned int RVLenum;
 
 /* enum definitions */
-#define RVLPrimitive_u8   0x0103
-#define RVLPrimitive_u16  0x0104
-#define RVLPrimitive_u32  0x0105
-#define RVLPrimitive_u64  0x0106
-#define RVLPrimitive_u128 0x0107
+#define RVL_PRIMITIVE_U8   0x0103
+#define RVL_PRIMITIVE_U16  0x0104
+#define RVL_PRIMITIVE_U32  0x0105
+#define RVL_PRIMITIVE_U64  0x0106
+#define RVL_PRIMITIVE_U128 0x0107
+#define RVL_PRIMITIVE_I8   0x0113
+#define RVL_PRIMITIVE_I16  0x0114
+#define RVL_PRIMITIVE_I32  0x0115
+#define RVL_PRIMITIVE_I64  0x0116
+#define RVL_PRIMITIVE_I128 0x0117
+#define RVL_PRIMITIVE_F8   0x0123
+#define RVL_PRIMITIVE_F16  0x0124
+#define RVL_PRIMITIVE_F32  0x0125
+#define RVL_PRIMITIVE_F64  0x0126
+#define RVL_PRIMITIVE_F128 0x0127
 
-#define RVLPrimitive_i8   0x0113
-#define RVLPrimitive_i16  0x0114
-#define RVLPrimitive_i32  0x0115
-#define RVLPrimitive_i64  0x0116
-#define RVLPrimitive_i128 0x0117
+#define RVL_PRIMITIVE_VEC2U8   0x0203
+#define RVL_PRIMITIVE_VEC2U16  0x0204
+#define RVL_PRIMITIVE_VEC2U32  0x0205
+#define RVL_PRIMITIVE_VEC2U64  0x0206
+#define RVL_PRIMITIVE_VEC2U128 0x0207
+#define RVL_PRIMITIVE_VEC2I8   0x0213
+#define RVL_PRIMITIVE_VEC2I16  0x0214
+#define RVL_PRIMITIVE_VEC2I32  0x0215
+#define RVL_PRIMITIVE_VEC2I64  0x0216
+#define RVL_PRIMITIVE_VEC2I128 0x0217
+#define RVL_PRIMITIVE_VEC2F8   0x0223
+#define RVL_PRIMITIVE_VEC2F16  0x0224
+#define RVL_PRIMITIVE_VEC2F32  0x0225
+#define RVL_PRIMITIVE_VEC2F64  0x0226
+#define RVL_PRIMITIVE_VEC2F128 0x0227
 
-#define RVLPrimitive_f8   0x0123
-#define RVLPrimitive_f16  0x0124
-#define RVLPrimitive_f32  0x0125
-#define RVLPrimitive_f64  0x0126
-#define RVLPrimitive_f128 0x0127
+#define RVL_PRIMITIVE_VEC3U8   0x0303
+#define RVL_PRIMITIVE_VEC3U16  0x0304
+#define RVL_PRIMITIVE_VEC3U32  0x0305
+#define RVL_PRIMITIVE_VEC3U64  0x0306
+#define RVL_PRIMITIVE_VEC3U128 0x0307
+#define RVL_PRIMITIVE_VEC3I8   0x0313
+#define RVL_PRIMITIVE_VEC3I16  0x0314
+#define RVL_PRIMITIVE_VEC3I32  0x0315
+#define RVL_PRIMITIVE_VEC3I64  0x0316
+#define RVL_PRIMITIVE_VEC3I128 0x0317
+#define RVL_PRIMITIVE_VEC3F8   0x0323
+#define RVL_PRIMITIVE_VEC3F16  0x0324
+#define RVL_PRIMITIVE_VEC3F32  0x0325
+#define RVL_PRIMITIVE_VEC3F64  0x0326
+#define RVL_PRIMITIVE_VEC3F128 0x0327
 
-#define RVLPrimitive_vec2u8   0x0203
-#define RVLPrimitive_vec2u16  0x0204
-#define RVLPrimitive_vec2u32  0x0205
-#define RVLPrimitive_vec2u64  0x0206
-#define RVLPrimitive_vec2u128 0x0207
+#define RVL_PRIMITIVE_VEC4U8   0X0403
+#define RVL_PRIMITIVE_VEC4U16  0X0404
+#define RVL_PRIMITIVE_VEC4U32  0X0405
+#define RVL_PRIMITIVE_VEC4U64  0X0406
+#define RVL_PRIMITIVE_VEC4U128 0X0407
+#define RVL_PRIMITIVE_VEC4I8   0X0413
+#define RVL_PRIMITIVE_VEC4I16  0X0414
+#define RVL_PRIMITIVE_VEC4I32  0X0415
+#define RVL_PRIMITIVE_VEC4I64  0X0416
+#define RVL_PRIMITIVE_VEC4I128 0X0417
+#define RVL_PRIMITIVE_VEC4F8   0X0423
+#define RVL_PRIMITIVE_VEC4F16  0X0424
+#define RVL_PRIMITIVE_VEC4F32  0X0425
+#define RVL_PRIMITIVE_VEC4F64  0X0426
+#define RVL_PRIMITIVE_VEC4F128 0X0427
 
-#define RVLPrimitive_vec2i8   0x0213
-#define RVLPrimitive_vec2i16  0x0214
-#define RVLPrimitive_vec2i32  0x0215
-#define RVLPrimitive_vec2i64  0x0216
-#define RVLPrimitive_vec2i128 0x0217
+#define RVL_ENDIAN_BIG    0
+#define RVL_ENDIAN_LITTLE 1
 
-#define RVLPrimitive_vec2f8   0x0223
-#define RVLPrimitive_vec2f16  0x0224
-#define RVLPrimitive_vec2f32  0x0225
-#define RVLPrimitive_vec2f64  0x0226
-#define RVLPrimitive_vec2f128 0x0227
+#define RVL_GRID_REGULAR     0
+#define RVL_GRID_RECTILINEAR 1
 
-#define RVLPrimitive_vec3u8   0x0303
-#define RVLPrimitive_vec3u16  0x0304
-#define RVLPrimitive_vec3u32  0x0305
-#define RVLPrimitive_vec3u64  0x0306
-#define RVLPrimitive_vec3u128 0x0307
-
-#define RVLPrimitive_vec3i8   0x0313
-#define RVLPrimitive_vec3i16  0x0314
-#define RVLPrimitive_vec3i32  0x0315
-#define RVLPrimitive_vec3i64  0x0316
-#define RVLPrimitive_vec3i128 0x0317
-
-#define RVLPrimitive_vec3f8   0x0323
-#define RVLPrimitive_vec3f16  0x0324
-#define RVLPrimitive_vec3f32  0x0325
-#define RVLPrimitive_vec3f64  0x0326
-#define RVLPrimitive_vec3f128 0x0327
-
-#define RVLPrimitive_vec4u8   0x0403
-#define RVLPrimitive_vec4u16  0x0404
-#define RVLPrimitive_vec4u32  0x0405
-#define RVLPrimitive_vec4u64  0x0406
-#define RVLPrimitive_vec4u128 0x0407
-
-#define RVLPrimitive_vec4i8   0x0413
-#define RVLPrimitive_vec4i16  0x0414
-#define RVLPrimitive_vec4i32  0x0415
-#define RVLPrimitive_vec4i64  0x0416
-#define RVLPrimitive_vec4i128 0x0417
-
-#define RVLPrimitive_vec4f8   0x0423
-#define RVLPrimitive_vec4f16  0x0424
-#define RVLPrimitive_vec4f32  0x0425
-#define RVLPrimitive_vec4f64  0x0426
-#define RVLPrimitive_vec4f128 0x0427
-
-#define RVLEndian_Big    0
-#define RVLEndian_Little 1
-
-#define RVLGridType_Regular     0
-#define RVLGridType_Rectilinear 1
-
-#define RVLGridUnit_NA        0x00
-#define RVLGridUnit_Meter     0x01
-#define RVLGridUnit_Milimeter 0x02
-#define RVLGridUnit_Kilometer 0x03
+#define RVL_UNIT_NA        0X00
+#define RVL_UNIT_METER     0X01
+#define RVL_UNIT_MILIMETER 0X02
+#define RVL_UNIT_KILOMETER 0X03
 
 // Prevent name-mangling for librvl functions from C++ compiler.
 #ifdef __cplusplus
