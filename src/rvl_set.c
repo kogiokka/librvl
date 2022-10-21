@@ -50,19 +50,19 @@ rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz)
 {
   RVLSize size = 1 * sizeof (f32);
 
-  self->grid.ndx  = 1;
-  self->grid.ndy  = 1;
-  self->grid.ndz  = 1;
-  self->grid.dxSz = size;
-  self->grid.dySz = size;
-  self->grid.dzSz = size;
-  self->grid.dx   = (RVLByte *)malloc (size);
-  self->grid.dy   = (RVLByte *)malloc (size);
-  self->grid.dz   = (RVLByte *)malloc (size);
+  self->grid.dimBufSz = 3 * size;
+  self->grid.dimBuf = (RVLByte *)malloc (self->grid.dimBufSz);
 
-  ((float*)self->grid.dx)[0] = dx;
-  ((float*)self->grid.dy)[0] = dy;
-  ((float*)self->grid.dz)[0] = dz;
+  self->grid.ndx = 1;
+  self->grid.ndy = 1;
+  self->grid.ndz = 1;
+  self->grid.dx  = (f32 *)(self->grid.dimBuf);
+  self->grid.dy  = (f32 *)(self->grid.dimBuf + size);
+  self->grid.dz  = (f32 *)(self->grid.dimBuf + (2 * size));
+
+  ((f32 *)self->grid.dx)[0] = dx;
+  ((f32 *)self->grid.dy)[0] = dy;
+  ((f32 *)self->grid.dz)[0] = dz;
 }
 
 void
@@ -70,20 +70,23 @@ rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz, float *dx,
                       float *dy, float *dz)
 {
   RVLSize sizef32 = sizeof (f32);
+  RVLSize szdx    = ndx * sizeof (f32);
+  RVLSize szdy    = ndy * sizeof (f32);
+  RVLSize szdz    = ndz * sizeof (f32);
 
-  self->grid.ndx  = ndx;
-  self->grid.ndy  = ndy;
-  self->grid.ndz  = ndz;
-  self->grid.dxSz = ndx * sizef32;
-  self->grid.dySz = ndy * sizef32;
-  self->grid.dzSz = ndz * sizef32;
-  self->grid.dx   = (RVLByte *)malloc (self->grid.dxSz);
-  self->grid.dy   = (RVLByte *)malloc (self->grid.dySz);
-  self->grid.dz   = (RVLByte *)malloc (self->grid.dzSz);
+  self->grid.dimBufSz = (ndx + ndy + ndz) * sizef32;
+  self->grid.dimBuf = (RVLByte *)malloc (self->grid.dimBufSz);
 
-  memcpy (self->grid.dx, dx, self->grid.dxSz);
-  memcpy (self->grid.dy, dy, self->grid.dySz);
-  memcpy (self->grid.dz, dz, self->grid.dzSz);
+  self->grid.ndx = ndx;
+  self->grid.ndy = ndy;
+  self->grid.ndz = ndz;
+  self->grid.dx  = (f32 *)(self->grid.dimBuf);
+  self->grid.dy  = (f32 *)(self->grid.dimBuf + szdx);
+  self->grid.dz  = (f32 *)(self->grid.dimBuf + szdx + szdy);
+
+  memcpy (self->grid.dx, dx, szdx);
+  memcpy (self->grid.dy, dy, szdy);
+  memcpy (self->grid.dz, dz, szdz);
 }
 
 void
@@ -102,4 +105,3 @@ rvl_set_text (RVL *self, RVLText **text, int numText)
   self->numText = numText;
   *text         = NULL;
 }
-

@@ -70,21 +70,24 @@ rvl_write_VHDR_chunk (RVL *self)
 void
 rvl_write_GRID_chunk (RVL *self)
 {
-  RVLSize offset = 14;
-  RVLSize wbufSize
-      = offset + self->grid.dxSz + self->grid.dySz + self->grid.dzSz;
-  RVLByte *wbuf = (RVLByte *)malloc (wbufSize);
+  RVLSize  offset   = 14;
+  RVLSize  wbufSize = offset + self->grid.dimBufSz;
+  RVLByte *wbuf     = (RVLByte *)malloc (wbufSize);
 
   // Grid info
   wbuf[0] = self->grid.type;
   wbuf[1] = self->grid.unit;
   memcpy (&wbuf[2], self->grid.position, 12);
 
-  memcpy (&wbuf[offset], self->grid.dx, self->grid.dxSz);
-  offset += self->grid.dxSz;
-  memcpy (&wbuf[offset], self->grid.dy, self->grid.dySz);
-  offset += self->grid.dySz;
-  memcpy (&wbuf[offset], self->grid.dz, self->grid.dzSz);
+  RVLSize szdx = self->grid.ndx * sizeof (f32);
+  RVLSize szdy = self->grid.ndy * sizeof (f32);
+  RVLSize szdz = self->grid.ndz * sizeof (f32);
+
+  memcpy (&wbuf[offset], self->grid.dx, szdx);
+  offset += szdx;
+  memcpy (&wbuf[offset], self->grid.dy, szdy);
+  offset += szdy;
+  memcpy (&wbuf[offset], self->grid.dz, szdz);
 
   rvl_write_chunk_header (self, RVLChunkCode_GRID, wbufSize);
   rvl_write_chunk_payload (self, wbuf, wbufSize);

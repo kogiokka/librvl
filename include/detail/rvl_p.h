@@ -32,10 +32,11 @@ typedef struct
    *
    * The buffer pointer is owned by RVL struct.
    */
-  RVLByte *dx, *dy, *dz;
-  RVLSize  dxSz, dySz, dzSz;
+  RVLByte *dimBuf;
+  RVLSize  dimBufSz;
 
-  u32 ndx, ndy, ndz;
+  f32 *dx, *dy, *dz;
+  u32  ndx, ndy, ndz;
 } RVLGrid;
 
 /**

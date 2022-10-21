@@ -46,9 +46,7 @@ rvl_destroy (RVL **self)
   // Dealloc read buffer. Writer buffer pointer is non-owning so the user is
   // responsible for calling this dealloc function.
   rvl_dealloc (ptr, &ptr->data.rbuf);
-  rvl_dealloc (ptr, &ptr->grid.dx);
-  rvl_dealloc (ptr, &ptr->grid.dy);
-  rvl_dealloc (ptr, &ptr->grid.dz);
+  rvl_dealloc (ptr, &ptr->grid.dimBuf);
 
   fclose (ptr->io);
   free (ptr);

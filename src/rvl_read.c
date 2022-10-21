@@ -49,9 +49,7 @@ rvl_read_rvl (RVL *self)
           break;
         case RVLChunkCode_GRID:
           {
-            rvl_alloc (self, &self->grid.dx, self->grid.dxSz);
-            rvl_alloc (self, &self->grid.dy, self->grid.dySz);
-            rvl_alloc (self, &self->grid.dz, self->grid.dzSz);
+            rvl_alloc (self, &self->grid.dimBuf, size - 14);
             rvl_read_chunk_payload (self, rbuf, size);
             rvl_read_GRID_chunk (self, rbuf, size);
           }
@@ -102,9 +100,7 @@ rvl_read_info (RVL *self)
           break;
         case RVLChunkCode_GRID:
           {
-            rvl_alloc (self, &self->grid.dx, self->grid.dxSz);
-            rvl_alloc (self, &self->grid.dy, self->grid.dySz);
-            rvl_alloc (self, &self->grid.dz, self->grid.dzSz);
+            rvl_alloc (self, &self->grid.dimBuf, size - 14);
             rvl_read_chunk_payload (self, rbuf, size);
             rvl_read_GRID_chunk (self, rbuf, size);
           }
@@ -184,37 +180,38 @@ rvl_read_VHDR_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 void
 rvl_read_GRID_chunk (RVL *self, RVLConstByte *rbuf, RVLSize size)
 {
-  RVLSize offset = 14;
+  RVLSize  offset = 14;
+  RVLGrid *grid   = &self->grid;
 
-  self->grid.type = rbuf[0];
-  self->grid.unit = rbuf[1];
-  memcpy (self->grid.position, &rbuf[2], 12);
+  grid->type = rbuf[0];
+  grid->unit = rbuf[1];
+  memcpy (grid->position, &rbuf[2], 12);
 
-  if (self->grid.type == RVLGridType_Regular)
+  RVLSize szdx = 0, szdy = 0, szdz = 0;
+  if (grid->type == RVLGridType_Regular)
     {
-      self->grid.ndx  = 1;
-      self->grid.ndy  = 1;
-      self->grid.ndz  = 1;
-      self->grid.dxSz = sizeof (f32);
-      self->grid.dySz = sizeof (f32);
-      self->grid.dzSz = sizeof (f32);
+      grid->ndx = 1;
+      grid->ndy = 1;
+      grid->ndz = 1;
+      szdx = szdy = szdz = sizeof (f32);
     }
-  else if (self->grid.type == RVLGridType_Rectilinear)
+  else if (grid->type == RVLGridType_Rectilinear)
     {
-      u32 *r          = self->resolution;
-      self->grid.ndx  = r[0];
-      self->grid.ndy  = r[1];
-      self->grid.ndz  = r[2];
-      self->grid.dxSz = r[0] * sizeof (f32);
-      self->grid.dySz = r[1] * sizeof (f32);
-      self->grid.dzSz = r[2] * sizeof (f32);
+      u32 *r    = self->resolution;
+      grid->ndx = r[0];
+      grid->ndy = r[1];
+      grid->ndz = r[2];
+      szdx      = r[0] * sizeof (f32);
+      szdy      = r[1] * sizeof (f32);
+      szdz      = r[2] * sizeof (f32);
     }
 
-  memcpy (self->grid.dx, &rbuf[offset], self->grid.dxSz);
-  offset += self->grid.dxSz;
-  memcpy (self->grid.dy, &rbuf[offset], self->grid.dySz);
-  offset += self->grid.dySz;
-  memcpy (self->grid.dz, &rbuf[offset], self->grid.dzSz);
+  grid->dx = (float *)(grid->dimBuf);
+  grid->dy = (float *)(grid->dimBuf + szdx);
+  grid->dz = (float *)(grid->dimBuf + szdx + szdy);
+  memcpy (grid->dx, &rbuf[offset], szdx);
+  memcpy (grid->dy, &rbuf[offset + szdx], szdy);
+  memcpy (grid->dz, &rbuf[offset + szdx + szdy], szdz);
 }
 
 void
