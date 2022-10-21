@@ -235,8 +235,8 @@ extern "C"
    * These helper functions depend on certain RVL information. Please make sure
    * the instance has been fully configured before using them.
    */
-  int rvl_get_primitive_nbytes (RVL *self);
-  int rvl_get_data_nbytes (RVL *self);
+  unsigned int rvl_get_primitive_nbytes (RVL *self);
+  unsigned int rvl_get_data_nbytes (RVL *self);
 
 #ifdef __cplusplus
 }

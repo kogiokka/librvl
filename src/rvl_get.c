@@ -79,7 +79,7 @@ rvl_get_text (RVL *self, RVLText **text, int *numText)
   *numText = self->numText;
 }
 
-int
+unsigned int
 rvl_get_primitive_nbytes (RVL *self)
 {
   BYTE *p = (BYTE *)&self->primitive;
@@ -97,7 +97,7 @@ rvl_get_primitive_nbytes (RVL *self)
   return nbytes;
 }
 
-int
+unsigned int
 rvl_get_data_nbytes (RVL *self)
 {
   const u32 *res = self->resolution;
