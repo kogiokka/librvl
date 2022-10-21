@@ -152,12 +152,10 @@ typedef int RVLenum;
 #define RVLGridType_Regular     0
 #define RVLGridType_Rectilinear 1
 
-// -128 - N/A or unknown, n - 1.0e+n meter
-#define RVLGridUnit_NA         -128
-#define RVLGridUnit_Milimeter  -3
-#define RVLGridUnit_Centimeter -2
-#define RVLGridUnit_Meter      0
-#define RVLGridUnit_Kilometer  3
+#define RVLGridUnit_NA        0x00
+#define RVLGridUnit_Meter     0x01
+#define RVLGridUnit_Milimeter 0x02
+#define RVLGridUnit_Kilometer 0x03
 
 // Prevent name-mangling for librvl functions from C++ compiler.
 #ifdef __cplusplus
