@@ -6,6 +6,7 @@ project("rvl"
     LANGUAGES C)
 
 option(RVL_BUILD_TEST "Build the unit tests for librvl" ON)
+option(RVL_BUILD_EXAMPLE "Build the examples for librvl" ON)
 
 add_library(rvl SHARED)
 add_library(rvl::rvl ALIAS rvl)
@@ -57,6 +58,10 @@ target_link_libraries(rvl PRIVATE
     lz4_static
     log.c
 )
+
+if(RVL_BUILD_EXAMPLE)
+    add_subdirectory("examples/")
+endif()
 
 install(TARGETS rvl EXPORT librvlTargets
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
