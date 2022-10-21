@@ -71,7 +71,7 @@ typedef struct RVL     RVL;
 typedef struct RVLText RVLText;
 
 /* enum types */
-typedef int RVLenum;
+typedef unsigned int RVLenum;
 
 /* enum definitions */
 #define RVLPrimitive_u8   0x0103
