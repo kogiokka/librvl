@@ -18,17 +18,20 @@ include("cmake/FetchLZ4.cmake")
 include("cmake/PackageSource.cmake")
 add_subdirectory("external/")
 
-set_target_properties(rvl PROPERTIES
+set_target_properties(rvl
+PROPERTIES
     C_STANDARD 99
     C_STANDARD_REQUIRED ON
     PUBLIC_HEADER "include/rvl.h"
 )
 
-target_compile_options(rvl PRIVATE
+target_compile_options(rvl
+PRIVATE
     $<$<C_COMPILER_ID:GNU,CLANG>:-Wall -Wextra -pedantic-errors>
 )
 
-target_sources(rvl PRIVATE
+target_sources(rvl
+PRIVATE
     "src/rvl.c"
     "src/rvl_read.c"
     "src/rvl_write.c"
@@ -53,7 +56,8 @@ PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>" # For exporting without installation
 )
 
-target_link_libraries(rvl PRIVATE
+target_link_libraries(rvl
+PRIVATE
     lz4_static
     log.c
 )
@@ -64,25 +68,31 @@ install(TARGETS rvl EXPORT librvlTargets
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
     PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
 )
+
 install(EXPORT librvlTargets
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
     NAMESPACE rvl::
 )
+
 set(LIB_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/librvl")
+
 write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/librvlConfigVersion.cmake"
-  COMPATIBILITY SameMinorVersion # Minor backward compat before the major is 1
-)
-configure_package_config_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/librvlConfig.cmake.in"
-  "${CMAKE_CURRENT_BINARY_DIR}/librvlConfig.cmake"
-  INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
-  PATH_VARS LIB_INSTALL_DIR
-)
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/librvlConfig.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/librvlConfigVersion.cmake"
-  DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
+    COMPATIBILITY SameMinorVersion # Minor backward compat before the major is 1
+)
+
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/librvlConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/librvlConfig.cmake"
+    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
+    PATH_VARS LIB_INSTALL_DIR
+)
+
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/librvlConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/librvlConfigVersion.cmake"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
 )
 
 if (RVL_BUILD_TEST)
