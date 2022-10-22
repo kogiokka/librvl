@@ -85,10 +85,6 @@ install(FILES
   DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
 )
 
-export(EXPORT librvlTargets
-    NAMESPACE rvl::
-)
-
 if (RVL_BUILD_TEST)
     include(CTest)
     enable_testing()
