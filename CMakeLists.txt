@@ -11,12 +11,10 @@ add_library(rvl SHARED)
 add_library(rvl::rvl ALIAS rvl)
 
 include(GNUInstallDirs)
-include(FetchContent)
 include(CMakePackageConfigHelpers)
 
-include("cmake/FetchLZ4.cmake")
+include("cmake/ExternalProjects.cmake")
 include("cmake/PackageSource.cmake")
-add_subdirectory("external/")
 
 set_target_properties(rvl
 PROPERTIES
@@ -59,7 +57,7 @@ PUBLIC
 target_link_libraries(rvl
 PRIVATE
     lz4_static
-    log.c
+    logc
 )
 
 install(TARGETS rvl EXPORT librvlTargets
