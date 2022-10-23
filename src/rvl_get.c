@@ -30,6 +30,12 @@ rvl_get_endian (RVL *self)
   return self->endian;
 }
 
+RVLenum
+rvl_get_compression_method (RVL *self)
+{
+  return self->compress;
+}
+
 void
 rvl_get_resolution (RVL *self, int *x, int *y, int *z)
 {

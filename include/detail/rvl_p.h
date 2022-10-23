@@ -15,10 +15,11 @@ typedef uint16_t u16;
 /* Part of VHDR */
 typedef uint16_t RVLPrimitive;
 typedef uint8_t  RVLEndian;
+typedef uint8_t  RVLCompress;
 
 /* Part of GRID */
-typedef uint8_t  RVLGridType;
-typedef int8_t   RVLGridUnit;
+typedef uint8_t RVLGridType;
+typedef int8_t  RVLGridUnit;
 
 typedef void (*RVLWriteFn) (RVL *, const BYTE *, u32);
 typedef void (*RVLReadFn) (RVL *, BYTE *, u32);
@@ -90,6 +91,7 @@ struct RVL
   u32          resolution[3];
   RVLPrimitive primitive;
   RVLEndian    endian;
+  RVLCompress  compress;
 
   /* GRID chunk */
   RVLGrid grid;

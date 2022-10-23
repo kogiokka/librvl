@@ -1,13 +1,17 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <log.h>
 #include <lz4.h>
+#include <lzma.h>
 
 #include "rvl.h"
 
 #include "detail/rvl_p.h"
+
+#include "detail/rvl_compress_p.h"
 #include "detail/rvl_text_p.h"
 
 static void rvl_read_chunk_header (RVL *self, u32 *size, RVLChunkCode *code);
@@ -171,13 +175,16 @@ rvl_read_VHDR_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
   RVLPrimitive primitive;
   RVLEndian    endian;
+  RVLCompress  compress;
 
   memcpy (&self->resolution, &rbuf[2], 12);
   memcpy (&primitive, &rbuf[14], 2);
   memcpy (&endian, &rbuf[16], 1);
+  memcpy (&compress, &rbuf[17], 1);
 
   self->primitive = primitive;
   self->endian    = endian;
+  self->compress  = compress;
 
   self->data.size = rvl_get_data_nbytes (self);
 }
@@ -227,12 +234,18 @@ rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size)
   const u32   srcSize = size;
   const u32   dstCap  = self->data.size;
 
-  const u32 numBytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
-
-  if (numBytes != self->data.size)
+  if (self->compress == RVL_COMPRESS_LZ4)
     {
-      log_fatal ("[librvl read] Data decompression error!");
-      exit (EXIT_FAILURE);
+      int numBytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
+      if (numBytes != self->data.size)
+        {
+          log_fatal ("[librvl read] Data decompression error!");
+          exit (EXIT_FAILURE);
+        }
+    }
+  else if (self->compress == RVL_COMPRESS_LZMA)
+    {
+      rvl_decompress_lzma (self, rbuf, size);
     }
 }
 

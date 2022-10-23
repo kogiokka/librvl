@@ -149,6 +149,9 @@ typedef unsigned int RVLenum;
 #define RVL_UNIT_MILIMETER 0X02
 #define RVL_UNIT_KILOMETER 0X03
 
+#define RVL_COMPRESS_LZMA 0x00
+#define RVL_COMPRESS_LZ4  0x01
+
 // Prevent name-mangling for librvl functions from C++ compiler.
 #ifdef __cplusplus
 extern "C"
@@ -180,6 +183,7 @@ extern "C"
   void    rvl_get_resolution (RVL *self, int *x, int *y, int *z);
   RVLenum rvl_get_primitive (RVL *self);
   RVLenum rvl_get_endian (RVL *self);
+  RVLenum rvl_get_compression_method (RVL *self);
 
   /* GRID chunk functions */
   void    rvl_set_grid_type (RVL *self, RVLenum gridType);

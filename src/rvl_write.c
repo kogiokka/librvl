@@ -1,13 +1,18 @@
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <log.h>
 #include <lz4.h>
 #include <lz4hc.h>
+#include <lzma.h>
 
 #include "rvl.h"
 
 #include "detail/rvl_p.h"
+
+#include "detail/rvl_compress_p.h"
 #include "detail/rvl_text_p.h"
 
 static void rvl_write_chunk_header (RVL *self, RVLChunkCode code, u32 size);
@@ -56,12 +61,13 @@ rvl_write_VHDR_chunk (RVL *self)
 
   RVLPrimitive primitive = self->primitive;
   RVLEndian    endian    = self->endian;
+  RVLCompress  compress  = self->compress;
 
   memcpy (&buf[0], self->version, 2);
   memcpy (&buf[2], &self->resolution[0], 12);
   memcpy (&buf[14], &primitive, 2);
   memcpy (&buf[16], &endian, 1);
-  buf[17] = 0; // padding
+  memcpy (&buf[17], &compress, 1);
 
   rvl_write_chunk_header (self, RVLChunkCode_VHDR, size);
   rvl_write_chunk_payload (self, buf, size);
@@ -102,21 +108,28 @@ void
 rvl_write_DATA_chunk (RVL *self)
 {
   u32   wbufSize = self->data.size;
-  char *wbuf     = (char *)malloc (wbufSize);
+  BYTE *wbuf     = (BYTE *)malloc (wbufSize);
 
   int         srcSize = self->data.size;
   const char *src     = (char *)self->data.wbuf;
 
-  int compSize
-      = LZ4_compress_HC (src, wbuf, srcSize, wbufSize, LZ4HC_CLEVEL_MIN);
-
-  // When the compressed size is greater than the uncompressed one.
-  if (compSize == 0)
+  u32 compSize = 0;
+  if (self->compress == RVL_COMPRESS_LZ4)
     {
-      wbufSize = LZ4_compressBound (self->data.size);
-      wbuf     = realloc (wbuf, wbufSize);
-      compSize = LZ4_compress_HC (src, wbuf, self->data.size, wbufSize,
+      compSize = LZ4_compress_HC (src, (char *)wbuf, srcSize, wbufSize,
                                   LZ4HC_CLEVEL_MIN);
+      // When the compressed size is greater than the uncompressed one.
+      if (compSize == 0)
+        {
+          wbufSize = LZ4_compressBound (self->data.size);
+          wbuf     = realloc (wbuf, wbufSize);
+          compSize = LZ4_compress_HC (src, (char *)wbuf, self->data.size,
+                                      wbufSize, LZ4HC_CLEVEL_MIN);
+        }
+    }
+  else if (self->compress == RVL_COMPRESS_LZMA)
+    {
+      rvl_compress_lzma (self, &wbuf, &compSize);
     }
 
   rvl_write_chunk_header (self, RVLChunkCode_DATA, compSize);
