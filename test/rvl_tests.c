@@ -22,8 +22,6 @@ rvl_test_write_regular_grid ()
   unsigned char *buffer = (unsigned char *)malloc (size);
   memset (buffer, 'A', size);
   rvl_set_data_buffer (rvl, size, buffer);
-  rvl_write_rvl (rvl);
-  free (buffer);
 
   // TEXT chunk
   int      numText = 2;
@@ -36,6 +34,7 @@ rvl_test_write_regular_grid ()
   // Write to file
   rvl_write_rvl (rvl);
 
+  free (buffer);
   rvl_destroy (&rvl);
 }
 
@@ -109,8 +108,6 @@ rvl_test_write_rectilinear_grid ()
   unsigned char *buffer = (unsigned char *)malloc (size);
   memset (buffer, 'A', size);
   rvl_set_data_buffer (rvl, size, buffer);
-  rvl_write_rvl (rvl);
-  free (buffer);
 
   // TEXT chunk
   int      numText = 2;
@@ -123,6 +120,7 @@ rvl_test_write_rectilinear_grid ()
   // Write to file
   rvl_write_rvl (rvl);
 
+  free (buffer);
   rvl_destroy (&rvl);
 }
 
