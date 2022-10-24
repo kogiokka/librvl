@@ -49,24 +49,24 @@ rvl_test_read_regular_grid ()
   // VHDR/GRID chunk
   RVLenum gridType = rvl_get_grid_type (rvl);
   RVLenum unit     = rvl_get_grid_unit (rvl);
-  RVLenum format   = rvl_get_primitive (rvl);
-  RVLenum endian   = rvl_get_endian (rvl);
-  RVLenum compress = rvl_get_compression (rvl);
   int     x, y, z;
   float   dx, dy, dz;
   float   px, py, pz;
-  rvl_get_resolution (rvl, &x, &y, &z);
+  RVLenum primitive, endian;
+  rvl_get_header (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
+
+  RVLenum compress = rvl_get_compression(rvl);
 
   char sep[81];
   memset (sep, '-', 80);
   fprintf (stdout, "%s\n", sep);
   fprintf (stdout, "Width: %d, Length: %d, Height: %d\n", x, y, z);
   fprintf (stdout, "Grid - type: %d, unit: %d\n", gridType, unit);
-  fprintf (stdout, "Data format: 0x%.4x\n", format);
+  fprintf (stdout, "Data format: 0x%.4x\n", primitive);
   fprintf (stdout, "Endian - %d\n", endian);
-  fprintf (stdout, "Compresson method - %d\n", compress);
+  fprintf (stdout, "Compression method - %d\n", compress);
   fprintf (stdout, "Voxel Dim - x: %.3f, y: %.3f, z: %.3f\n", dx, dy, dz);
   fprintf (stdout, "Position - x: %.3f, y: %.3f, z: %.3f\n", px, py, pz);
   fprintf (stdout, "%s\n", sep);
@@ -137,24 +137,24 @@ rvl_test_read_rectilinear_grid ()
   // VHDR/GRID chunk
   RVLenum gridType = rvl_get_grid_type (rvl);
   RVLenum unit     = rvl_get_grid_unit (rvl);
-  RVLenum format   = rvl_get_primitive (rvl);
-  RVLenum endian   = rvl_get_endian (rvl);
-  RVLenum compress = rvl_get_compression (rvl);
 
   int          x, y, z;
   int          ndx, ndy, ndz;
   const float *dx, *dy, *dz;
   float        px, py, pz;
-  rvl_get_resolution (rvl, &x, &y, &z);
+  RVLenum primitive, endian;
+  rvl_get_header (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims_v (rvl, &ndx, &ndy, &ndz, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
+
+  RVLenum compress = rvl_get_compression(rvl);
 
   char sep[81];
   memset (sep, '-', 80);
   fprintf (stdout, "%s\n", sep);
   fprintf (stdout, "Width: %d, Length: %d, Height: %d\n", x, y, z);
   fprintf (stdout, "Grid - type: %d, unit: %d\n", gridType, unit);
-  fprintf (stdout, "Data format: 0x%.4x\n", format);
+  fprintf (stdout, "Data format: 0x%.4x\n", primitive);
   fprintf (stdout, "Endian - %d\n", endian);
   fprintf (stdout, "Compresson method - %d\n", compress);
   fprintf (stdout, "Voxel Dim -\n");
@@ -218,12 +218,14 @@ rvl_test_partially_read ()
 
   RVLenum gridType = rvl_get_grid_type (rvl);
   RVLenum unit     = rvl_get_grid_unit (rvl);
-  RVLenum format   = rvl_get_primitive (rvl);
-  RVLenum endian   = rvl_get_endian (rvl);
-  rvl_get_resolution (rvl, &x, &y, &z);
+  RVLenum primitive, endian;
+
+  rvl_get_header (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
   rvl_get_text (rvl, &textArr, &numText);
+
+  RVLenum compress = rvl_get_compression(rvl);
 
   // Print RVL information
   char sep[81];
@@ -231,8 +233,9 @@ rvl_test_partially_read ()
   fprintf (stdout, "%s\n", sep);
   fprintf (stdout, "Width: %d, Length: %d, Height: %d\n", x, y, z);
   fprintf (stdout, "Grid - type: %d, unit: %d\n", gridType, unit);
-  fprintf (stdout, "Data format: 0x%.4x\n", format);
+  fprintf (stdout, "Data format: 0x%.4x\n", primitive);
   fprintf (stdout, "Endian - %d\n", endian);
+  fprintf (stdout, "Compression - %d\n", compress);
   fprintf (stdout, "Voxel Dim - x: %.3f, y: %.3f, z: %.3f\n", dx, dy, dz);
   for (int i = 0; i < numText; i++)
     {
@@ -259,12 +262,10 @@ rvl_test_uninitialized_rvl ()
 void
 init_regular_grid (RVL *rvl)
 {
+  rvl_set_header(rvl, 2, 2, 2, RVL_PRIMITIVE_VEC2U8, RVL_ENDIAN_LITTLE);
+
   rvl_set_grid_type (rvl, RVL_GRID_REGULAR);
   rvl_set_grid_unit (rvl, RVL_UNIT_NA);
-
-  rvl_set_primitive (rvl, RVL_PRIMITIVE_VEC2U8);
-  rvl_set_endian (rvl, RVL_ENDIAN_LITTLE);
-  rvl_set_resolution (rvl, 2, 2, 2);
   rvl_set_grid_position (rvl, 3.0f, 2.0f, 1.0f);
   rvl_set_voxel_dims (rvl, 0.1f, 0.2f, 0.3f);
 }
@@ -272,12 +273,10 @@ init_regular_grid (RVL *rvl)
 void
 init_rectilinear_grid (RVL *rvl)
 {
+  rvl_set_header(rvl, 6, 6, 3, RVL_PRIMITIVE_F8, RVL_ENDIAN_LITTLE);
+
   rvl_set_grid_type (rvl, RVL_GRID_RECTILINEAR);
   rvl_set_grid_unit (rvl, RVL_UNIT_NA);
-
-  rvl_set_primitive (rvl, RVL_PRIMITIVE_F8);
-  rvl_set_endian (rvl, RVL_ENDIAN_LITTLE);
-  rvl_set_resolution (rvl, 6, 6, 3);
   rvl_set_grid_position (rvl, 1.0f, 2.0f, 3.0f);
 
   float dx[6];

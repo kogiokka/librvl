@@ -6,6 +6,23 @@
 
 #include "detail/rvl_p.h"
 
+void
+rvl_get_header (RVL *self, int *x, int *y, int *z, RVLenum *primitive,
+                RVLenum *endian)
+{
+  *x         = self->resolution[0];
+  *y         = self->resolution[1];
+  *z         = self->resolution[2];
+  *primitive = self->primitive;
+  *endian    = self->endian;
+}
+
+RVLenum
+rvl_get_compression (RVL *self)
+{
+  return self->compress;
+}
+
 RVLenum
 rvl_get_grid_unit (RVL *self)
 {
@@ -16,32 +33,6 @@ RVLenum
 rvl_get_grid_type (RVL *self)
 {
   return self->grid.type;
-}
-
-RVLenum
-rvl_get_primitive (RVL *self)
-{
-  return self->primitive;
-}
-
-RVLenum
-rvl_get_endian (RVL *self)
-{
-  return self->endian;
-}
-
-RVLenum
-rvl_get_compression (RVL *self)
-{
-  return self->compress;
-}
-
-void
-rvl_get_resolution (RVL *self, int *x, int *y, int *z)
-{
-  *x = self->resolution[0];
-  *y = self->resolution[1];
-  *z = self->resolution[2];
 }
 
 void

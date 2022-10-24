@@ -6,27 +6,14 @@
 #include "detail/rvl_p.h"
 
 void
-rvl_set_grid_type (RVL *self, RVLenum gridType)
+rvl_set_header (RVL *self, int x, int y, int z, RVLenum primitive,
+                RVLenum endian)
 {
-  self->grid.type = gridType;
-}
-
-void
-rvl_set_grid_unit (RVL *self, RVLenum gridUnit)
-{
-  self->grid.unit = gridUnit;
-}
-
-void
-rvl_set_primitive (RVL *self, RVLenum primitive)
-{
-  self->primitive = primitive;
-}
-
-void
-rvl_set_endian (RVL *self, RVLenum endian)
-{
-  self->endian = endian;
+  self->resolution[0] = x;
+  self->resolution[1] = y;
+  self->resolution[2] = z;
+  self->primitive     = primitive;
+  self->endian        = endian;
 }
 
 void
@@ -36,11 +23,15 @@ rvl_set_compression (RVL *self, RVLenum compression)
 }
 
 void
-rvl_set_resolution (RVL *self, int x, int y, int z)
+rvl_set_grid_type (RVL *self, RVLenum gridType)
 {
-  self->resolution[0] = x;
-  self->resolution[1] = y;
-  self->resolution[2] = z;
+  self->grid.type = gridType;
+}
+
+void
+rvl_set_grid_unit (RVL *self, RVLenum gridUnit)
+{
+  self->grid.unit = gridUnit;
 }
 
 void
