@@ -6,10 +6,12 @@
 
 #include "detail/rvl_compress_p.h"
 
-static bool init_lzma_encoder (lzma_stream *stream, uint32_t preset);
+static void     create_lzma_encoder (lzma_stream *self, uint32_t preset);
+static void     destroy_lzma_encoder (lzma_stream *self);
+static lzma_ret run_lzma_compression (lzma_stream *strm, const BYTE *src,
+                                      u32 srcSize, BYTE *dst, u32 dstCap);
+
 static bool init_lzma_decoder (lzma_stream *strm);
-static u32  compress_lzma (lzma_stream *strm, const BYTE *src, u32 srcSize,
-                           BYTE **dst, u32 dstCap);
 static u32  decompress_lzma (lzma_stream *strm, const BYTE *src, u32 srcSize,
                              BYTE **dst, u32 dstCap);
 
@@ -19,11 +21,46 @@ static void print_lzma_decompression_error (lzma_ret ret);
 void
 rvl_compress_lzma (RVL *self, BYTE **out, u32 *size)
 {
-  lzma_stream strm = LZMA_STREAM_INIT;
-  init_lzma_encoder (&strm, 6 | LZMA_PRESET_DEFAULT);
-  *size = compress_lzma (&strm, self->data.wbuf, self->data.size, out,
-                         self->data.size);
-  lzma_end (&strm);
+  lzma_stream strm;
+
+  const BYTE *src     = self->data.wbuf;
+  u32         srcSize = self->data.size;
+  u32         dstCap  = self->data.size;
+
+  log_trace ("[librvl compress][LZMA] Compressing data with %u bytes...",
+             srcSize);
+
+  lzma_ret ret;
+  create_lzma_encoder (&strm, 6 | LZMA_PRESET_DEFAULT);
+  ret = run_lzma_compression (&strm, src, srcSize, *out, dstCap);
+
+  if (ret != LZMA_STREAM_END)
+    {
+      destroy_lzma_encoder (&strm);
+      create_lzma_encoder (&strm, 6 | LZMA_PRESET_DEFAULT);
+
+      dstCap = lzma_stream_buffer_bound (self->data.size);
+      *out   = realloc (*out, dstCap);
+
+      log_trace (
+          "[librvl compress][LZMA] Reallocate output memory with %u bytes.",
+          dstCap);
+
+      ret = run_lzma_compression (&strm, src, srcSize, *out, dstCap);
+    }
+
+  if (ret != LZMA_STREAM_END)
+    {
+      print_lzma_compression_error (ret);
+      exit (EXIT_FAILURE);
+    }
+
+  *size = strm.total_out;
+  destroy_lzma_encoder (&strm);
+
+  log_trace ("[librvl compress][LZMA] Compressed successfully. The output "
+             "size is %u bytes.",
+             strm.total_out);
 }
 
 void
@@ -44,65 +81,36 @@ rvl_decompress_lzma (RVL *self, const BYTE *in, u32 size)
   lzma_end (&strm);
 }
 
-bool
-init_lzma_encoder (lzma_stream *strm, uint32_t preset)
+void
+create_lzma_encoder (lzma_stream *self, uint32_t preset)
 {
-  lzma_ret ret = lzma_easy_encoder (strm, preset, LZMA_CHECK_CRC64);
+  *self = (lzma_stream)LZMA_STREAM_INIT;
+
+  lzma_ret ret = lzma_easy_encoder (self, preset, LZMA_CHECK_CRC64);
 
   // Return successfully
   if (ret == LZMA_OK)
-    return true;
+    return;
 
   print_lzma_compression_error (ret);
-  return false;
 }
 
-u32
-compress_lzma (lzma_stream *strm, const BYTE *src, u32 srcSize, BYTE **dst,
-               u32 dstCap)
+void
+destroy_lzma_encoder (lzma_stream *self)
 {
-  strm->next_in  = src;
-  strm->avail_in = srcSize;
+  lzma_end (self);
+}
 
-  strm->next_out  = *dst;
+lzma_ret
+run_lzma_compression (lzma_stream *strm, const BYTE *src, u32 srcSize,
+                      BYTE *dst, u32 dstCap)
+{
+  strm->next_in   = src;
+  strm->avail_in  = srcSize;
+  strm->next_out  = dst;
   strm->avail_out = dstCap;
 
-  lzma_ret ret;
-
-  ret = lzma_code (strm, LZMA_RUN);
-  ret = lzma_code (strm, LZMA_FINISH);
-
-  if (ret == LZMA_STREAM_END)
-    {
-      log_trace ("[librvl compress][LZMA] Compressed size: %u",
-                 strm->total_out);
-      return strm->total_out;
-    }
-
-  {
-    dstCap = lzma_stream_buffer_bound (srcSize);
-
-    log_trace (
-        "[librvl compress][LZMA] Reallocate compressed memory with size %u.",
-        dstCap);
-
-    *dst            = realloc (*dst, dstCap);
-    strm->avail_out = dstCap;
-    strm->next_out  = *dst;
-
-    ret = lzma_code (strm, LZMA_RUN);
-    ret = lzma_code (strm, LZMA_FINISH);
-  }
-
-  if (ret == LZMA_STREAM_END)
-    {
-      log_trace ("[librvl compress][LZMA] Compressed size: %u",
-                 strm->total_out);
-      return strm->total_out;
-    }
-
-  print_lzma_compression_error (ret);
-  return 0;
+  return lzma_code (strm, LZMA_FINISH);
 }
 
 bool
