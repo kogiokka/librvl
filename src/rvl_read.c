@@ -15,7 +15,7 @@
 static void rvl_read_chunk_header (RVL *self, u32 *size, RVLChunkCode *code);
 static void rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size);
 
-static void rvl_read_VHDR_chunk (RVL *self, const BYTE *rbuf, u32 size);
+static void rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf, u32 size);
 static void rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size);
 static void rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size);
 static void rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size);
@@ -44,9 +44,9 @@ rvl_read_rvl (RVL *self)
       BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
         {
-        case RVLChunkCode_VHDR:
+        case RVLChunkCode_VFMT:
           rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_VHDR_chunk (self, rbuf, size);
+          rvl_read_VFMT_chunk (self, rbuf, size);
           break;
         case RVLChunkCode_GRID:
           {
@@ -95,9 +95,9 @@ rvl_read_info (RVL *self)
       BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
         {
-        case RVLChunkCode_VHDR:
+        case RVLChunkCode_VFMT:
           rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_VHDR_chunk (self, rbuf, size);
+          rvl_read_VFMT_chunk (self, rbuf, size);
           break;
         case RVLChunkCode_GRID:
           {
@@ -169,7 +169,7 @@ rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size)
 }
 
 void
-rvl_read_VHDR_chunk (RVL *self, const BYTE *rbuf, u32 size)
+rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
   RVLPrimitive primitive;
   RVLEndian    endian;

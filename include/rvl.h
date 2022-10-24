@@ -14,12 +14,12 @@
  * +04 4B chunk code
  * +08 NB chunk payload
  *
- * There are 5 types of chunk: VHDR, GRID, DATA, TEXT, VEND. A valid RVL file
- * must contain an VHDR chunk, an GRID chunk, one or more DATA chunks, and an
+ * There are 5 types of chunk: VFMT, GRID, DATA, TEXT, VEND. A valid RVL file
+ * must contain an VFMT chunk, an GRID chunk, one or more DATA chunks, and an
  * VEND chunk.
  *
  *
- * VHDR Chunk
+ * VFMT Chunk
  * ++++++++++
  *
  * +00 1B    librvl major version
@@ -29,7 +29,7 @@
  * +16 1B    endian
  * +17 1B    compression method
  *
- * VHDR chunk holds the information on how to interpret the DATA chunk.
+ * VFMT chunk holds the information on how to interpret the DATA chunk.
  *
  *
  * GRID Chunk
@@ -176,7 +176,7 @@ extern "C"
   // deallocation is managed by the user.
   void rvl_read_data_buffer (RVL *self, unsigned char **buffer);
 
-  /* VHDR chunk functions */
+  /* VFMT chunk functions */
   void    rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,
                                      RVLenum primitive, RVLenum endian);
   void    rvl_get_volumetric_format (RVL *self, int *nx, int *ny, int *nz,

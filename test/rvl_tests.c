@@ -14,7 +14,7 @@ rvl_test_write_regular_grid ()
 {
   RVL *rvl = rvl_create_writer ("test_regular.rvl");
 
-  // VHDR/GRID chunk
+  // VFMT/GRID chunk
   init_regular_grid (rvl);
 
   // DATA chunk
@@ -46,7 +46,7 @@ rvl_test_read_regular_grid ()
   // Read from file
   rvl_read_rvl (rvl);
 
-  // VHDR/GRID chunk
+  // VFMT/GRID chunk
   RVLenum gridType = rvl_get_grid_type (rvl);
   RVLenum unit     = rvl_get_grid_unit (rvl);
   int     x, y, z;
@@ -102,7 +102,7 @@ rvl_test_write_rectilinear_grid ()
 {
   RVL *rvl = rvl_create_writer ("test_rectilinear.rvl");
 
-  // VHDR/GRID chunk
+  // VFMT/GRID chunk
   init_rectilinear_grid (rvl);
 
   // DATA chunk
@@ -134,7 +134,7 @@ rvl_test_read_rectilinear_grid ()
   // Read from file
   rvl_read_rvl (rvl);
 
-  // VHDR/GRID chunk
+  // VFMT/GRID chunk
   RVLenum gridType = rvl_get_grid_type (rvl);
   RVLenum unit     = rvl_get_grid_unit (rvl);
 
@@ -205,7 +205,7 @@ rvl_test_partially_read ()
 {
   RVL *rvl = rvl_create_reader ("test_regular.rvl");
 
-  // Read VHDR, GRID and TEXT
+  // Read VFMT, GRID and TEXT
   rvl_read_info (rvl);
 
   int         x, y, z;

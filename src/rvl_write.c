@@ -16,7 +16,7 @@ static void rvl_write_chunk_header (RVL *self, RVLChunkCode code, u32 size);
 static void rvl_write_chunk_payload (RVL *self, const BYTE *data, u32 size);
 static void rvl_write_chunk_end (RVL *self);
 
-static void rvl_write_VHDR_chunk (RVL *self);
+static void rvl_write_VFMT_chunk (RVL *self);
 static void rvl_write_GRID_chunk (RVL *self);
 static void rvl_write_DATA_chunk (RVL *self);
 static void rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr,
@@ -38,7 +38,7 @@ rvl_write_rvl (RVL *self)
   rvl_write_file_sig (self);
 
   // Required chunks
-  rvl_write_VHDR_chunk (self);
+  rvl_write_VFMT_chunk (self);
   rvl_write_GRID_chunk (self);
   rvl_write_DATA_chunk (self);
 
@@ -51,7 +51,7 @@ rvl_write_rvl (RVL *self)
 }
 
 void
-rvl_write_VHDR_chunk (RVL *self)
+rvl_write_VFMT_chunk (RVL *self)
 {
   u32 size = 18;
   u8 *buf  = calloc (1, size);
@@ -66,7 +66,7 @@ rvl_write_VHDR_chunk (RVL *self)
   memcpy (&buf[16], &endian, 1);
   memcpy (&buf[17], &compress, 1);
 
-  rvl_write_chunk_header (self, RVLChunkCode_VHDR, size);
+  rvl_write_chunk_header (self, RVLChunkCode_VFMT, size);
   rvl_write_chunk_payload (self, buf, size);
   rvl_write_chunk_end (self);
 }

@@ -12,7 +12,7 @@ typedef float    f32;
 typedef uint8_t  u8;
 typedef uint16_t u16;
 
-/* Part of VHDR */
+/* Part of VFMT */
 typedef uint16_t RVLPrimitive;
 typedef uint8_t  RVLEndian;
 typedef uint8_t  RVLCompress;
@@ -62,7 +62,7 @@ typedef struct
 
 typedef uint32_t RVLChunkCode;
 
-#define RVLChunkCode_VHDR CHUNK_CODE (86, 72, 68, 82)
+#define RVLChunkCode_VFMT CHUNK_CODE (86, 70, 77, 84)
 #define RVLChunkCode_GRID CHUNK_CODE (71, 82, 73, 68)
 #define RVLChunkCode_DATA CHUNK_CODE (68, 65, 84, 65)
 #define RVLChunkCode_VEND CHUNK_CODE (86, 69, 78, 68)
@@ -86,7 +86,7 @@ struct RVL
   RVLWriteFn writeFn;
   RVLReadFn  readFn;
 
-  /* VHDR chunk */
+  /* VFMT chunk */
   u8           version[2]; // major, minor
   u32          resolution[3];
   RVLPrimitive primitive;
