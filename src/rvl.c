@@ -101,6 +101,7 @@ rvl_create (const char *filename, RVLIoState ioState)
   self->ioState    = ioState;
   self->text       = NULL;
   self->numText    = 0;
+  self->compress   = RVL_COMPRESSION_LZMA;
 
   switch (ioState)
     {

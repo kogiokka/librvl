@@ -33,6 +33,7 @@ PRIVATE
     "src/rvl.c"
     "src/rvl_read.c"
     "src/rvl_write.c"
+    "src/rvl_compress.c"
     "src/rvl_get.c"
     "src/rvl_set.c"
     "src/rvl_text.c"
@@ -56,6 +57,7 @@ PUBLIC
 
 target_link_libraries(rvl
 PRIVATE
+    liblzma
     lz4_static
     logc
 )

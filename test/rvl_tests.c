@@ -51,6 +51,7 @@ rvl_test_read_regular_grid ()
   RVLenum unit     = rvl_get_grid_unit (rvl);
   RVLenum format   = rvl_get_primitive (rvl);
   RVLenum endian   = rvl_get_endian (rvl);
+  RVLenum compress = rvl_get_compression (rvl);
   int     x, y, z;
   float   dx, dy, dz;
   float   px, py, pz;
@@ -65,6 +66,7 @@ rvl_test_read_regular_grid ()
   fprintf (stdout, "Grid - type: %d, unit: %d\n", gridType, unit);
   fprintf (stdout, "Data format: 0x%.4x\n", format);
   fprintf (stdout, "Endian - %d\n", endian);
+  fprintf (stdout, "Compresson method - %d\n", compress);
   fprintf (stdout, "Voxel Dim - x: %.3f, y: %.3f, z: %.3f\n", dx, dy, dz);
   fprintf (stdout, "Position - x: %.3f, y: %.3f, z: %.3f\n", px, py, pz);
   fprintf (stdout, "%s\n", sep);
@@ -137,6 +139,7 @@ rvl_test_read_rectilinear_grid ()
   RVLenum unit     = rvl_get_grid_unit (rvl);
   RVLenum format   = rvl_get_primitive (rvl);
   RVLenum endian   = rvl_get_endian (rvl);
+  RVLenum compress = rvl_get_compression (rvl);
 
   int          x, y, z;
   int          ndx, ndy, ndz;
@@ -153,6 +156,7 @@ rvl_test_read_rectilinear_grid ()
   fprintf (stdout, "Grid - type: %d, unit: %d\n", gridType, unit);
   fprintf (stdout, "Data format: 0x%.4x\n", format);
   fprintf (stdout, "Endian - %d\n", endian);
+  fprintf (stdout, "Compresson method - %d\n", compress);
   fprintf (stdout, "Voxel Dim -\n");
 
   if (ndx <= 0 || ndy <= 0 || ndx <= 0)
