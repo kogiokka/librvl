@@ -57,7 +57,7 @@ rvl_test_read_regular_grid ()
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
 
-  RVLenum compress = rvl_get_compression(rvl);
+  RVLenum compress = rvl_get_compression (rvl);
 
   char sep[81];
   memset (sep, '-', 80);
@@ -142,12 +142,12 @@ rvl_test_read_rectilinear_grid ()
   int          ndx, ndy, ndz;
   const float *dx, *dy, *dz;
   float        px, py, pz;
-  RVLenum primitive, endian;
+  RVLenum      primitive, endian;
   rvl_get_header (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims_v (rvl, &ndx, &ndy, &ndz, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
 
-  RVLenum compress = rvl_get_compression(rvl);
+  RVLenum compress = rvl_get_compression (rvl);
 
   char sep[81];
   memset (sep, '-', 80);
@@ -225,7 +225,7 @@ rvl_test_partially_read ()
   rvl_get_grid_position (rvl, &px, &py, &pz);
   rvl_get_text (rvl, &textArr, &numText);
 
-  RVLenum compress = rvl_get_compression(rvl);
+  RVLenum compress = rvl_get_compression (rvl);
 
   // Print RVL information
   char sep[81];
@@ -262,22 +262,17 @@ rvl_test_uninitialized_rvl ()
 void
 init_regular_grid (RVL *rvl)
 {
-  rvl_set_header(rvl, 2, 2, 2, RVL_PRIMITIVE_VEC2U8, RVL_ENDIAN_LITTLE);
+  rvl_set_header (rvl, 2, 2, 2, RVL_PRIMITIVE_VEC2U8, RVL_ENDIAN_LITTLE);
 
-  rvl_set_grid_type (rvl, RVL_GRID_REGULAR);
+  rvl_set_regular_grid (rvl, 0.1f, 0.2f, 0.3f);
+  rvl_set_grid_origin (rvl, 3.0f, 2.0f, 1.0f);
   rvl_set_grid_unit (rvl, RVL_UNIT_NA);
-  rvl_set_grid_position (rvl, 3.0f, 2.0f, 1.0f);
-  rvl_set_voxel_dims (rvl, 0.1f, 0.2f, 0.3f);
 }
 
 void
 init_rectilinear_grid (RVL *rvl)
 {
-  rvl_set_header(rvl, 6, 6, 3, RVL_PRIMITIVE_F8, RVL_ENDIAN_LITTLE);
-
-  rvl_set_grid_type (rvl, RVL_GRID_RECTILINEAR);
-  rvl_set_grid_unit (rvl, RVL_UNIT_NA);
-  rvl_set_grid_position (rvl, 1.0f, 2.0f, 3.0f);
+  rvl_set_header (rvl, 6, 6, 3, RVL_PRIMITIVE_F8, RVL_ENDIAN_LITTLE);
 
   float dx[6];
   float dy[6];
@@ -293,7 +288,9 @@ init_rectilinear_grid (RVL *rvl)
         }
     }
 
-  rvl_set_voxel_dims_v (rvl, 6, 6, 3, dx, dy, dz);
+  rvl_set_rectilinear_grid (rvl, 6, 6, 3, dx, dy, dz);
+  rvl_set_grid_origin (rvl, 1.0f, 2.0f, 3.0f);
+  rvl_set_grid_unit (rvl, RVL_UNIT_METER);
 }
 
 void

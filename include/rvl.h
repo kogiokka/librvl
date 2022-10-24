@@ -185,18 +185,17 @@ extern "C"
   RVLenum rvl_get_compression (RVL *self);
 
   /* GRID chunk functions */
-  void    rvl_set_grid_type (RVL *self, RVLenum gridType);
-  void    rvl_set_grid_unit (RVL *self, RVLenum gridUnit);
-  void    rvl_set_grid_position (RVL *self, float x, float y, float z);
+  void rvl_set_regular_grid (RVL *self, float dx, float dy, float dz);
+  void rvl_set_rectilinear_grid (RVL *self, int ndx, int ndy, int ndz,
+                                 float *dx, float *dy, float *dz);
+  void rvl_set_grid_unit (RVL *self, RVLenum unit);
+  void rvl_set_grid_origin (RVL *self, float x0, float y0, float z0);
+
   RVLenum rvl_get_grid_type (RVL *self);
   RVLenum rvl_get_grid_unit (RVL *self);
-  void    rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
 
-  void rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz);
+  void rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
   void rvl_get_voxel_dims (RVL *self, float *dx, float *dy, float *dz);
-
-  void rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz, float *dx,
-                             float *dy, float *dz);
   void rvl_get_voxel_dims_v (RVL *self, int *ndx, int *ndy, int *ndz,
                              const float **dx, const float **dy,
                              const float **dz);

@@ -5,6 +5,10 @@
 
 #include "detail/rvl_p.h"
 
+static void rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz);
+static void rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz,
+                                  float *dx, float *dy, float *dz);
+
 void
 rvl_set_header (RVL *self, int x, int y, int z, RVLenum primitive,
                 RVLenum endian)
@@ -23,9 +27,18 @@ rvl_set_compression (RVL *self, RVLenum compression)
 }
 
 void
-rvl_set_grid_type (RVL *self, RVLenum gridType)
+rvl_set_regular_grid (RVL *self, float dx, float dy, float dz)
 {
-  self->grid.type = gridType;
+  self->grid.type = RVL_GRID_REGULAR;
+  rvl_set_voxel_dims (self, dx, dy, dz);
+}
+
+void
+rvl_set_rectilinear_grid (RVL *self, int ndx, int ndy, int ndz, float *dx,
+                          float *dy, float *dz)
+{
+  self->grid.type = RVL_GRID_RECTILINEAR;
+  rvl_set_voxel_dims_v (self, ndx, ndy, ndz, dx, dy, dz);
 }
 
 void
@@ -35,11 +48,11 @@ rvl_set_grid_unit (RVL *self, RVLenum gridUnit)
 }
 
 void
-rvl_set_grid_position (RVL *self, float x, float y, float z)
+rvl_set_grid_origin (RVL *self, float x0, float y0, float z0)
 {
-  self->grid.position[0] = x;
-  self->grid.position[1] = y;
-  self->grid.position[2] = z;
+  self->grid.position[0] = x0;
+  self->grid.position[1] = y0;
+  self->grid.position[2] = z0;
 }
 
 void
