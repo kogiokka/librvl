@@ -44,27 +44,27 @@ rvl_read_rvl (RVL *self)
       BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
         {
-        case RVLChunkCode_VFMT:
+        case RVL_CHUNK_CODE_VFMT:
           rvl_read_chunk_payload (self, rbuf, size);
           rvl_read_VFMT_chunk (self, rbuf, size);
           break;
-        case RVLChunkCode_GRID:
+        case RVL_CHUNK_CODE_GRID:
           {
             rvl_alloc (self, &self->grid.dimBuf, size - 14);
             rvl_read_chunk_payload (self, rbuf, size);
             rvl_read_GRID_chunk (self, rbuf, size);
           }
           break;
-        case RVLChunkCode_DATA:
+        case RVL_CHUNK_CODE_DATA:
           rvl_alloc (self, &self->data.rbuf, self->data.size);
           rvl_read_chunk_payload (self, rbuf, size);
           rvl_read_DATA_chunk (self, rbuf, size);
           break;
-        case RVLChunkCode_TEXT:
+        case RVL_CHUNK_CODE_TEXT:
           rvl_read_chunk_payload (self, rbuf, size);
           rvl_read_TEXT_chunk (self, rbuf, size);
           break;
-        case RVLChunkCode_VEND:
+        case RVL_CHUNK_CODE_VEND:
           break;
         default:
           {
@@ -75,7 +75,7 @@ rvl_read_rvl (RVL *self)
         }
       free (rbuf);
     }
-  while (code != RVLChunkCode_VEND);
+  while (code != RVL_CHUNK_CODE_VEND);
 }
 
 void
@@ -95,18 +95,18 @@ rvl_read_info (RVL *self)
       BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
         {
-        case RVLChunkCode_VFMT:
+        case RVL_CHUNK_CODE_VFMT:
           rvl_read_chunk_payload (self, rbuf, size);
           rvl_read_VFMT_chunk (self, rbuf, size);
           break;
-        case RVLChunkCode_GRID:
+        case RVL_CHUNK_CODE_GRID:
           {
             rvl_alloc (self, &self->grid.dimBuf, size - 14);
             rvl_read_chunk_payload (self, rbuf, size);
             rvl_read_GRID_chunk (self, rbuf, size);
           }
           break;
-        case RVLChunkCode_TEXT:
+        case RVL_CHUNK_CODE_TEXT:
           rvl_read_chunk_payload (self, rbuf, size);
           rvl_read_TEXT_chunk (self, rbuf, size);
           break;
@@ -116,7 +116,7 @@ rvl_read_info (RVL *self)
         }
       free (rbuf);
     }
-  while (code != RVLChunkCode_VEND);
+  while (code != RVL_CHUNK_CODE_VEND);
   fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);
 }
 
@@ -136,7 +136,7 @@ rvl_read_data_buffer (RVL *self, unsigned char **buffer)
 
       BYTE *rbuf = (BYTE *)malloc (size);
 
-      if (code == RVLChunkCode_DATA)
+      if (code == RVL_CHUNK_CODE_DATA)
         {
           rvl_read_chunk_payload (self, rbuf, size);
           rvl_read_DATA_chunk (self, rbuf, size);
@@ -149,7 +149,7 @@ rvl_read_data_buffer (RVL *self, unsigned char **buffer)
 
       free (rbuf);
     }
-  while (code != RVLChunkCode_VEND);
+  while (code != RVL_CHUNK_CODE_VEND);
 
   self->data.rbuf = NULL;
   fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);

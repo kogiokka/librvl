@@ -62,12 +62,11 @@ typedef struct
 
 typedef uint32_t RVLChunkCode;
 
-#define RVLChunkCode_VFMT CHUNK_CODE (86, 70, 77, 84)
-#define RVLChunkCode_GRID CHUNK_CODE (71, 82, 73, 68)
-#define RVLChunkCode_DATA CHUNK_CODE (68, 65, 84, 65)
-#define RVLChunkCode_VEND CHUNK_CODE (86, 69, 78, 68)
-
-#define RVLChunkCode_TEXT CHUNK_CODE (84, 69, 88, 84)
+#define RVL_CHUNK_CODE_VFMT CHUNK_CODE (86, 70, 77, 84)
+#define RVL_CHUNK_CODE_GRID CHUNK_CODE (71, 82, 73, 68)
+#define RVL_CHUNK_CODE_DATA CHUNK_CODE (68, 65, 84, 65)
+#define RVL_CHUNK_CODE_TEXT CHUNK_CODE (84, 69, 88, 84)
+#define RVL_CHUNK_CODE_VEND CHUNK_CODE (86, 69, 78, 68)
 
 // RVL File Signature: .RVL FORMAT\0
 #define RVL_FILE_SIG_SIZE 12

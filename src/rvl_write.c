@@ -66,7 +66,7 @@ rvl_write_VFMT_chunk (RVL *self)
   memcpy (&buf[16], &endian, 1);
   memcpy (&buf[17], &compress, 1);
 
-  rvl_write_chunk_header (self, RVLChunkCode_VFMT, size);
+  rvl_write_chunk_header (self, RVL_CHUNK_CODE_VFMT, size);
   rvl_write_chunk_payload (self, buf, size);
   rvl_write_chunk_end (self);
 }
@@ -96,7 +96,7 @@ rvl_write_GRID_chunk (RVL *self)
   offset += szdy;
   memcpy (&wbuf[offset], self->grid.dz, szdz);
 
-  rvl_write_chunk_header (self, RVLChunkCode_GRID, wbufSize);
+  rvl_write_chunk_header (self, RVL_CHUNK_CODE_GRID, wbufSize);
   rvl_write_chunk_payload (self, wbuf, wbufSize);
   rvl_write_chunk_end (self);
 }
@@ -116,7 +116,7 @@ rvl_write_DATA_chunk (RVL *self)
       rvl_compress_lzma (self, &wbuf, &wbufSize);
     }
 
-  rvl_write_chunk_header (self, RVLChunkCode_DATA, wbufSize);
+  rvl_write_chunk_header (self, RVL_CHUNK_CODE_DATA, wbufSize);
   rvl_write_chunk_payload (self, (const BYTE *)wbuf, wbufSize);
   rvl_write_chunk_end (self);
 
@@ -133,7 +133,7 @@ rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr, int numText)
       const u32            keySize   = strlen (text->key);
       const u32            valueSize = strlen (text->value);
 
-      rvl_write_chunk_header (self, RVLChunkCode_TEXT,
+      rvl_write_chunk_header (self, RVL_CHUNK_CODE_TEXT,
                               keySize + valueSize + 1);
 
       // Include the null terminator
@@ -151,7 +151,7 @@ rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr, int numText)
 void
 rvl_write_VEND_chunk (RVL *self)
 {
-  rvl_write_chunk_header (self, RVLChunkCode_VEND, 0);
+  rvl_write_chunk_header (self, RVL_CHUNK_CODE_VEND, 0);
   rvl_write_chunk_payload (self, NULL, 0);
   rvl_write_chunk_end (self);
 }
