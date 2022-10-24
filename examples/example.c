@@ -25,26 +25,26 @@ main ()
 void
 write_rvl (RVL *rvl)
 {
-  int rx = 20;
-  int ry = 10;
-  int rz = 20;
+  int nx = 20;
+  int ny = 10;
+  int nz = 20;
 
-  unsigned int size   = rx * ry * rz * sizeof (int);
+  unsigned int size   = nx * ny * nz * sizeof (int);
   int         *buffer = (int *)malloc (size);
 
-  for (int i = 0; i < rz; i++)
+  for (int i = 0; i < nz; i++)
     {
-      for (int j = 0; j < ry; j++)
+      for (int j = 0; j < ny; j++)
         {
-          for (int k = 0; k < rx; k++)
+          for (int k = 0; k < nx; k++)
             {
-              buffer[k + j * rx + i * rx * ry] = i;
+              buffer[k + j * nx + i * nx * ny] = i;
             }
         }
     }
 
   rvl_set_regular_grid (rvl, 0.1f, 0.2f, 0.1f);
-  rvl_set_volumetric_format (rvl, rx, ry, rz, RVL_PRIMITIVE_I32,
+  rvl_set_volumetric_format (rvl, nx, ny, nz, RVL_PRIMITIVE_I32,
                              RVL_ENDIAN_LITTLE);
   rvl_set_data_buffer (rvl, size, (unsigned char *)buffer);
 
