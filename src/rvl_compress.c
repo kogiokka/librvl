@@ -1,8 +1,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include <log.h>
+#include <lz4.h>
+#include <lz4hc.h>
 #include <lzma.h>
+
+#include <log.h>
 
 #include "detail/rvl_compress_p.h"
 
@@ -91,6 +94,51 @@ rvl_decompress_lzma (RVL *self, const BYTE *in, u32 size)
   log_trace ("[librvl compress][LZMA] Decompressed successfully. The output "
              "data has %u bytes.",
              strm.total_out);
+}
+
+void
+rvl_compress_lz4 (RVL *self, BYTE **out, u32 *size)
+{
+  const char *src     = (const char *)self->data.wbuf;
+  u32         srcSize = self->data.size;
+  char       *dst     = (char *)*out;
+  u32         dstCap  = self->data.size;
+
+  int nbytes = LZ4_compress_HC (src, dst, srcSize, dstCap, LZ4HC_CLEVEL_MIN);
+
+  // When the compressed size is greater than the uncompressed one.
+  if (nbytes == 0)
+    {
+      dstCap = LZ4_compressBound (self->data.size);
+      *out   = realloc (*out, srcSize);
+      dst    = (char *)*out;
+
+      nbytes = LZ4_compress_HC (src, dst, srcSize, dstCap, LZ4HC_CLEVEL_MIN);
+    }
+
+  *size = nbytes;
+
+  log_trace ("[librvl compress][LZ4] Compressed successfully. The output data "
+             "has %u bytes.",
+             nbytes);
+}
+
+void
+rvl_decompress_lz4 (RVL *self, const BYTE *in, u32 size)
+{
+  const char *src     = (const char *)in;
+  u32         srcSize = size;
+  char       *dst     = (char *)self->data.rbuf;
+  u32         dstCap  = self->data.size;
+
+  int nbytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
+  if ((u32)nbytes != self->data.size)
+    {
+      log_fatal ("[librvl compress][LZ4] Decompression failed. The retunred "
+                 "number of bytes is %d.",
+                 nbytes);
+      exit (EXIT_FAILURE);
+    }
 }
 
 void

@@ -4,8 +4,6 @@
 #include <string.h>
 
 #include <log.h>
-#include <lz4.h>
-#include <lzma.h>
 
 #include "rvl.h"
 
@@ -229,19 +227,9 @@ rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size)
 void
 rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
-  char *const src     = (char *)rbuf;
-  char *const dst     = (char *)self->data.rbuf;
-  const u32   srcSize = size;
-  const u32   dstCap  = self->data.size;
-
   if (self->compress == RVL_COMPRESSION_LZ4)
     {
-      int numBytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
-      if (numBytes != self->data.size)
-        {
-          log_fatal ("[librvl read] Data decompression error!");
-          exit (EXIT_FAILURE);
-        }
+      rvl_decompress_lz4 (self, rbuf, size);
     }
   else if (self->compress == RVL_COMPRESSION_LZMA)
     {

@@ -4,9 +4,6 @@
 #include <string.h>
 
 #include <log.h>
-#include <lz4.h>
-#include <lz4hc.h>
-#include <lzma.h>
 
 #include "rvl.h"
 
@@ -110,30 +107,17 @@ rvl_write_DATA_chunk (RVL *self)
   u32   wbufSize = self->data.size;
   BYTE *wbuf     = (BYTE *)malloc (wbufSize);
 
-  int         srcSize = self->data.size;
-  const char *src     = (char *)self->data.wbuf;
-
-  u32 compSize = 0;
   if (self->compress == RVL_COMPRESSION_LZ4)
     {
-      compSize = LZ4_compress_HC (src, (char *)wbuf, srcSize, wbufSize,
-                                  LZ4HC_CLEVEL_MIN);
-      // When the compressed size is greater than the uncompressed one.
-      if (compSize == 0)
-        {
-          wbufSize = LZ4_compressBound (self->data.size);
-          wbuf     = realloc (wbuf, wbufSize);
-          compSize = LZ4_compress_HC (src, (char *)wbuf, self->data.size,
-                                      wbufSize, LZ4HC_CLEVEL_MIN);
-        }
+      rvl_compress_lz4 (self, &wbuf, &wbufSize);
     }
   else if (self->compress == RVL_COMPRESSION_LZMA)
     {
-      rvl_compress_lzma (self, &wbuf, &compSize);
+      rvl_compress_lzma (self, &wbuf, &wbufSize);
     }
 
-  rvl_write_chunk_header (self, RVLChunkCode_DATA, compSize);
-  rvl_write_chunk_payload (self, (const BYTE *)wbuf, compSize);
+  rvl_write_chunk_header (self, RVLChunkCode_DATA, wbufSize);
+  rvl_write_chunk_payload (self, (const BYTE *)wbuf, wbufSize);
   rvl_write_chunk_end (self);
 
   free (wbuf);
