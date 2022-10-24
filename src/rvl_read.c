@@ -234,7 +234,7 @@ rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size)
   const u32   srcSize = size;
   const u32   dstCap  = self->data.size;
 
-  if (self->compress == RVL_COMPRESS_LZ4)
+  if (self->compress == RVL_COMPRESSION_LZ4)
     {
       int numBytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
       if (numBytes != self->data.size)
@@ -243,7 +243,7 @@ rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size)
           exit (EXIT_FAILURE);
         }
     }
-  else if (self->compress == RVL_COMPRESS_LZMA)
+  else if (self->compress == RVL_COMPRESSION_LZMA)
     {
       rvl_decompress_lzma (self, rbuf, size);
     }

@@ -149,8 +149,8 @@ typedef unsigned int RVLenum;
 #define RVL_UNIT_MILIMETER 0X02
 #define RVL_UNIT_KILOMETER 0X03
 
-#define RVL_COMPRESS_LZMA 0x00
-#define RVL_COMPRESS_LZ4  0x01
+#define RVL_COMPRESSION_LZMA 0x00
+#define RVL_COMPRESSION_LZ4  0x01
 
 // Prevent name-mangling for librvl functions from C++ compiler.
 #ifdef __cplusplus

@@ -114,7 +114,7 @@ rvl_write_DATA_chunk (RVL *self)
   const char *src     = (char *)self->data.wbuf;
 
   u32 compSize = 0;
-  if (self->compress == RVL_COMPRESS_LZ4)
+  if (self->compress == RVL_COMPRESSION_LZ4)
     {
       compSize = LZ4_compress_HC (src, (char *)wbuf, srcSize, wbufSize,
                                   LZ4HC_CLEVEL_MIN);
@@ -127,7 +127,7 @@ rvl_write_DATA_chunk (RVL *self)
                                       wbufSize, LZ4HC_CLEVEL_MIN);
         }
     }
-  else if (self->compress == RVL_COMPRESS_LZMA)
+  else if (self->compress == RVL_COMPRESSION_LZMA)
     {
       rvl_compress_lzma (self, &wbuf, &compSize);
     }
