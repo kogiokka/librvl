@@ -28,7 +28,7 @@
  * +02 12B   resolution
  * +14 2B    primitive
  * +16 1B    endian
- * +17 1B    padding byte
+ * +17 1B    compression method
  *
  * Total 18 bytes
  *
