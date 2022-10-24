@@ -1,27 +1,26 @@
 /**
  * rvl.h - Structs and functions for read/write an rvl file.
  *
+ * RVL Specification
+ * *****************
+ *
  * Chunk
  * =====
  *
- * Each chunk consists of three parts: size, code and payload.
+ * Chunk is the basic structure to hold RVL information. Each chunk consists of
+ * three parts: size, code and payload:
  *
  * +00 4B chunk size (N bytes)
  * +04 4B chunk code
  * +08 NB chunk payload
  *
- * Chunk Codes
- * ===========
+ * There are 5 types of chunk: VHDR, GRID, DATA, TEXT, VEND. A valid RVL file
+ * must contain an VHDR chunk, an GRID chunk, one or more DATA chunks, and an
+ * VEND chunk.
  *
- * Currently, there are 5 types of chunk: VHDR, GRID, DATA, TEXT, VEND.
- * A valid RVL file must contain an VHDR chunk, an GRID chunk, one or more DATA
- * chunks, and an VEND chunk.
  *
  * VHDR Chunk
  * ++++++++++
- *
- * VHDR chunk holds the information on how to interpret the DATA chunk. The
- * layout of the chunk payload is as follow:
  *
  * +00 1B    librvl major version
  * +01 1B    librvl minor version
@@ -30,7 +29,7 @@
  * +16 1B    endian
  * +17 1B    compression method
  *
- * Total 18 bytes
+ * VHDR chunk holds the information on how to interpret the DATA chunk.
  *
  *
  * GRID Chunk
@@ -41,8 +40,9 @@
  * +02  12B   position of the lower corner of the grid
  * +14   nB   voxel dimensions
  *
- *
- * Each grid type has its own voxel dimensions configuration.
+ * GRID chunk describes how should one present the volumetric data. There are
+ * two types of grid: Regular and Rectilinear. Each grid type has its own voxel
+ * dimensions configuration.
  *
  * Regular Grid
  * ------------
