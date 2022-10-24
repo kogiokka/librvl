@@ -7,12 +7,12 @@
 #include "detail/rvl_p.h"
 
 void
-rvl_get_header (RVL *self, int *x, int *y, int *z, RVLenum *primitive,
-                RVLenum *endian)
+rvl_get_volumetric_format (RVL *self, int *nx, int *ny, int *nz,
+                           RVLenum *primitive, RVLenum *endian)
 {
-  *x         = self->resolution[0];
-  *y         = self->resolution[1];
-  *z         = self->resolution[2];
+  *nx        = self->resolution[0];
+  *ny        = self->resolution[1];
+  *nz        = self->resolution[2];
   *primitive = self->primitive;
   *endian    = self->endian;
 }

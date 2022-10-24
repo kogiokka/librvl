@@ -44,7 +44,8 @@ write_rvl (RVL *rvl)
     }
 
   rvl_set_regular_grid (rvl, 0.1f, 0.2f, 0.1f);
-  rvl_set_header (rvl, rx, ry, rz, RVL_PRIMITIVE_I32, RVL_ENDIAN_LITTLE);
+  rvl_set_volumetric_format (rvl, rx, ry, rz, RVL_PRIMITIVE_I32,
+                             RVL_ENDIAN_LITTLE);
   rvl_set_data_buffer (rvl, size, (unsigned char *)buffer);
 
   int      numText = 2;
@@ -72,7 +73,7 @@ read_rvl (RVL *rvl)
   int     x, y, z;
   float   dx, dy, dz;
   float   px, py, pz;
-  rvl_get_header (rvl, &x, &y, &z, &primitive, &endian);
+  rvl_get_volumetric_format (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
 

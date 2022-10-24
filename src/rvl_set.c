@@ -10,12 +10,12 @@ static void rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz,
                                   float *dx, float *dy, float *dz);
 
 void
-rvl_set_header (RVL *self, int x, int y, int z, RVLenum primitive,
-                RVLenum endian)
+rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,
+                           RVLenum primitive, RVLenum endian)
 {
-  self->resolution[0] = x;
-  self->resolution[1] = y;
-  self->resolution[2] = z;
+  self->resolution[0] = nx;
+  self->resolution[1] = ny;
+  self->resolution[2] = nz;
   self->primitive     = primitive;
   self->endian        = endian;
 }

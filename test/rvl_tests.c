@@ -53,7 +53,7 @@ rvl_test_read_regular_grid ()
   float   dx, dy, dz;
   float   px, py, pz;
   RVLenum primitive, endian;
-  rvl_get_header (rvl, &x, &y, &z, &primitive, &endian);
+  rvl_get_volumetric_format (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
 
@@ -143,7 +143,7 @@ rvl_test_read_rectilinear_grid ()
   const float *dx, *dy, *dz;
   float        px, py, pz;
   RVLenum      primitive, endian;
-  rvl_get_header (rvl, &x, &y, &z, &primitive, &endian);
+  rvl_get_volumetric_format (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims_v (rvl, &ndx, &ndy, &ndz, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
 
@@ -220,7 +220,7 @@ rvl_test_partially_read ()
   RVLenum unit     = rvl_get_grid_unit (rvl);
   RVLenum primitive, endian;
 
-  rvl_get_header (rvl, &x, &y, &z, &primitive, &endian);
+  rvl_get_volumetric_format (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
   rvl_get_text (rvl, &textArr, &numText);
@@ -262,7 +262,7 @@ rvl_test_uninitialized_rvl ()
 void
 init_regular_grid (RVL *rvl)
 {
-  rvl_set_header (rvl, 2, 2, 2, RVL_PRIMITIVE_VEC2U8, RVL_ENDIAN_LITTLE);
+  rvl_set_volumetric_format (rvl, 2, 2, 2, RVL_PRIMITIVE_VEC2U8, RVL_ENDIAN_LITTLE);
 
   rvl_set_regular_grid (rvl, 0.1f, 0.2f, 0.3f);
   rvl_set_grid_origin (rvl, 3.0f, 2.0f, 1.0f);
@@ -272,7 +272,7 @@ init_regular_grid (RVL *rvl)
 void
 init_rectilinear_grid (RVL *rvl)
 {
-  rvl_set_header (rvl, 6, 6, 3, RVL_PRIMITIVE_F8, RVL_ENDIAN_LITTLE);
+  rvl_set_volumetric_format (rvl, 6, 6, 3, RVL_PRIMITIVE_F8, RVL_ENDIAN_LITTLE);
 
   float dx[6];
   float dy[6];

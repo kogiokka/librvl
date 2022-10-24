@@ -177,11 +177,11 @@ extern "C"
   void rvl_read_data_buffer (RVL *self, unsigned char **buffer);
 
   /* VHDR chunk functions */
-  void rvl_set_header (RVL *self, int x, int y, int z, RVLenum primitive,
-                       RVLenum endian);
-  void rvl_get_header (RVL *self, int *x, int *y, int *z, RVLenum *primitive,
-                       RVLenum *endian);
-  void rvl_set_compression (RVL *self, RVLenum compression);
+  void    rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,
+                                     RVLenum primitive, RVLenum endian);
+  void    rvl_get_volumetric_format (RVL *self, int *nx, int *ny, int *nz,
+                                     RVLenum *primitive, RVLenum *endian);
+  void    rvl_set_compression (RVL *self, RVLenum compression);
   RVLenum rvl_get_compression (RVL *self);
 
   /* GRID chunk functions */
