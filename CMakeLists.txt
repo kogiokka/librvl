@@ -6,6 +6,7 @@ project("rvl"
     LANGUAGES C)
 
 option(RVL_BUILD_TEST "Build the unit tests for librvl" ON)
+option(RVL_BUILD_EXAMPLES "Build the examples of librvl" ON)
 
 add_library(rvl SHARED)
 add_library(rvl::rvl ALIAS rvl)
@@ -15,6 +16,10 @@ include(CMakePackageConfigHelpers)
 
 include("cmake/ExternalProjects.cmake")
 include("cmake/PackageSource.cmake")
+
+if (RVL_BUILD_EXAMPLES)
+    include("cmake/BuildExamples.cmake")
+endif()
 
 set_target_properties(rvl
 PROPERTIES
