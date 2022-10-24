@@ -51,7 +51,7 @@ rvl_test_read_regular_grid ()
   RVLenum unit     = rvl_get_grid_unit (rvl);
   RVLenum format   = rvl_get_primitive (rvl);
   RVLenum endian   = rvl_get_endian (rvl);
-  RVLenum compress = rvl_get_compression_method (rvl);
+  RVLenum compress = rvl_get_compression (rvl);
   int     x, y, z;
   float   dx, dy, dz;
   float   px, py, pz;
@@ -139,7 +139,7 @@ rvl_test_read_rectilinear_grid ()
   RVLenum unit     = rvl_get_grid_unit (rvl);
   RVLenum format   = rvl_get_primitive (rvl);
   RVLenum endian   = rvl_get_endian (rvl);
-  RVLenum compress = rvl_get_compression_method (rvl);
+  RVLenum compress = rvl_get_compression (rvl);
 
   int          x, y, z;
   int          ndx, ndy, ndz;

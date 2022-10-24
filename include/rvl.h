@@ -180,10 +180,11 @@ extern "C"
   void    rvl_set_resolution (RVL *self, int x, int y, int z);
   void    rvl_set_primitive (RVL *self, RVLenum primitive);
   void    rvl_set_endian (RVL *self, RVLenum endian);
+  void    rvl_set_compression (RVL *self, RVLenum compression);
   void    rvl_get_resolution (RVL *self, int *x, int *y, int *z);
   RVLenum rvl_get_primitive (RVL *self);
   RVLenum rvl_get_endian (RVL *self);
-  RVLenum rvl_get_compression_method (RVL *self);
+  RVLenum rvl_get_compression (RVL *self);
 
   /* GRID chunk functions */
   void    rvl_set_grid_type (RVL *self, RVLenum gridType);

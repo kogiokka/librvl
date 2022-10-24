@@ -30,6 +30,12 @@ rvl_set_endian (RVL *self, RVLenum endian)
 }
 
 void
+rvl_set_compression (RVL *self, RVLenum compression)
+{
+  self->compress = compression;
+}
+
+void
 rvl_set_resolution (RVL *self, int x, int y, int z)
 {
   self->resolution[0] = x;

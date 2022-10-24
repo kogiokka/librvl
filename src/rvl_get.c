@@ -31,7 +31,7 @@ rvl_get_endian (RVL *self)
 }
 
 RVLenum
-rvl_get_compression_method (RVL *self)
+rvl_get_compression (RVL *self)
 {
   return self->compress;
 }
