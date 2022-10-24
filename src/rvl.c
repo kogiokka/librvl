@@ -101,7 +101,13 @@ rvl_create (const char *filename, RVLIoState ioState)
   self->ioState    = ioState;
   self->text       = NULL;
   self->numText    = 0;
-  self->compress   = RVL_COMPRESSION_LZMA;
+
+  // Explicitly set the default values of the optional settings.
+  self->compress         = RVL_COMPRESSION_LZMA;
+  self->grid.unit        = RVL_UNIT_NA;
+  self->grid.position[0] = 0.0f;
+  self->grid.position[1] = 0.0f;
+  self->grid.position[2] = 0.0f;
 
   switch (ioState)
     {
