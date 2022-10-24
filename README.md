@@ -9,7 +9,7 @@ subject to change for each minor release.
 
 `librvl` uses CMake to configure the build system.
 
-The steps to build `librvl` and install it in a designated location is as follow:
+The steps to build `librvl` and install it in a designated location are as follows:
 
 ```shell
 # Generate CMake cache
