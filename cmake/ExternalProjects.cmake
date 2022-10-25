@@ -16,6 +16,7 @@ add_library(lz4 STATIC)
 set(LZ4_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/lz4-1.9.4")
 
 set_target_properties(lz4 PROPERTIES POSITION_INDEPENDENT_CODE ON)
+target_include_directories(lz4 PUBLIC "${LZ4_SOURCE_DIR}")
 target_sources(lz4
 PRIVATE
    "${LZ4_SOURCE_DIR}/lz4.c"
