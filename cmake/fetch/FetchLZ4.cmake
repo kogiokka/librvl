@@ -5,11 +5,9 @@ FetchContent_Declare(
     SOURCE_SUBDIR "build/cmake/" # Look for the CMakeLists.txt of lz4
 )
 
-if(NOT lz4_POPULATED)
-    set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
-    set(FETCHCONTENT_QUIET FALSE)
+set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
+set(FETCHCONTENT_QUIET FALSE)
 
-    set(LZ4_BUILD_CLI OFF CACHE BOOL "Build lz4 program")
-    set(LZ4_BUILD_LEGACY_LZ4C OFF CACHE BOOL "Build lz4c program with legacy argument support")
-    FetchContent_MakeAvailable(lz4)
-endif()
+set(LZ4_BUILD_CLI OFF CACHE BOOL "Build lz4 program")
+set(LZ4_BUILD_LEGACY_LZ4C OFF CACHE BOOL "Build lz4c program with legacy argument support")
+FetchContent_MakeAvailable(lz4)
