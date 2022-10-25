@@ -175,3 +175,26 @@
       of your accepting any such warranty or additional liability.
 
    END OF TERMS AND CONDITIONS
+
+================================================================================
+
+This product bundles various third-party components under other open source
+licenses. This section summarizes those components and their licenses.
+
+Public Domain
+-------------
+
+external/liblzma-5.2.7.zip
+
+
+BSD 2-Clause License
+--------------------
+
+external/lz4-1.9.4.zip
+
+
+MIT License
+-----------
+
+external/lz4-1.9.4.zip
+
