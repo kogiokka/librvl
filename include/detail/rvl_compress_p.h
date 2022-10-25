@@ -1,6 +1,10 @@
 #ifndef RVL_COMPRESS_H
 #define RVL_COMPRESS_H
 
+#ifndef RVL_H_INTERNAL
+#error Never include this file directly. Use <rvl.h> instead.
+#endif
+
 #include "rvl_p.h"
 
 void rvl_compress_lzma (RVL *self, BYTE **out, u32 *size);

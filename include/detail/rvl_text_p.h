@@ -1,7 +1,9 @@
 #ifndef RVL_TEXT_P_H
 #define RVL_TEXT_P_H
 
-#include "detail/rvl_p.h"
+#ifndef RVL_H_INTERNAL
+#error Never include this file directly. Use <rvl.h> instead.
+#endif
 
 struct RVLText
 {

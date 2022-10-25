@@ -1,6 +1,10 @@
 #ifndef RVL_P_H
 #define RVL_P_H
 
+#ifndef RVL_H_INTERNAL
+#error Never include this file directly. Use <rvl.h> instead.
+#endif
+
 #include <stdint.h>
 #include <stdio.h>
 

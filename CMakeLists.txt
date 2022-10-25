@@ -28,6 +28,7 @@ PROPERTIES
     PUBLIC_HEADER "include/rvl.h"
 )
 
+target_compile_definitions(rvl PRIVATE RVL_H_INTERNAL)
 target_compile_options(rvl
 PRIVATE
     $<$<C_COMPILER_ID:GNU,CLANG>:-Wall -Wextra -pedantic-errors>
@@ -44,20 +45,11 @@ PRIVATE
     "src/rvl_text.c"
 )
 
-add_custom_target(rvl-public-header-export
-    COMMAND ${CMAKE_COMMAND} -E copy
-            "${CMAKE_CURRENT_SOURCE_DIR}/include/rvl.h"
-            "${CMAKE_CURRENT_BINARY_DIR}/include/rvl.h"
-)
-
-add_dependencies(rvl rvl-public-header-export)
-
 target_include_directories(rvl
 PRIVATE
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
 PUBLIC
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>" # For exporting without installation
 )
 
 target_link_libraries(rvl
