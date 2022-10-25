@@ -107,11 +107,8 @@ rvl_set_data_buffer (RVL *self, unsigned int size, const unsigned char *buffer)
 }
 
 void
-rvl_set_text (RVL *self, RVLText **text, int numText)
+rvl_set_text (RVL *self, RVLText *text, int numText)
 {
-  rvl_text_destroy_array (&self->text);
-
-  self->text    = *text;
+  self->text    = text;
   self->numText = numText;
-  *text         = NULL;
 }

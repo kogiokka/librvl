@@ -215,7 +215,7 @@ extern "C"
   /* TEXT chunk functions */
   RVLText *rvl_text_create_array (int num);
   void     rvl_text_destroy_array (RVLText **self);
-  void     rvl_set_text (RVL *self, RVLText **text, int numText);
+  void     rvl_set_text (RVL *self, RVLText *text, int numText);
   void     rvl_get_text (RVL *self, RVLText **text, int *numText);
   void     rvl_text_set (RVLText *textArr, int index, char *key, char *value);
   void     rvl_text_get (RVLText *textArr, int index, const char **key,

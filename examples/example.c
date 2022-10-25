@@ -53,11 +53,12 @@ write_rvl (RVL *rvl)
   rvl_text_set (textArr, 0, "Title", "librvl");
   rvl_text_set (textArr, 1, "Description",
                 "The Regular VoLumetric format reference library");
-  rvl_set_text (rvl, &textArr, numText);
+  rvl_set_text (rvl, textArr, numText);
 
   // Write to file
   rvl_write_rvl (rvl);
 
+  rvl_text_destroy_array (&textArr);
   free (buffer);
 }
 

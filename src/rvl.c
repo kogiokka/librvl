@@ -41,7 +41,6 @@ rvl_destroy (RVL **self)
     return;
 
   RVL *ptr = *self;
-  rvl_text_destroy_array (&ptr->text);
 
   // Dealloc read buffer. Writer buffer pointer is non-owning so the user is
   // responsible for calling this dealloc function.
