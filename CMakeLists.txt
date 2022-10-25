@@ -63,7 +63,7 @@ PUBLIC
 target_link_libraries(rvl
 PRIVATE
     liblzma
-    lz4_static
+    lz4
     logc
 )
 

@@ -179,22 +179,22 @@
 ================================================================================
 
 This product bundles various third-party components under other open source
-licenses. This section summarizes those components and their licenses.
-
-Public Domain
--------------
-
-external/liblzma-5.2.7.zip
+licenses. This section summarizes those components and their licenses. See
+licenses/ for text of these licenses.
 
 
 BSD 2-Clause License
 --------------------
 
-external/lz4-1.9.4.zip
-
+external/lz4-1.9.4/*
 
 MIT License
 -----------
 
-external/log.c-f9ea34994bd58ed342d2245cd4110bb5c6790153.zip
+external/log.c/*
 
+
+Public Domain
+-------------
+
+external/xz-5.2.7/*
