@@ -56,6 +56,33 @@
  * +xx [voxel dimensions in y-direction]
  * +xx [voxel dimensions in z-direction]
  *
+ *
+ * TEXT Chunk
+ * ++++++++++
+ *
+ * A field of TEXT consists of a tag and its value. The tags and the information
+ * that each field should hold are part of the specification.
+ *
+ * +---------------+-----------------------------------------------------------+
+ * | Tag           | Value                                                     |
+ * +===============+===========================================================+
+ * | Title         | Data name or title.                                       |
+ * +---------------+-----------------------------------------------------------+
+ * | Description   | Data description.                                         |
+ * +---------------+-----------------------------------------------------------+
+ * | Author        | Name of the creator(s).                                   |
+ * +---------------+-----------------------------------------------------------+
+ * | Copyright     | Copyright notice.                                         |
+ * +---------------+-----------------------------------------------------------+
+ * | License       | Legal document to grant additional copyright permissions  |
+ * |               | to the general public. (ex. Common license).              |
+ * +---------------+-----------------------------------------------------------+
+ * | Source        | Source of the data (ex. place, device, etc.)              |
+ * +---------------+-----------------------------------------------------------+
+ * | Creation Time | Creation time of original data. The text should be in ISO |
+ * |               | 8601 format (ex. YYYY-MM-DDThh:mm:ssTZD)                  |
+ * +---------------+-----------------------------------------------------------+
+ *
  */
 
 #ifndef RVL_H
@@ -67,7 +94,7 @@
 #define RVL_VERSION_MINOR 4
 
 /* RVL struct types */
-typedef struct RVL     RVL;
+typedef struct RVL RVL;
 
 /* enum types */
 typedef unsigned int RVLenum;
@@ -237,3 +264,4 @@ extern "C"
 #endif
 
 #endif
+
