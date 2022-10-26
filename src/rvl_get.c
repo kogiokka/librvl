@@ -78,13 +78,14 @@ rvl_get_text (RVL *self, RVLenum tag, const char **value)
     {
       if (cur->tag == tag)
         {
-          log_trace ("[librvl get] Get TEXT: %.4X, %s", cur->tag,
-                     cur->value);
+          log_trace ("[librvl get] Get TEXT: %.4X, %s", cur->tag, cur->value);
           *value = cur->value;
-          break;
+          return;
         }
       cur = cur->next;
     }
+
+  *value = "";
 }
 
 unsigned int
