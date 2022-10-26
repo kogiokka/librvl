@@ -1,89 +1,88 @@
-/**
- * rvl.h - Structs and functions for read/write an rvl file.
- *
- * RVL Specification
- * *****************
- *
- * Chunk
- * =====
- *
- * Chunk is the basic structure to hold RVL information. Each chunk consists of
- * three parts: size, code and payload:
- *
- * +00 4B chunk size (N bytes)
- * +04 4B chunk code
- * +08 NB chunk payload
- *
- * There are 5 types of chunk: VFMT, GRID, DATA, TEXT, VEND. A valid RVL file
- * must contain an VFMT chunk, an GRID chunk, one or more DATA chunks, and an
- * VEND chunk.
- *
- *
- * VFMT Chunk
- * ++++++++++
- *
- * +00 1B    librvl major version
- * +01 1B    librvl minor version
- * +02 12B   resolution
- * +14 2B    primitive
- * +16 1B    endian
- * +17 1B    compression method
- *
- * VFMT chunk holds the information on how to interpret the DATA chunk.
- *
- *
- * GRID Chunk
- * ++++++++++
- *
- * +00   1B   grid type
- * +01   1B   grid unit
- * +02  12B   position of the lower corner of the grid
- * +14   nB   voxel dimensions
- *
- * GRID chunk describes how should one present the volumetric data. There are
- * two types of grid: Regular and Rectilinear. Each grid type has its own voxel
- * dimensions configuration.
- *
- * Regular Grid
- * ------------
- *
- * +14  12B   three values for x, y, and z, respectively.
- *
- * Rectilinear Grid
- * ----------------
- *
- * +14 [voxel dimensions in x-direction]
- * +xx [voxel dimensions in y-direction]
- * +xx [voxel dimensions in z-direction]
- *
- *
- * TEXT Chunk
- * ++++++++++
- *
- * A field of TEXT consists of a tag and its value. The tags and the information
- * that each field should hold are part of the specification.
- *
- * +---------------+-----------------------------------------------------------+
- * | Tag           | Value                                                     |
- * +===============+===========================================================+
- * | Title         | Data name or title.                                       |
- * +---------------+-----------------------------------------------------------+
- * | Description   | Data description.                                         |
- * +---------------+-----------------------------------------------------------+
- * | Author        | Name of the creator(s).                                   |
- * +---------------+-----------------------------------------------------------+
- * | Copyright     | Copyright notice.                                         |
- * +---------------+-----------------------------------------------------------+
- * | License       | Legal document to grant additional copyright permissions  |
- * |               | to the general public. (ex. Creative Common licenses).    |
- * +---------------+-----------------------------------------------------------+
- * | Source        | Source of the data (ex. place, device, etc.)              |
- * +---------------+-----------------------------------------------------------+
- * | Creation Time | Creation time of original data. The text should be in ISO |
- * |               | 8601 format (ex. YYYY-MM-DDThh:mm:ssTZD)                  |
- * +---------------+-----------------------------------------------------------+
- *
- */
+/*******************************************************************************
+   rvl.h - Structs and functions for read/write an rvl file.
+
+   RVL Specification
+   *****************
+
+   Chunk
+   =====
+
+   Chunk is the basic structure to hold RVL information. Each chunk consists of
+   three parts: size, code and payload:
+
+       +00 4B chunk size (N bytes)
+       +04 4B chunk code
+       +08 NB chunk payload
+
+   There are 5 types of chunk: VFMT, GRID, DATA, TEXT, VEND. A valid RVL file
+   must contain an VFMT chunk, an GRID chunk, one or more DATA chunks, and an
+   VEND chunk.
+
+   VFMT Chunk
+   ++++++++++
+
+       +00 1B    librvl major version
+       +01 1B    librvl minor version
+       +02 12B   resolution
+       +14 2B    primitive
+       +16 1B    endian
+       +17 1B    compression method
+
+   VFMT chunk holds the information on how to interpret the DATA chunk.
+
+
+   GRID Chunk
+   ++++++++++
+
+       +00   1B   grid type
+       +01   1B   grid unit
+       +02  12B   position of the lower corner of the grid
+       +14   nB   voxel dimensions
+
+   GRID chunk describes how should one present the volumetric data. There are
+   two types of grid: Regular and Rectilinear. Each grid type has its own voxel
+   dimensions configuration.
+
+   Regular Grid
+   ------------
+
+       +14  12B   three values for x, y, and z, respectively.
+
+   Rectilinear Grid
+   ----------------
+
+       +14 [voxel dimensions in x-direction]
+       +xx [voxel dimensions in y-direction]
+       +xx [voxel dimensions in z-direction]
+
+
+   TEXT Chunk
+   ++++++++++
+
+   A field of TEXT consists of a tag and its value. The tags and the information
+   that each field should hold are part of the specification.
+
+   +---------------+-----------------------------------------------------------+
+   | Tag           | Value                                                     |
+   +===============+===========================================================+
+   | Title         | Data name or title.                                       |
+   +---------------+-----------------------------------------------------------+
+   | Description   | Data description.                                         |
+   +---------------+-----------------------------------------------------------+
+   | Author        | Name of the creator(s).                                   |
+   +---------------+-----------------------------------------------------------+
+   | Copyright     | Copyright notice.                                         |
+   +---------------+-----------------------------------------------------------+
+   | License       | Legal document to grant additional copyright permissions  |
+   |               | to the general public. (ex. Creative Common licenses).    |
+   +---------------+-----------------------------------------------------------+
+   | Source        | Source of the data (ex. place, device, etc.)              |
+   +---------------+-----------------------------------------------------------+
+   | Creation Time | Creation time of original data. The text should be in ISO |
+   |               | 8601 format (ex. YYYY-MM-DDThh:mm:ssTZD)                  |
+   +---------------+-----------------------------------------------------------+
+
+*******************************************************************************/
 
 #ifndef RVL_H
 #define RVL_H
@@ -264,4 +263,3 @@ extern "C"
 #endif
 
 #endif
-
