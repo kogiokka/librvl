@@ -75,7 +75,7 @@
  * | Copyright     | Copyright notice.                                         |
  * +---------------+-----------------------------------------------------------+
  * | License       | Legal document to grant additional copyright permissions  |
- * |               | to the general public. (ex. Common license).              |
+ * |               | to the general public. (ex. Creative Common licenses).    |
  * +---------------+-----------------------------------------------------------+
  * | Source        | Source of the data (ex. place, device, etc.)              |
  * +---------------+-----------------------------------------------------------+
