@@ -19,8 +19,7 @@ static void rvl_write_chunk_end (RVL *self);
 static void rvl_write_VFMT_chunk (RVL *self);
 static void rvl_write_GRID_chunk (RVL *self);
 static void rvl_write_DATA_chunk (RVL *self);
-static void rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr,
-                                  int numText);
+static void rvl_write_TEXT_chunk (RVL *self, const RVLText *textList);
 static void rvl_write_VEND_chunk (RVL *self);
 
 static void rvl_write_file_sig (RVL *self);
@@ -44,7 +43,7 @@ rvl_write_rvl (RVL *self)
 
   if (self->text != NULL)
     {
-      rvl_write_TEXT_chunk (self, self->text, self->numText);
+      rvl_write_TEXT_chunk (self, self->text);
     }
 
   rvl_write_VEND_chunk (self);
@@ -125,26 +124,32 @@ rvl_write_DATA_chunk (RVL *self)
 
 // Strip off the null terminator at the end of the value string.
 void
-rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr, int numText)
+rvl_write_TEXT_chunk (RVL *self, const RVLText *textList)
 {
-  for (int i = 0; i < numText; i++)
+  const RVLText *cur = textList;
+  while (cur->next != NULL)
     {
-      const RVLText *const text      = &textArr[i];
-      const u32            keySize   = strlen (text->key);
-      const u32            valueSize = strlen (text->value);
+      {
+        const RVLText *const text      = cur;
+        const u32            keySize   = strlen (text->key);
+        const u32            valueSize = strlen (text->value);
 
-      rvl_write_chunk_header (self, RVL_CHUNK_CODE_TEXT,
-                              keySize + valueSize + 1);
+        rvl_write_chunk_header (self, RVL_CHUNK_CODE_TEXT,
+                                keySize + valueSize + 1);
 
-      // Include the null terminator
-      rvl_write_chunk_payload (self, (const BYTE *)text->key, keySize + 1);
+        // Include the null terminator
+        rvl_write_chunk_payload (self, (const BYTE *)text->key, keySize + 1);
 
-      if (valueSize != 0)
-        {
-          rvl_write_chunk_payload (self, (const BYTE *)text->value, valueSize);
-        }
+        if (valueSize != 0)
+          {
+            rvl_write_chunk_payload (self, (const BYTE *)text->value,
+                                     valueSize);
+          }
 
-      rvl_write_chunk_end (self);
+        rvl_write_chunk_end (self);
+
+        cur = cur->next;
+      }
     }
 }
 

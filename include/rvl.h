@@ -152,6 +152,11 @@ typedef unsigned int RVLenum;
 #define RVL_COMPRESSION_LZMA 0x00
 #define RVL_COMPRESSION_LZ4  0x01
 
+#define RVL_TEXT_FIELD_TITLE       0x0D01
+#define RVL_TEXT_FIELD_DESCRIPTION 0x0D02
+#define RVL_TEXT_FIELD_AUTHOR      0x0D03
+#define RVL_TEXT_FIELD_LICENSE     0x0D04
+
 // Prevent name-mangling for librvl functions from C++ compiler.
 #ifdef __cplusplus
 extern "C"
@@ -213,13 +218,8 @@ extern "C"
   void rvl_get_data_buffer (RVL *self, unsigned char **buffer);
 
   /* TEXT chunk functions */
-  RVLText *rvl_text_create_array (int num);
-  void     rvl_text_destroy_array (RVLText **self);
-  void     rvl_set_text (RVL *self, RVLText *text, int numText);
-  void     rvl_get_text (RVL *self, RVLText **text, int *numText);
-  void     rvl_text_set (RVLText *textArr, int index, char *key, char *value);
-  void     rvl_text_get (RVLText *textArr, int index, const char **key,
-                         const char **value);
+  void rvl_set_text (RVL *self, RVLenum field, const char *value);
+  void rvl_get_text (RVL *self, RVLenum field, const char **value);
 
   /**
    * Helpers

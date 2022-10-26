@@ -1,9 +1,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <log.h>
+
 #include "rvl.h"
 
 #include "detail/rvl_p.h"
+#include "detail/rvl_text_p.h"
 
 static void rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz);
 static void rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz,
@@ -107,8 +110,28 @@ rvl_set_data_buffer (RVL *self, unsigned int size, const unsigned char *buffer)
 }
 
 void
-rvl_set_text (RVL *self, RVLText *text, int numText)
+rvl_set_text (RVL *self, RVLenum field, const char *value)
 {
-  self->text    = text;
-  self->numText = numText;
+  if (self->text == NULL)
+    {
+      RVLText *text = rvl_text_create ();
+      rvl_text_set_field (text, field, value);
+      self->text = text;
+    }
+
+  RVLText *cur = self->text;
+  while (cur->next != NULL)
+    {
+      if (cur->field == field)
+        {
+          log_error ("[librvl set] The text field %.4x has already exist.");
+          return;
+        }
+
+      cur = cur->next;
+    }
+
+  RVLText *text = rvl_text_create ();
+  rvl_text_set_field (text, field, value);
+  cur->next = text;
 }

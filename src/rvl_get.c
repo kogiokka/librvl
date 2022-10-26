@@ -5,6 +5,7 @@
 #include "rvl.h"
 
 #include "detail/rvl_p.h"
+#include "detail/rvl_text_p.h"
 
 void
 rvl_get_volumetric_format (RVL *self, int *nx, int *ny, int *nz,
@@ -70,10 +71,24 @@ rvl_get_data_buffer (RVL *self, unsigned char **buffer)
 }
 
 void
-rvl_get_text (RVL *self, RVLText **text, int *numText)
+rvl_get_text (RVL *self, RVLenum field, const char **value)
 {
-  *text    = self->text;
-  *numText = self->numText;
+  if (self->text == NULL)
+    {
+      log_error ("[librvl get] There is no TEXT.");
+      return;
+    }
+
+  RVLText *cur = self->text;
+  while (cur->next != NULL)
+    {
+      if (cur->field == field)
+        {
+          *value = cur->value;
+          break;
+        }
+      cur = cur->next;
+    }
 }
 
 unsigned int

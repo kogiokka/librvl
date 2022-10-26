@@ -104,14 +104,11 @@ struct RVL
 
   /* TEXT chunk */
   RVLText *text;
-  int      numText;
 };
 
-RVLText *rvl_text_create_array (int num);
-void     rvl_text_destroy_array (RVLText **self);
-void     rvl_alloc (RVL *self, BYTE **ptr, u32 size);
-void     rvl_dealloc (RVL *self, BYTE **ptr);
-void     rvl_fwrite_default (RVL *self, const BYTE *data, u32 size);
-void     rvl_fread_default (RVL *self, BYTE *data, u32 size);
+void rvl_alloc (RVL *self, BYTE **ptr, u32 size);
+void rvl_dealloc (RVL *self, BYTE **ptr);
+void rvl_fwrite_default (RVL *self, const BYTE *data, u32 size);
+void rvl_fread_default (RVL *self, BYTE *data, u32 size);
 
 #endif

@@ -240,16 +240,7 @@ rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size)
 void
 rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
-  RVLText *newArr  = rvl_text_create_array (self->numText + 1);
-  int      numText = self->numText + 1;
-
-  if (self->text != NULL)
-    {
-      memcpy (newArr, self->text, sizeof (RVLText) * self->numText);
-      free (self->text);
-    }
-
-  RVLText *newText = &newArr[numText - 1];
+  RVLText *text = rvl_text_create ();
 
   // Both the key and the value will be null-terminated.
   u32 nullPos = 0;
@@ -260,15 +251,26 @@ rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size)
           nullPos = i;
         }
     }
-  memcpy (newText->key, rbuf, nullPos + 1);
+  memcpy (text->key, rbuf, nullPos + 1);
 
-  u32 valueSize  = size - (nullPos + 1);
-  newText->value = (char *)malloc (valueSize + 1);
-  memcpy (newText->value, rbuf + nullPos + 1, valueSize);
-  newText->value[valueSize + 1] = '\0';
+  u32 valueSize = size - (nullPos + 1);
+  text->value   = (char *)malloc (valueSize + 1);
+  memcpy (text->value, rbuf + nullPos + 1, valueSize);
+  text->value[valueSize + 1] = '\0';
 
-  self->text    = newArr;
-  self->numText = numText;
+  if (self->text == NULL)
+    {
+      self->text = text;
+      return;
+    }
+
+  RVLText *cur = self->text;
+  while (cur->next != NULL)
+    {
+      cur = cur->next;
+    }
+
+  cur->next = text;
 }
 
 void
