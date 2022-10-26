@@ -25,6 +25,8 @@ typedef uint8_t  RVLCompress;
 typedef uint8_t RVLGridType;
 typedef int8_t  RVLGridUnit;
 
+typedef struct RVLText RVLText;
+
 typedef void (*RVLWriteFn) (RVL *, const BYTE *, u32);
 typedef void (*RVLReadFn) (RVL *, BYTE *, u32);
 

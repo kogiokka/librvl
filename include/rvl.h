@@ -68,7 +68,6 @@
 
 /* RVL struct types */
 typedef struct RVL     RVL;
-typedef struct RVLText RVLText;
 
 /* enum types */
 typedef unsigned int RVLenum;
