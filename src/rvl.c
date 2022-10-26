@@ -55,6 +55,7 @@ rvl_destroy (RVL **self)
         {
           RVLText *tmp = cur;
           cur          = cur->next;
+          free (tmp->value);
           free (tmp);
         }
     }

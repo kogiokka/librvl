@@ -127,29 +127,22 @@ void
 rvl_write_TEXT_chunk (RVL *self, const RVLText *textList)
 {
   const RVLText *cur = textList;
-  while (cur->next != NULL)
+  while (cur != NULL)
     {
-      {
-        const RVLText *const text      = cur;
-        const u32            keySize   = strlen (text->key);
-        const u32            valueSize = strlen (text->value);
+      const RVLText *const text      = cur;
+      const u32            valueSize = strlen (text->value);
 
-        rvl_write_chunk_header (self, RVL_CHUNK_CODE_TEXT,
-                                keySize + valueSize + 1);
+      rvl_write_chunk_header (self, RVL_CHUNK_CODE_TEXT, valueSize + 1);
+      rvl_write_chunk_payload (self, (const BYTE *)&cur->field, 1);
 
-        // Include the null terminator
-        rvl_write_chunk_payload (self, (const BYTE *)text->key, keySize + 1);
+      if (valueSize != 0)
+        {
+          rvl_write_chunk_payload (self, (const BYTE *)text->value, valueSize);
+        }
 
-        if (valueSize != 0)
-          {
-            rvl_write_chunk_payload (self, (const BYTE *)text->value,
-                                     valueSize);
-          }
+      rvl_write_chunk_end (self);
 
-        rvl_write_chunk_end (self);
-
-        cur = cur->next;
-      }
+      cur = cur->next;
     }
 }
 

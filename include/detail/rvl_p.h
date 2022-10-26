@@ -20,6 +20,7 @@ typedef uint16_t u16;
 typedef uint16_t RVLPrimitive;
 typedef uint8_t  RVLEndian;
 typedef uint8_t  RVLCompress;
+typedef uint8_t  RVLTextField;
 
 /* Part of GRID */
 typedef uint8_t RVLGridType;

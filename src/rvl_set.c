@@ -112,11 +112,18 @@ rvl_set_data_buffer (RVL *self, unsigned int size, const unsigned char *buffer)
 void
 rvl_set_text (RVL *self, RVLenum field, const char *value)
 {
+  if ((field & 0xff00) != 0x0D00)
+    {
+      log_error ("[librvl set] Invalid enum for TEXT.");
+      return;
+    }
+
   if (self->text == NULL)
     {
       RVLText *text = rvl_text_create ();
       rvl_text_set_field (text, field, value);
       self->text = text;
+      return;
     }
 
   RVLText *cur = self->text;

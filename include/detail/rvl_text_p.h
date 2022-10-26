@@ -7,9 +7,8 @@
 
 struct RVLText
 {
-  char    key[80];
-  char   *value;
   RVLenum field;
+  char   *value;
 
   struct RVLText *next;
 };

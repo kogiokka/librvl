@@ -242,21 +242,17 @@ rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size)
 {
   RVLText *text = rvl_text_create ();
 
-  // Both the key and the value will be null-terminated.
-  u32 nullPos = 0;
-  for (u32 i = 0; i < size; i++)
-    {
-      if (rbuf[i] == '\0')
-        {
-          nullPos = i;
-        }
-    }
-  memcpy (text->key, rbuf, nullPos + 1);
+  RVLTextField field;
+  memcpy (&field, &rbuf[0], 1);
+  text->field = ((RVLenum)field) | 0x0D00;
 
-  u32 valueSize = size - (nullPos + 1);
-  text->value   = (char *)malloc (valueSize + 1);
-  memcpy (text->value, rbuf + nullPos + 1, valueSize);
-  text->value[valueSize + 1] = '\0';
+  u32 valueLen = size - 1;
+  text->value  = (char *)malloc (valueLen + 1);
+
+  text->value[valueLen] = '\0';
+  memcpy (text->value, &rbuf[1], valueLen);
+
+  log_trace ("[librvl read] Read TEXT: %.4X, %s", text->field, text->value);
 
   if (self->text == NULL)
     {

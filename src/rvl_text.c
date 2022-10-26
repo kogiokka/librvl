@@ -28,26 +28,11 @@ rvl_text_destroy (RVLText **self)
 void
 rvl_text_set_field (RVLText *self, RVLenum field, const char *value)
 {
-  switch (field)
-    {
-    case RVL_TEXT_FIELD_TITLE:
-      strcpy (self->key, "Title");
-      break;
-    case RVL_TEXT_FIELD_AUTHOR:
-      strcpy (self->key, "Author");
-      break;
-    case RVL_TEXT_FIELD_LICENSE:
-      strcpy (self->key, "License");
-      break;
-    case RVL_TEXT_FIELD_DESCRIPTION:
-      strcpy (self->key, "Description");
-      break;
-    default:
-      log_error ("[librvl set] Unknown text field: %.4x", field);
-      return;
-    }
+  self->field = field;
 
   u32 size    = strlen (value) + 1; // including '\0'
   self->value = (char *)malloc (size);
   memcpy (self->value, value, size);
+  log_trace ("[librvl text] Creating text: 0x%.4X, %s.", self->field,
+             self->value);
 }

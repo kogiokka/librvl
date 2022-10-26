@@ -73,17 +73,13 @@ rvl_get_data_buffer (RVL *self, unsigned char **buffer)
 void
 rvl_get_text (RVL *self, RVLenum field, const char **value)
 {
-  if (self->text == NULL)
-    {
-      log_error ("[librvl get] There is no TEXT.");
-      return;
-    }
-
   RVLText *cur = self->text;
-  while (cur->next != NULL)
+  while (cur != NULL)
     {
       if (cur->field == field)
         {
+          log_trace ("[librvl get] Get TEXT: %.4X, %s", cur->field,
+                     cur->value);
           *value = cur->value;
           break;
         }
