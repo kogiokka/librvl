@@ -24,8 +24,8 @@ rvl_test_write_regular_grid ()
   rvl_set_data_buffer (rvl, size, buffer);
 
   // TEXT chunk
-  rvl_set_text (rvl, RVL_TEXT_TITLE, "librvl");
-  rvl_set_text (rvl, RVL_TEXT_DESCRIPTION,
+  rvl_set_text (rvl, RVL_TAG_TITLE, "librvl");
+  rvl_set_text (rvl, RVL_TAG_DESCRIPTION,
                 "The Regular VoLumetric format reference library");
 
   // Write to file
@@ -81,8 +81,8 @@ rvl_test_read_regular_grid ()
   // TEXT chunk
   const char *title;
   const char *descr;
-  rvl_get_text (rvl, RVL_TEXT_TITLE, &title);
-  rvl_get_text (rvl, RVL_TEXT_DESCRIPTION, &descr);
+  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
+  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
   fprintf (stdout, "Title: %s\n", title);
   fprintf (stdout, "Description: %s\n", descr);
 
@@ -104,8 +104,8 @@ rvl_test_write_rectilinear_grid ()
   rvl_set_data_buffer (rvl, size, buffer);
 
   // TEXT chunk
-  rvl_set_text (rvl, RVL_TEXT_TITLE, "librvl");
-  rvl_set_text (rvl, RVL_TEXT_DESCRIPTION,
+  rvl_set_text (rvl, RVL_TAG_TITLE, "librvl");
+  rvl_set_text (rvl, RVL_TAG_DESCRIPTION,
                 "The Regular VoLumetric format reference library");
 
   // Write to file
@@ -176,8 +176,8 @@ rvl_test_read_rectilinear_grid ()
   // TEXT chunk
   const char *title;
   const char *descr;
-  rvl_get_text (rvl, RVL_TEXT_TITLE, &title);
-  rvl_get_text (rvl, RVL_TEXT_DESCRIPTION, &descr);
+  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
+  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
   fprintf (stdout, "Title: %s\n", title);
   fprintf (stdout, "Description: %s\n", descr);
 
@@ -206,8 +206,8 @@ rvl_test_partially_read ()
 
   const char *title;
   const char *descr;
-  rvl_get_text (rvl, RVL_TEXT_TITLE, &title);
-  rvl_get_text (rvl, RVL_TEXT_DESCRIPTION, &descr);
+  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
+  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
   fprintf (stdout, "Title: %s\n", title);
   fprintf (stdout, "Description: %s\n", descr);
 

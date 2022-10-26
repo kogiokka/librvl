@@ -71,14 +71,14 @@ rvl_get_data_buffer (RVL *self, unsigned char **buffer)
 }
 
 void
-rvl_get_text (RVL *self, RVLenum field, const char **value)
+rvl_get_text (RVL *self, RVLenum tag, const char **value)
 {
   RVLText *cur = self->text;
   while (cur != NULL)
     {
-      if (cur->field == field)
+      if (cur->tag == tag)
         {
-          log_trace ("[librvl get] Get TEXT: %.4X, %s", cur->field,
+          log_trace ("[librvl get] Get TEXT: %.4X, %s", cur->tag,
                      cur->value);
           *value = cur->value;
           break;

@@ -48,8 +48,8 @@ write_rvl (RVL *rvl)
                              RVL_ENDIAN_LITTLE);
   rvl_set_data_buffer (rvl, size, (unsigned char *)buffer);
 
-  rvl_set_text (rvl, RVL_TEXT_TITLE, "librvl");
-  rvl_set_text (rvl, RVL_TEXT_DESCRIPTION,
+  rvl_set_text (rvl, RVL_TAG_TITLE, "librvl");
+  rvl_set_text (rvl, RVL_TAG_DESCRIPTION,
                 "The Regular VoLumetric format reference library");
 
   // Write to file
@@ -92,8 +92,8 @@ read_rvl (RVL *rvl)
 
   const char *title;
   const char *descr;
-  rvl_get_text (rvl, RVL_TEXT_TITLE, &title);
-  rvl_get_text (rvl, RVL_TEXT_DESCRIPTION, &descr);
+  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
+  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
   fprintf (stdout, "Title: %s\n", title);
   fprintf (stdout, "Description: %s\n", descr);
 }

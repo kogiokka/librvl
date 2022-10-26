@@ -26,13 +26,13 @@ rvl_text_destroy (RVLText **self)
 }
 
 void
-rvl_text_set_field (RVLText *self, RVLenum field, const char *value)
+rvl_text_set_field (RVLText *self, RVLenum tag, const char *value)
 {
-  self->field = field;
+  self->tag = tag;
 
   u32 size    = strlen (value) + 1; // including '\0'
   self->value = (char *)malloc (size);
   memcpy (self->value, value, size);
-  log_trace ("[librvl text] Creating text: 0x%.4X, %s.", self->field,
+  log_trace ("[librvl text] Creating text: 0x%.4X, %s.", self->tag,
              self->value);
 }
