@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -11,6 +12,24 @@
 static void rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz);
 static void rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz,
                                   float *dx, float *dy, float *dz);
+void
+rvl_set_file (RVL *self, const char *filename)
+{
+  switch (self->ioState)
+    {
+    case RVLIoState_Read:
+      self->io = fopen (filename, "rb");
+      break;
+    case RVLIoState_Write:
+      self->io = fopen (filename, "wb");
+      break;
+    }
+
+  if (self->io == NULL)
+    {
+      log_error ("[rvl set] %s", strerror (errno));
+    }
+}
 
 void
 rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,

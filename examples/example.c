@@ -14,11 +14,13 @@ main ()
 {
   RVL *rvl;
 
-  rvl = rvl_create_writer ("volumetric_data.rvl");
+  rvl = rvl_create_writer ();
+  rvl_set_file (rvl, "volumetric_data.rvl");
   write_rvl (rvl);
   rvl_destroy (&rvl);
 
-  rvl = rvl_create_reader ("volumetric_data.rvl");
+  rvl = rvl_create_reader ();
+  rvl_set_file (rvl, "volumetric_data.rvl");
   read_rvl (rvl);
   rvl_destroy (&rvl);
 

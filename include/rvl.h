@@ -191,9 +191,11 @@ extern "C"
 {
 #endif
 
-  RVL *rvl_create_writer (const char *filename);
-  RVL *rvl_create_reader (const char *filename);
+  RVL *rvl_create_writer (void);
+  RVL *rvl_create_reader (void);
   void rvl_destroy (RVL **self);
+
+  void rvl_set_file (RVL *self, const char *filename);
 
   // Write the entire rvl file
   void rvl_write_rvl (RVL *self);

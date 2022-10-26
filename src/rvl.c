@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -15,21 +14,21 @@ BYTE RVL_FILE_SIG[RVL_FILE_SIG_SIZE] = {
   131, 82, 86, 76, 32, 70, 79, 82, 77, 65, 84, 0,
 };
 
-static RVL *rvl_create (const char *filename, RVLIoState ioState);
+static RVL *rvl_create (RVLIoState ioState);
 
 RVL *
-rvl_create_writer (const char *filename)
+rvl_create_writer (void)
 {
-  RVL *rvl = rvl_create (filename, RVLIoState_Write);
+  RVL *rvl = rvl_create (RVLIoState_Write);
   memset (&rvl->data, 0, sizeof (RVLData));
   rvl->writeFn = rvl_fwrite_default;
   return rvl;
 }
 
 RVL *
-rvl_create_reader (const char *filename)
+rvl_create_reader (void)
 {
-  RVL *rvl = rvl_create (filename, RVLIoState_Read);
+  RVL *rvl = rvl_create (RVLIoState_Read);
   memset (&rvl->data, 0, sizeof (RVLData));
   rvl->readFn = rvl_fread_default;
   return rvl;
@@ -98,7 +97,7 @@ rvl_dealloc (RVL *self, BYTE **ptr)
 }
 
 RVL *
-rvl_create (const char *filename, RVLIoState ioState)
+rvl_create (RVLIoState ioState)
 {
 
   log_set_level (LOG_INFO);
@@ -119,21 +118,6 @@ rvl_create (const char *filename, RVLIoState ioState)
   self->grid.position[0] = 0.0f;
   self->grid.position[1] = 0.0f;
   self->grid.position[2] = 0.0f;
-
-  switch (ioState)
-    {
-    case RVLIoState_Read:
-      self->io = fopen (filename, "rb");
-      break;
-    case RVLIoState_Write:
-      self->io = fopen (filename, "wb");
-      break;
-    }
-
-  if (self->io == NULL)
-    {
-      log_error ("[rvl io] %s", strerror (errno));
-    }
 
   return self;
 }
