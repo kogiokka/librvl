@@ -59,7 +59,11 @@ rvl_destroy (RVL **self)
         }
     }
 
-  fclose (ptr->io);
+  if (ptr->io != NULL)
+    {
+      fclose (ptr->io);
+    }
+
   free (ptr);
 
   *self = NULL;
