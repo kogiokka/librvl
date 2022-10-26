@@ -15,6 +15,11 @@ static void rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz,
 void
 rvl_set_file (RVL *self, const char *filename)
 {
+  if (self->io != NULL)
+    {
+      fclose (self->io);
+    }
+
   switch (self->ioState)
     {
     case RVLIoState_Read:
