@@ -12,13 +12,16 @@ static void print_data_buffer (int x, int y, int z,
 int
 main ()
 {
-  RVL *rvlw = rvl_create_writer ("volumetric_data.rvl");
-  write_rvl (rvlw);
-  rvl_destroy (&rvlw);
+  RVL *rvl;
 
-  RVL *rvlr = rvl_create_reader ("volumetric_data.rvl");
-  read_rvl (rvlr);
-  rvl_destroy (&rvlr);
+  rvl = rvl_create_writer ("volumetric_data.rvl");
+  write_rvl (rvl);
+  rvl_destroy (&rvl);
+
+  rvl = rvl_create_reader ("volumetric_data.rvl");
+  read_rvl (rvl);
+  rvl_destroy (&rvl);
+
   return 0;
 }
 
