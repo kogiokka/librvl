@@ -3,7 +3,7 @@
 #############################################################################
 
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build liblzma as a shared library instead of static")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/external/xz-5.2.7")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/external/xz-5.2.7" EXCLUDE_FROM_ALL)
 set_target_properties(liblzma PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 
