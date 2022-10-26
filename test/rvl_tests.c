@@ -24,18 +24,14 @@ rvl_test_write_regular_grid ()
   rvl_set_data_buffer (rvl, size, buffer);
 
   // TEXT chunk
-  int      numText = 2;
-  RVLText *textArr = rvl_text_create_array (numText);
-  rvl_text_set (textArr, 0, "Title", "librvl");
-  rvl_text_set (textArr, 1, "Description",
+  rvl_set_text (rvl, RVL_TAG_TITLE, "librvl");
+  rvl_set_text (rvl, RVL_TAG_DESCRIPTION,
                 "The Regular VoLumetric format reference library");
-  rvl_set_text (rvl, textArr, numText);
 
   // Write to file
   rvl_write_rvl (rvl);
 
   free (buffer);
-  rvl_text_destroy_array (&textArr);
   rvl_destroy (&rvl);
 }
 
@@ -83,17 +79,12 @@ rvl_test_read_regular_grid ()
   print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
 
   // TEXT chunk
-  RVLText *textArr;
-  int      numText;
-  rvl_get_text (rvl, &textArr, &numText);
-
-  const char *key   = NULL;
-  const char *value = NULL;
-  for (int i = 0; i < numText; i++)
-    {
-      rvl_text_get (textArr, i, &key, &value);
-      fprintf (stdout, "%s: %s\n", key, value);
-    }
+  const char *title;
+  const char *descr;
+  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
+  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
+  fprintf (stdout, "Title: %s\n", title);
+  fprintf (stdout, "Description: %s\n", descr);
 
   rvl_destroy (&rvl);
 }
@@ -113,18 +104,14 @@ rvl_test_write_rectilinear_grid ()
   rvl_set_data_buffer (rvl, size, buffer);
 
   // TEXT chunk
-  int      numText = 2;
-  RVLText *textArr = rvl_text_create_array (numText);
-  rvl_text_set (textArr, 0, "Title", "librvl");
-  rvl_text_set (textArr, 1, "Description",
+  rvl_set_text (rvl, RVL_TAG_TITLE, "librvl");
+  rvl_set_text (rvl, RVL_TAG_DESCRIPTION,
                 "The Regular VoLumetric format reference library");
-  rvl_set_text (rvl, textArr, numText);
 
   // Write to file
   rvl_write_rvl (rvl);
 
   free (buffer);
-  rvl_text_destroy_array (&textArr);
   rvl_destroy (&rvl);
 }
 
@@ -187,17 +174,12 @@ rvl_test_read_rectilinear_grid ()
   print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
 
   // TEXT chunk
-  RVLText *textArr;
-  int      numText;
-  rvl_get_text (rvl, &textArr, &numText);
-
-  const char *key   = NULL;
-  const char *value = NULL;
-  for (int i = 0; i < numText; i++)
-    {
-      rvl_text_get (textArr, i, &key, &value);
-      fprintf (stdout, "%s: %s\n", key, value);
-    }
+  const char *title;
+  const char *descr;
+  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
+  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
+  fprintf (stdout, "Title: %s\n", title);
+  fprintf (stdout, "Description: %s\n", descr);
 
   rvl_destroy (&rvl);
 }
@@ -210,13 +192,9 @@ rvl_test_partially_read ()
   // Read VFMT, GRID and TEXT
   rvl_read_info (rvl);
 
-  int         x, y, z;
-  float       dx, dy, dz;
-  float       px, py, pz;
-  RVLText    *textArr;
-  int         numText;
-  const char *key   = NULL;
-  const char *value = NULL;
+  int   x, y, z;
+  float dx, dy, dz;
+  float px, py, pz;
 
   RVLenum gridType = rvl_get_grid_type (rvl);
   RVLenum unit     = rvl_get_grid_unit (rvl);
@@ -225,7 +203,13 @@ rvl_test_partially_read ()
   rvl_get_volumetric_format (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_position (rvl, &px, &py, &pz);
-  rvl_get_text (rvl, &textArr, &numText);
+
+  const char *title;
+  const char *descr;
+  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
+  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
+  fprintf (stdout, "Title: %s\n", title);
+  fprintf (stdout, "Description: %s\n", descr);
 
   RVLenum compress = rvl_get_compression (rvl);
 
@@ -239,11 +223,6 @@ rvl_test_partially_read ()
   fprintf (stdout, "Endian - %d\n", endian);
   fprintf (stdout, "Compression - %d\n", compress);
   fprintf (stdout, "Voxel Dim - x: %.3f, y: %.3f, z: %.3f\n", dx, dy, dz);
-  for (int i = 0; i < numText; i++)
-    {
-      rvl_text_get (textArr, i, &key, &value);
-      fprintf (stdout, "%s: %s\n", key, value);
-    }
 
   // Read DATA
   unsigned char *buffer = (unsigned char *)malloc (rvl_get_data_nbytes (rvl));
@@ -264,7 +243,8 @@ rvl_test_uninitialized_rvl ()
 void
 init_regular_grid (RVL *rvl)
 {
-  rvl_set_volumetric_format (rvl, 2, 2, 2, RVL_PRIMITIVE_VEC2U8, RVL_ENDIAN_LITTLE);
+  rvl_set_volumetric_format (rvl, 2, 2, 2, RVL_PRIMITIVE_VEC2U8,
+                             RVL_ENDIAN_LITTLE);
 
   rvl_set_regular_grid (rvl, 0.1f, 0.2f, 0.3f);
   rvl_set_grid_origin (rvl, 3.0f, 2.0f, 1.0f);
@@ -274,7 +254,8 @@ init_regular_grid (RVL *rvl)
 void
 init_rectilinear_grid (RVL *rvl)
 {
-  rvl_set_volumetric_format (rvl, 6, 6, 3, RVL_PRIMITIVE_F8, RVL_ENDIAN_LITTLE);
+  rvl_set_volumetric_format (rvl, 6, 6, 3, RVL_PRIMITIVE_F8,
+                             RVL_ENDIAN_LITTLE);
 
   float dx[6];
   float dy[6];

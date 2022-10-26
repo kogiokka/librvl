@@ -56,6 +56,33 @@
  * +xx [voxel dimensions in y-direction]
  * +xx [voxel dimensions in z-direction]
  *
+ *
+ * TEXT Chunk
+ * ++++++++++
+ *
+ * A field of TEXT consists of a tag and its value. The tags and the information
+ * that each field should hold are part of the specification.
+ *
+ * +---------------+-----------------------------------------------------------+
+ * | Tag           | Value                                                     |
+ * +===============+===========================================================+
+ * | Title         | Data name or title.                                       |
+ * +---------------+-----------------------------------------------------------+
+ * | Description   | Data description.                                         |
+ * +---------------+-----------------------------------------------------------+
+ * | Author        | Name of the creator(s).                                   |
+ * +---------------+-----------------------------------------------------------+
+ * | Copyright     | Copyright notice.                                         |
+ * +---------------+-----------------------------------------------------------+
+ * | License       | Legal document to grant additional copyright permissions  |
+ * |               | to the general public. (ex. Creative Common licenses).    |
+ * +---------------+-----------------------------------------------------------+
+ * | Source        | Source of the data (ex. place, device, etc.)              |
+ * +---------------+-----------------------------------------------------------+
+ * | Creation Time | Creation time of original data. The text should be in ISO |
+ * |               | 8601 format (ex. YYYY-MM-DDThh:mm:ssTZD)                  |
+ * +---------------+-----------------------------------------------------------+
+ *
  */
 
 #ifndef RVL_H
@@ -67,8 +94,7 @@
 #define RVL_VERSION_MINOR 4
 
 /* RVL struct types */
-typedef struct RVL     RVL;
-typedef struct RVLText RVLText;
+typedef struct RVL RVL;
 
 /* enum types */
 typedef unsigned int RVLenum;
@@ -152,6 +178,14 @@ typedef unsigned int RVLenum;
 #define RVL_COMPRESSION_LZMA 0x00
 #define RVL_COMPRESSION_LZ4  0x01
 
+#define RVL_TAG_TITLE         0x0D01
+#define RVL_TAG_DESCRIPTION   0x0D02
+#define RVL_TAG_AUTHOR        0x0D03
+#define RVL_TAG_COPYRIGHT     0x0D04
+#define RVL_TAG_LICENSE       0x0D05
+#define RVL_TAG_SOURCE        0x0D06
+#define RVL_TAG_CREATION_TIME 0x0D07
+
 // Prevent name-mangling for librvl functions from C++ compiler.
 #ifdef __cplusplus
 extern "C"
@@ -213,13 +247,8 @@ extern "C"
   void rvl_get_data_buffer (RVL *self, unsigned char **buffer);
 
   /* TEXT chunk functions */
-  RVLText *rvl_text_create_array (int num);
-  void     rvl_text_destroy_array (RVLText **self);
-  void     rvl_set_text (RVL *self, RVLText *text, int numText);
-  void     rvl_get_text (RVL *self, RVLText **text, int *numText);
-  void     rvl_text_set (RVLText *textArr, int index, char *key, char *value);
-  void     rvl_text_get (RVLText *textArr, int index, const char **key,
-                         const char **value);
+  void rvl_set_text (RVL *self, RVLenum tag, const char *value);
+  void rvl_get_text (RVL *self, RVLenum tag, const char **value);
 
   /**
    * Helpers
@@ -235,3 +264,4 @@ extern "C"
 #endif
 
 #endif
+

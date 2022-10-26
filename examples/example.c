@@ -48,17 +48,13 @@ write_rvl (RVL *rvl)
                              RVL_ENDIAN_LITTLE);
   rvl_set_data_buffer (rvl, size, (unsigned char *)buffer);
 
-  int      numText = 2;
-  RVLText *textArr = rvl_text_create_array (numText);
-  rvl_text_set (textArr, 0, "Title", "librvl");
-  rvl_text_set (textArr, 1, "Description",
+  rvl_set_text (rvl, RVL_TAG_TITLE, "librvl");
+  rvl_set_text (rvl, RVL_TAG_DESCRIPTION,
                 "The Regular VoLumetric format reference library");
-  rvl_set_text (rvl, textArr, numText);
 
   // Write to file
   rvl_write_rvl (rvl);
 
-  rvl_text_destroy_array (&textArr);
   free (buffer);
 }
 
@@ -94,17 +90,12 @@ read_rvl (RVL *rvl)
   rvl_get_data_buffer (rvl, &buffer);
   print_data_buffer (x, y, z, buffer);
 
-  RVLText *textArr;
-  int      numText;
-  rvl_get_text (rvl, &textArr, &numText);
-
-  const char *key   = NULL;
-  const char *value = NULL;
-  for (int i = 0; i < numText; i++)
-    {
-      rvl_text_get (textArr, i, &key, &value);
-      fprintf (stdout, "%s: %s\n", key, value);
-    }
+  const char *title;
+  const char *descr;
+  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
+  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
+  fprintf (stdout, "Title: %s\n", title);
+  fprintf (stdout, "Description: %s\n", descr);
 }
 
 void

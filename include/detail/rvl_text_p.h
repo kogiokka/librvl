@@ -5,10 +5,22 @@
 #error Never include this file directly. Use <rvl.h> instead.
 #endif
 
+#include <stdint.h>
+
+#include "detail/rvl_p.h"
+
+typedef uint8_t RVLTag;
+
 struct RVLText
 {
-  char  key[80];
-  char *value;
+  RVLenum tag;
+  char   *value;
+
+  struct RVLText *next;
 };
+
+RVLText *rvl_text_create ();
+void     rvl_text_destroy (RVLText **self);
+void     rvl_text_set_field (RVLText *self, RVLenum tag, const char *value);
 
 #endif

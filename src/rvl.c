@@ -8,6 +8,7 @@
 #include "rvl.h"
 
 #include "detail/rvl_p.h"
+#include "detail/rvl_text_p.h"
 
 // .RVL FORMAT\0
 BYTE RVL_FILE_SIG[RVL_FILE_SIG_SIZE] = {
@@ -46,6 +47,18 @@ rvl_destroy (RVL **self)
   // responsible for calling this dealloc function.
   rvl_dealloc (ptr, &ptr->data.rbuf);
   rvl_dealloc (ptr, &ptr->grid.dimBuf);
+
+  if (ptr->text != NULL)
+    {
+      RVLText *cur = ptr->text;
+      while (cur->next != NULL)
+        {
+          RVLText *tmp = cur;
+          cur          = cur->next;
+          free (tmp->value);
+          free (tmp);
+        }
+    }
 
   fclose (ptr->io);
   free (ptr);
@@ -99,7 +112,6 @@ rvl_create (const char *filename, RVLIoState ioState)
   self->version[1] = RVL_VERSION_MINOR;
   self->ioState    = ioState;
   self->text       = NULL;
-  self->numText    = 0;
 
   // Explicitly set the default values of the optional settings.
   self->compress         = RVL_COMPRESSION_LZMA;
