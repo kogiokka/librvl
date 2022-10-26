@@ -48,9 +48,14 @@ write_rvl (RVL *rvl)
                              RVL_ENDIAN_LITTLE);
   rvl_set_data_buffer (rvl, size, (unsigned char *)buffer);
 
-  rvl_set_text (rvl, RVL_TAG_TITLE, "librvl");
+  rvl_set_text (rvl, RVL_TAG_TITLE, "Sphere");
   rvl_set_text (rvl, RVL_TAG_DESCRIPTION,
-                "The Regular VoLumetric format reference library");
+                "A volumetric model of an UV sphere.");
+  rvl_set_text (rvl, RVL_TAG_AUTHOR, "John Doe");
+  rvl_set_text (rvl, RVL_TAG_COPYRIGHT,
+                "Copyright (c) 2022 by John Doe, All Rights Reserved.");
+  rvl_set_text (rvl, RVL_TAG_LICENSE, "CC BY-SA 4.0");
+  rvl_set_text (rvl, RVL_TAG_CREATION_TIME, "2022-10-26T05:13:44+08:00");
 
   // Write to file
   rvl_write_rvl (rvl);
@@ -90,12 +95,22 @@ read_rvl (RVL *rvl)
   rvl_get_data_buffer (rvl, &buffer);
   print_data_buffer (x, y, z, buffer);
 
-  const char *title;
-  const char *descr;
+  const char *title, *descr, *author, *copyright, *license, *source, *ctime;
   rvl_get_text (rvl, RVL_TAG_TITLE, &title);
   rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
+  rvl_get_text (rvl, RVL_TAG_AUTHOR, &author);
+  rvl_get_text (rvl, RVL_TAG_COPYRIGHT, &copyright);
+  rvl_get_text (rvl, RVL_TAG_LICENSE, &license);
+  rvl_get_text (rvl, RVL_TAG_SOURCE, &source);
+  rvl_get_text (rvl, RVL_TAG_CREATION_TIME, &ctime);
+
   fprintf (stdout, "Title: %s\n", title);
   fprintf (stdout, "Description: %s\n", descr);
+  fprintf (stdout, "Author: %s\n", author);
+  fprintf (stdout, "Copyright: %s\n", copyright);
+  fprintf (stdout, "License: %s\n", license);
+  fprintf (stdout, "Source: %s\n", source);
+  fprintf (stdout, "Creation time: %s\n", ctime);
 }
 
 void
