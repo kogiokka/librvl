@@ -7,6 +7,8 @@
 
 #include <stdint.h>
 
+#include "detail/rvl_p.h"
+
 typedef uint8_t RVLTag;
 
 struct RVLText
