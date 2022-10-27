@@ -65,7 +65,7 @@ rvl_get_grid_position (RVL *self, float *x, float *y, float *z)
 }
 
 void
-rvl_get_data_buffer (RVL *self, unsigned char **buffer)
+rvl_get_data_buffer (RVL *self, const void **buffer)
 {
   *buffer = (unsigned char *)self->data.rbuf;
 }

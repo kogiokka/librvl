@@ -121,7 +121,7 @@ rvl_read_info (RVL *self)
 }
 
 void
-rvl_read_data_buffer (RVL *self, unsigned char **buffer)
+rvl_read_data_buffer (RVL *self, void **buffer)
 {
   if (self == NULL)
     return;

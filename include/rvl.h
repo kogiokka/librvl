@@ -210,7 +210,7 @@ extern "C"
 
   // Read the entire volumetric data into the buffer. The buffer allocation and
   // deallocation is managed by the user.
-  void rvl_read_data_buffer (RVL *self, unsigned char **buffer);
+  void rvl_read_data_buffer (RVL *self, void **buffer);
 
   /* VFMT chunk functions */
   void    rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,
@@ -241,12 +241,11 @@ extern "C"
   // Set the data buffer to be written by the RVL writer. The RVL instance does
   // not own the pointer; the user should allocate the memory before writing
   // and deallocate the memory after writing.
-  void rvl_set_data_buffer (RVL *self, unsigned int size,
-                            const unsigned char *buffer);
+  void rvl_set_data_buffer (RVL *self, unsigned int size, const void *buffer);
 
   // Get the data buffer from the RVL reader. The RVL instance owns the
   // pointer, and users should not free the memory themselves.
-  void rvl_get_data_buffer (RVL *self, unsigned char **buffer);
+  void rvl_get_data_buffer (RVL *self, const void **buffer);
 
   /* TEXT chunk functions */
   void rvl_set_text (RVL *self, RVLenum tag, const char *value);

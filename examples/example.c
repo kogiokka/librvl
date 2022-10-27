@@ -6,8 +6,7 @@
 
 static void write_rvl (RVL *rvl);
 static void read_rvl (RVL *rvl);
-static void print_data_buffer (int x, int y, int z,
-                               const unsigned char *buffer);
+static void print_data_buffer (int x, int y, int z, const void *buffer);
 
 int
 main ()
@@ -51,7 +50,7 @@ write_rvl (RVL *rvl)
   rvl_set_regular_grid (rvl, 0.1f, 0.2f, 0.1f);
   rvl_set_volumetric_format (rvl, nx, ny, nz, RVL_PRIMITIVE_I32,
                              RVL_ENDIAN_LITTLE);
-  rvl_set_data_buffer (rvl, size, (unsigned char *)buffer);
+  rvl_set_data_buffer (rvl, size, buffer);
 
   rvl_set_text (rvl, RVL_TAG_TITLE, "Sphere");
   rvl_set_text (rvl, RVL_TAG_DESCRIPTION,
@@ -96,7 +95,7 @@ read_rvl (RVL *rvl)
   fprintf (stdout, "Position - x: %.3f, y: %.3f, z: %.3f\n", px, py, pz);
   fprintf (stdout, "%s\n", sep);
 
-  unsigned char *buffer;
+  const void *buffer;
   rvl_get_data_buffer (rvl, &buffer);
   print_data_buffer (x, y, z, buffer);
 
@@ -119,7 +118,7 @@ read_rvl (RVL *rvl)
 }
 
 void
-print_data_buffer (int x, int y, int z, const unsigned char *buffer)
+print_data_buffer (int x, int y, int z, const void *buffer)
 {
   const int *data = (int *)buffer;
   for (int k = 0; k < z; k++)
