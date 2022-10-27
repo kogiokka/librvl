@@ -196,6 +196,7 @@ extern "C"
   void rvl_destroy (RVL **self);
 
   void rvl_set_file (RVL *self, const char *filename);
+  void rvl_set_io (RVL *self, FILE *stream);
 
   // Write the entire rvl file
   void rvl_write_rvl (RVL *self);
@@ -265,3 +266,4 @@ extern "C"
 #endif
 
 #endif
+

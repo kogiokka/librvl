@@ -15,8 +15,10 @@ static void rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz,
 void
 rvl_set_file (RVL *self, const char *filename)
 {
-  if (self->io != NULL)
+
+  if (self->isOwningIo && self->io != NULL)
     {
+      log_trace ("[librvl set] Closing previous file...");
       fclose (self->io);
     }
 
@@ -34,6 +36,25 @@ rvl_set_file (RVL *self, const char *filename)
     {
       log_error ("[rvl set] %s", strerror (errno));
     }
+
+  log_trace ("[librvl set] IO has been set to file \"%s\".",
+             filename);
+  self->isOwningIo = true;
+}
+
+void
+rvl_set_io (RVL *self, FILE *stream)
+{
+  if (self->isOwningIo && self->io != NULL)
+    {
+      log_trace ("Closing previous file...");
+      fclose (self->io);
+    }
+
+  self->io = stream;
+
+  log_trace ("[librvl set] IO has been set to %p", stream);
+  self->isOwningIo = false;
 }
 
 void

@@ -252,6 +252,35 @@ rvl_test_uninitialized_rvl ()
 }
 
 void
+rvl_test_io ()
+{
+  RVL *rvl = rvl_create_writer ();
+  init_regular_grid(rvl);
+
+  int            size   = rvl_get_data_nbytes (rvl);
+  unsigned char *buffer = (unsigned char *)malloc (size);
+  memset (buffer, 'O', size);
+  rvl_set_data_buffer (rvl, size, buffer);
+
+  rvl_set_file (rvl, "rvl_test_io.rvl");
+  rvl_write_rvl(rvl);
+
+  rvl_set_io(rvl, stdout);
+  rvl_write_rvl(rvl);
+
+  rvl_set_io(rvl, stderr);
+  rvl_set_io(rvl, stdout);
+  rvl_write_rvl(rvl);
+
+  rvl_set_file (rvl, "rvl_test_io_2.rvl");
+  rvl_set_file (rvl, "rvl_test_io_3.rvl");
+  rvl_write_rvl(rvl);
+
+  free (buffer);
+  rvl_destroy (&rvl);
+}
+
+void
 init_regular_grid (RVL *rvl)
 {
   rvl_set_volumetric_format (rvl, 2, 2, 2, RVL_PRIMITIVE_VEC2U8,

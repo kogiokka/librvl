@@ -5,6 +5,7 @@
 #error Never include this file directly. Use <rvl.h> instead.
 #endif
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -86,6 +87,7 @@ typedef enum
 
 struct RVL
 {
+  bool       isOwningIo;
   FILE      *io;
   RVLIoState ioState;
   RVLWriteFn writeFn;
