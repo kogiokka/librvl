@@ -9,6 +9,12 @@ target_sources(unit_tests PRIVATE
   rvl_tests.c
 )
 
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
+    CMAKE_C_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(unit_tests PRIVATE -fsanitize=address)
+    target_link_options(unit_tests PRIVATE -fsanitize=address)
+endif()
+
 target_link_libraries(unit_tests PRIVATE rvl::rvl)
 
 add_test(NAME "Write Regular Grid" COMMAND unit_tests 1)
