@@ -53,21 +53,23 @@ void
 rvl_write_VFMT_chunk (RVL *self)
 {
   u32 size = 18;
-  u8 *buf  = calloc (1, size);
+  u8 *wbuf  = calloc (1, size);
 
   RVLPrimitive primitive = self->primitive;
   RVLEndian    endian    = self->endian;
   RVLCompress  compress  = self->compress;
 
-  memcpy (&buf[0], self->version, 2);
-  memcpy (&buf[2], &self->resolution[0], 12);
-  memcpy (&buf[14], &primitive, 2);
-  memcpy (&buf[16], &endian, 1);
-  memcpy (&buf[17], &compress, 1);
+  memcpy (&wbuf[0], self->version, 2);
+  memcpy (&wbuf[2], &self->resolution[0], 12);
+  memcpy (&wbuf[14], &primitive, 2);
+  memcpy (&wbuf[16], &endian, 1);
+  memcpy (&wbuf[17], &compress, 1);
 
   rvl_write_chunk_header (self, RVL_CHUNK_CODE_VFMT, size);
-  rvl_write_chunk_payload (self, buf, size);
+  rvl_write_chunk_payload (self, wbuf, size);
   rvl_write_chunk_end (self);
+
+  free(wbuf);
 }
 
 void
@@ -98,6 +100,8 @@ rvl_write_GRID_chunk (RVL *self)
   rvl_write_chunk_header (self, RVL_CHUNK_CODE_GRID, wbufSize);
   rvl_write_chunk_payload (self, wbuf, wbufSize);
   rvl_write_chunk_end (self);
+
+  free(wbuf);
 }
 
 void

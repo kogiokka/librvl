@@ -19,7 +19,7 @@ static RVL *rvl_create (RVLIoState ioState);
 RVL *
 rvl_create_writer (void)
 {
-  RVL *rvl = rvl_create (RVLIoState_Write);
+  RVL *rvl     = rvl_create (RVLIoState_Write);
   rvl->writeFn = rvl_fwrite_default;
   return rvl;
 }
@@ -27,7 +27,7 @@ rvl_create_writer (void)
 RVL *
 rvl_create_reader (void)
 {
-  RVL *rvl = rvl_create (RVLIoState_Read);
+  RVL *rvl    = rvl_create (RVLIoState_Read);
   rvl->readFn = rvl_fread_default;
   return rvl;
 }
@@ -48,7 +48,7 @@ rvl_destroy (RVL **self)
   if (ptr->text != NULL)
     {
       RVLText *cur = ptr->text;
-      while (cur->next != NULL)
+      while (cur != NULL)
         {
           RVLText *tmp = cur;
           cur          = cur->next;
@@ -123,4 +123,3 @@ rvl_create (RVLIoState ioState)
 
   return self;
 }
-
