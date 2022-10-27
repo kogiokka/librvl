@@ -15,8 +15,8 @@
        +08 NB chunk payload
 
    There are 5 types of chunk: VFMT, GRID, DATA, TEXT, VEND. A valid RVL file
-   must contain an VFMT chunk, an GRID chunk, one or more DATA chunks, and an
-   VEND chunk.
+   must contain a VFMT chunk, a GRID chunk, one or more DATA chunks, and a VEND
+   chunk.
 
    VFMT Chunk
    ++++++++++
