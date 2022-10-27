@@ -134,20 +134,18 @@ rvl_read_data_buffer (RVL *self, void **buffer)
       u32 size;
       rvl_read_chunk_header (self, &size, &code);
 
-      BYTE *rbuf = (BYTE *)malloc (size);
-
       if (code == RVL_CHUNK_CODE_DATA)
         {
+          BYTE *rbuf = (BYTE *)malloc (size);
           rvl_read_chunk_payload (self, rbuf, size);
           rvl_read_DATA_chunk (self, rbuf, size);
+          free (rbuf);
           break;
         }
       else
         {
           fseek (self->io, size, SEEK_CUR);
         }
-
-      free (rbuf);
     }
   while (code != RVL_CHUNK_CODE_VEND);
 
