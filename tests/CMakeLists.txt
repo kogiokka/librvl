@@ -1,3 +1,7 @@
+if(NOT BUILD_TESTING)
+  return()
+endif()
+
 add_executable(unit_tests)
 
 target_sources(unit_tests PRIVATE

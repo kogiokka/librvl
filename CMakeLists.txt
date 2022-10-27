@@ -93,8 +93,6 @@ install(
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
 )
 
-if (RVL_BUILD_TEST)
-    include(CTest)
-    enable_testing()
-    add_subdirectory(test)
-endif()
+include(CTest)
+add_subdirectory("tests/")
+
