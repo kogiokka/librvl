@@ -2,9 +2,14 @@
 # liblzma
 #############################################################################
 
+set(LIBLZMA_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/xz-5.2.7")
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build liblzma as a shared library instead of static")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/external/xz-5.2.7" EXCLUDE_FROM_ALL)
+add_subdirectory("${LIBLZMA_SOURCE_DIR}" EXCLUDE_FROM_ALL)
 set_target_properties(liblzma PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+if (WIN32)
+   target_include_directories(liblzma INTERFACE "$<BUILD_INTERFACE:${LIBLZMA_SOURCE_DIR}/src/liblzma/api>")
+endif()
 
 
 #############################################################################
