@@ -90,7 +90,7 @@
 #include <stdint.h>
 
 #define RVL_VERSION_MAJOR 0
-#define RVL_VERSION_MINOR 5
+#define RVL_VERSION_MINOR 6
 
 /* RVL struct types */
 typedef struct RVL RVL;
