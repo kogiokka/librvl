@@ -20,7 +20,6 @@ RVL *
 rvl_create_writer (void)
 {
   RVL *rvl = rvl_create (RVLIoState_Write);
-  memset (&rvl->data, 0, sizeof (RVLData));
   rvl->writeFn = rvl_fwrite_default;
   return rvl;
 }
@@ -29,7 +28,6 @@ RVL *
 rvl_create_reader (void)
 {
   RVL *rvl = rvl_create (RVLIoState_Read);
-  memset (&rvl->data, 0, sizeof (RVLData));
   rvl->readFn = rvl_fread_default;
   return rvl;
 }
