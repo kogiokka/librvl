@@ -87,7 +87,7 @@
 #ifndef RVL_H
 #define RVL_H
 
-#include <stdint.h>
+#include <stdio.h>
 
 #define RVL_VERSION_MAJOR 0
 #define RVL_VERSION_MINOR 6
