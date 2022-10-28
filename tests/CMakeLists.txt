@@ -9,7 +9,7 @@ target_sources(unit_tests PRIVATE
   rvl_tests.c
 )
 
-if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR
+if ((CMAKE_C_COMPILER_ID STREQUAL "GNU" AND NOT MINGW) OR
     CMAKE_C_COMPILER_ID STREQUAL "Clang")
     target_compile_options(unit_tests PRIVATE -fsanitize=address)
     target_link_options(unit_tests PRIVATE -fsanitize=address)
