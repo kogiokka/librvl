@@ -195,9 +195,8 @@ rvl_fwrite (RVL *self, const BYTE *data, u32 size)
 {
   if (self->writeFn == NULL)
     {
-      rvl_log_fatal (
-          "[librvl write] Call to NULL write function. Please check if "
-          "the RVL instance is a writer.");
+      rvl_log_fatal ("Call to NULL write function. Please check if "
+                     "the RVL instance is a writer.");
       exit (EXIT_FAILURE);
     }
 
@@ -207,17 +206,11 @@ rvl_fwrite (RVL *self, const BYTE *data, u32 size)
 void
 rvl_fwrite_default (RVL *self, const BYTE *data, u32 size)
 {
-  if (self->io == NULL)
-    {
-      rvl_log_fatal ("[librvl write] RVL is not initialized.");
-      exit (EXIT_FAILURE);
-    }
-
   const size_t count = fwrite (data, 1, size, self->io);
 
   if (count != size)
     {
-      rvl_log_fatal ("[librvl write] fwrite failure.");
+      rvl_log_fatal ("Failed to write to file stream.");
       exit (EXIT_FAILURE);
     }
 }
@@ -227,14 +220,13 @@ check_data (RVL *self)
 {
   if (self->data.size <= 0)
     {
-      rvl_log_fatal ("[librvl write] Data buffer size is less than 0.");
+      rvl_log_fatal ("Size of data is less than 0.");
       exit (EXIT_FAILURE);
     }
 
   if (self->data.size != rvl_get_data_nbytes (self))
     {
-      rvl_log_fatal ("[librvl write] Data buffer size does not match this RVL "
-                     "configuration.");
+      rvl_log_fatal ("Size of data does not match the header information.");
       exit (EXIT_FAILURE);
     }
 }
@@ -244,7 +236,7 @@ check_grid (RVL *self)
 {
   if (self->grid.ndx <= 0 || self->grid.ndy <= 0 || self->grid.ndz <= 0)
     {
-      rvl_log_fatal ("[librvl write] Missing voxel dimensions.");
+      rvl_log_fatal ("Missing voxel dimensions.");
       exit (EXIT_FAILURE);
     }
 
@@ -253,9 +245,8 @@ check_grid (RVL *self)
     case RVL_GRID_REGULAR:
       if (self->grid.ndx != 1 || self->grid.ndy != 1 || self->grid.ndz != 1)
         {
-          rvl_log_fatal (
-              "[librvl write] Number of voxel dimensions is not valid "
-              "for regular grid.");
+          rvl_log_fatal ("Number of voxel dimensions is not valid "
+                         "for regular grid.");
           exit (EXIT_FAILURE);
         }
       break;
@@ -265,16 +256,14 @@ check_grid (RVL *self)
         if (self->grid.ndx != r[0] || self->grid.ndy != r[1]
             || self->grid.ndz != r[2])
           {
-            rvl_log_fatal (
-                "[librvl write] Number of voxel dimensions do not match "
-                "the resolution.");
+            rvl_log_fatal ("Number of voxel dimensions do not match "
+                           "the resolution.");
             exit (EXIT_FAILURE);
           }
       }
       break;
     default:
-      rvl_log_fatal ("[librvl write] Invalid grid type: %.2x.",
-                     self->grid.type);
+      rvl_log_fatal ("Invalid grid type: %.2x.", self->grid.type);
       exit (EXIT_FAILURE);
       break;
     }

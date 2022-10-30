@@ -17,7 +17,7 @@ rvl_set_file (RVL *self, const char *filename)
 
   if (self->isOwningIo && self->io != NULL)
     {
-      rvl_log_trace ("[librvl set] Closing previous file...");
+      rvl_log_debug ("Closing old file stream...");
       fclose (self->io);
     }
 
@@ -33,10 +33,10 @@ rvl_set_file (RVL *self, const char *filename)
 
   if (self->io == NULL)
     {
-      rvl_log_error ("[rvl set] %s", strerror (errno));
+      rvl_log_error ("fopen failed: %s", strerror (errno));
     }
 
-  rvl_log_trace ("[librvl set] IO has been set to file \"%s\".", filename);
+  rvl_log_debug ("File stream has been set to file \"%s\".", filename);
   self->isOwningIo = true;
 }
 
@@ -45,13 +45,13 @@ rvl_set_io (RVL *self, FILE *stream)
 {
   if (self->isOwningIo && self->io != NULL)
     {
-      rvl_log_trace ("Closing previous file...");
+      rvl_log_debug ("Closing old file stream...");
       fclose (self->io);
     }
 
   self->io = stream;
 
-  rvl_log_trace ("[librvl set] IO has been set to %p", stream);
+  rvl_log_debug ("File stream has been set to %p", stream);
   self->isOwningIo = false;
 }
 
@@ -157,7 +157,7 @@ rvl_set_text (RVL *self, RVLenum tag, const char *value)
 {
   if ((tag & 0xff00) != 0x0D00)
     {
-      rvl_log_error ("[librvl set] Invalid enum for TEXT.");
+      rvl_log_error ("Invalid enum for TEXT chunk.");
       return;
     }
 
@@ -174,8 +174,7 @@ rvl_set_text (RVL *self, RVLenum tag, const char *value)
     {
       if (cur->tag == tag)
         {
-          rvl_log_error (
-              "[librvl set] The text field %.4x has already exist.");
+          rvl_log_error ("The text field %.4x has already exist.");
           return;
         }
 

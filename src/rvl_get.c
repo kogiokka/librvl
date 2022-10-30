@@ -77,8 +77,7 @@ rvl_get_text (RVL *self, RVLenum tag, const char **value)
     {
       if (cur->tag == tag)
         {
-          rvl_log_trace ("[librvl get] Get TEXT: %.4X, %s", cur->tag,
-                         cur->value);
+          rvl_log_debug ("Get TEXT: %.4X, %s", cur->tag, cur->value);
           *value = cur->value;
           return;
         }
@@ -100,7 +99,7 @@ rvl_get_primitive_nbytes (RVL *self)
 
   if (nbytes <= 0)
     {
-      rvl_log_error ("[librvl get] Invalid primitive: %.4x", self->primitive);
+      rvl_log_error ("Invalid primitive: %.4x", self->primitive);
     }
 
   return nbytes;
@@ -113,8 +112,7 @@ rvl_get_data_nbytes (RVL *self)
 
   if (res[0] <= 0 || res[1] <= 0 || res[2] <= 0)
     {
-      rvl_log_error ("[librvl get] Invalid resolution: %d, %d, %d", res[0],
-                     res[1], res[2]);
+      rvl_log_error ("Invalid resolution: %d, %d, %d", res[0], res[1], res[2]);
     }
 
   return res[0] * res[1] * res[2] * rvl_get_primitive_nbytes (self);
