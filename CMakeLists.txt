@@ -28,7 +28,11 @@ PROPERTIES
     PUBLIC_HEADER "include/rvl.h"
 )
 
-target_compile_definitions(rvl PRIVATE RVL_H_INTERNAL)
+target_compile_definitions(rvl
+PRIVATE
+    RVL_H_INTERNAL
+    $<$<C_COMPILER_ID:MSVC>:RVLLIB_EXPORTS=1>
+)
 target_compile_options(rvl
 PRIVATE
     $<$<C_COMPILER_ID:GNU,CLANG>:-Wall -Wextra -pedantic-errors>

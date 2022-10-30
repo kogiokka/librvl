@@ -193,6 +193,12 @@ extern "C"
 
 #if defined(__GNUC__) && (__GNUC__ >= 4)
 #  define RVLLIB_API __attribute__ ((visibility ("default")))
+#elif defined(_WIN32)
+#  ifdef RVLLIB_EXPORTS
+#    define RVLLIB_API __declspec(dllexport)
+#  else
+#    define RVLLIB_API __declspec(dllimport)
+#  endif
 #else
 #  define RVLLIB_API
 #endif
