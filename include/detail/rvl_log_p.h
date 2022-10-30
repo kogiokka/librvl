@@ -30,4 +30,6 @@ void rvl_log (RVLenum level, const char *funcName, const char *fmt, ...);
 #define rvl_log_error(...) rvl_log (RVL_LOG_LEVEL_ERROR, __func__, __VA_ARGS__)
 #define rvl_log_fatal(...) rvl_log (RVL_LOG_LEVEL_FATAL, __func__, __VA_ARGS__)
 
+void rvl_log_set_level (RVLenum level);
+
 #endif

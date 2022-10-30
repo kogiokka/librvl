@@ -23,7 +23,8 @@ struct RVLLog
 static void rvl_log_fwrite_default (RVLLog *self);
 static void rvl_log_create_timestamp (RVLLog *self);
 
-static RVLLog logger = { .writeFn = rvl_log_fwrite_default };
+static RVLLog  logger       = { .writeFn = rvl_log_fwrite_default };
+static RVLenum LOGGIN_LEVEL = RVL_LOG_LEVEL_TRACE;
 
 static const char *levelStrings[RVL_LOG_LEVEL_LAST + 1] = {
   "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL",
@@ -35,6 +36,11 @@ static int levelAttrs[RVL_LOG_LEVEL_LAST + 1]  = { 2, 1, 1, 1, 1, 1 };
 void
 rvl_log (RVLenum level, const char *funcName, const char *fmt, ...)
 {
+  if (level < LOGGIN_LEVEL)
+    {
+      return;
+    }
+
   logger.level    = level;
   logger.funcName = funcName;
   logger.format   = fmt;
@@ -42,6 +48,12 @@ rvl_log (RVLenum level, const char *funcName, const char *fmt, ...)
   va_start (logger.args, fmt);
   logger.writeFn (&logger);
   va_end (logger.args);
+}
+
+void
+rvl_log_set_level (RVLenum level)
+{
+  LOGGIN_LEVEL = level;
 }
 
 void
