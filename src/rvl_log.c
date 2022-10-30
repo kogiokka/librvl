@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "detail/rvl_log_p.h"
@@ -59,30 +60,53 @@ rvl_log_set_level (RVLenum level)
 void
 rvl_log_fwrite_default (RVLLog *self)
 {
+  char  buf[512];
+  char *dynbuf = NULL;
+
+  char *out = buf;
+
   rvl_log_create_timestamp (self);
 
   // Calculate the required lengths
-  size_t hdrLen = snprintf (
+  size_t hdrlen = snprintf (
       NULL, 0, "%s \033[%d;%dm%s\033[0m \033[90m%s:\033[0m ", self->timestamp,
       levelColors[self->level], levelAttrs[self->level],
       levelStrings[self->level], self->funcName);
 
   va_list args;
   va_copy (args, self->args);
-  size_t msgLen = vsnprintf (NULL, 0, self->format, args);
+  size_t msglen = vsnprintf (NULL, 0, self->format, args);
   va_end (args);
 
-  // Write to char arrays
-  char hdr[hdrLen + 1];
-  char msg[msgLen + 1];
-  snprintf (hdr, hdrLen + 1, "%s \033[%d;%dm%s\033[0m \033[90m%s\033[0m",
-            self->timestamp, levelColors[self->level], levelAttrs[self->level],
-            levelStrings[self->level], self->funcName);
-  vsnprintf (msg, msgLen + 1, self->format, self->args);
+  size_t logsz = hdrlen + msglen + 1;
+  if (logsz > sizeof (buf))
+    {
+      dynbuf = (char *)malloc (logsz);
+      out    = dynbuf;
+    }
 
-  // Print the char arrays at once
-  fprintf (stdout, "%s: %s\n", hdr, msg);
+  // Write to char arrays
+  snprintf (out, hdrlen + 1,
+            "%s \033[%d;%dm%s\033[0m \033[90m%s\033[0m: ", self->timestamp,
+            levelColors[self->level], levelAttrs[self->level],
+            levelStrings[self->level], self->funcName);
+  vsnprintf (out + hdrlen, msglen + 1, self->format, self->args);
+
+  if (dynbuf != NULL)
+    {
+      rvl_log_warn (
+          "The log message from \"%s\" was %lu bytes long, exceeding "
+          "the buffer size.",
+          self->funcName, logsz);
+    }
+
+  fprintf (stdout, "%s\n", out);
   fflush (stdout);
+
+  if (dynbuf != NULL)
+    {
+      free (dynbuf);
+    }
 }
 
 void
