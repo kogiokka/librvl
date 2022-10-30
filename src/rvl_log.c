@@ -90,8 +90,10 @@ rvl_log_create_timestamp (RVLLog *self)
 {
   char *buf = self->timestamp;
 
-  time_t now;
-  time (&now);
-  buf[strftime (buf, sizeof (self->timestamp), "%FT%TZ", gmtime (&now))]
+  time_t tt;
+  time (&tt);
+  struct tm *now = gmtime (&tt);
+
+  buf[strftime (buf, sizeof (self->timestamp), "%Y-%m-%dT%H:%M:%SZ", now)]
       = '\0';
 }
