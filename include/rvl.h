@@ -191,48 +191,54 @@ extern "C"
 {
 #endif
 
-RVL *rvl_create_writer (void);
-RVL *rvl_create_reader (void);
-void rvl_destroy (RVL **self);
+#if defined(__GNUC__) && (__GNUC__ >= 4)
+#  define RVLLIB_API __attribute__ ((visibility ("default")))
+#else
+#  define RVLLIB_API
+#endif
 
-void rvl_set_file (RVL *self, const char *filename);
-void rvl_set_io (RVL *self, FILE *stream);
+RVLLIB_API RVL *rvl_create_writer (void);
+RVLLIB_API RVL *rvl_create_reader (void);
+RVLLIB_API void rvl_destroy (RVL **self);
+
+RVLLIB_API void rvl_set_file (RVL *self, const char *filename);
+RVLLIB_API void rvl_set_io (RVL *self, FILE *stream);
 
 // Write the entire rvl file
-void rvl_write_rvl (RVL *self);
+RVLLIB_API void rvl_write_rvl (RVL *self);
 
 // Read the entire rvl file
-void rvl_read_rvl (RVL *self);
+RVLLIB_API void rvl_read_rvl (RVL *self);
 
 // Read the information without the actual volumetric data
 // Use rvl_get_* to retrieve information.
-void rvl_read_info (RVL *self);
+RVLLIB_API void rvl_read_info (RVL *self);
 
 // Read the entire volumetric data into the buffer. The buffer allocation and
 // deallocation is managed by the user.
-void rvl_read_data_buffer (RVL *self, void **buffer);
+RVLLIB_API void rvl_read_data_buffer (RVL *self, void **buffer);
 
 /* VFMT chunk functions */
-void    rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,
+RVLLIB_API void    rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,
                                    RVLenum primitive, RVLenum endian);
-void    rvl_get_volumetric_format (RVL *self, int *nx, int *ny, int *nz,
+RVLLIB_API void    rvl_get_volumetric_format (RVL *self, int *nx, int *ny, int *nz,
                                    RVLenum *primitive, RVLenum *endian);
-void    rvl_set_compression (RVL *self, RVLenum compression);
-RVLenum rvl_get_compression (RVL *self);
+RVLLIB_API void    rvl_set_compression (RVL *self, RVLenum compression);
+RVLLIB_API RVLenum rvl_get_compression (RVL *self);
 
 /* GRID chunk functions */
-void rvl_set_regular_grid (RVL *self, float dx, float dy, float dz);
-void rvl_set_rectilinear_grid (RVL *self, int ndx, int ndy, int ndz,
+RVLLIB_API void rvl_set_regular_grid (RVL *self, float dx, float dy, float dz);
+RVLLIB_API void rvl_set_rectilinear_grid (RVL *self, int ndx, int ndy, int ndz,
                                float *dx, float *dy, float *dz);
-void rvl_set_grid_unit (RVL *self, RVLenum unit);
-void rvl_set_grid_origin (RVL *self, float x0, float y0, float z0);
+RVLLIB_API void rvl_set_grid_unit (RVL *self, RVLenum unit);
+RVLLIB_API void rvl_set_grid_origin (RVL *self, float x0, float y0, float z0);
 
-RVLenum rvl_get_grid_type (RVL *self);
-RVLenum rvl_get_grid_unit (RVL *self);
+RVLLIB_API RVLenum rvl_get_grid_type (RVL *self);
+RVLLIB_API RVLenum rvl_get_grid_unit (RVL *self);
 
-void rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
-void rvl_get_voxel_dims (RVL *self, float *dx, float *dy, float *dz);
-void rvl_get_voxel_dims_v (RVL *self, int *ndx, int *ndy, int *ndz,
+RVLLIB_API void rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
+RVLLIB_API void rvl_get_voxel_dims (RVL *self, float *dx, float *dy, float *dz);
+RVLLIB_API void rvl_get_voxel_dims_v (RVL *self, int *ndx, int *ndy, int *ndz,
                            const float **dx, const float **dy,
                            const float **dz);
 
@@ -241,15 +247,15 @@ void rvl_get_voxel_dims_v (RVL *self, int *ndx, int *ndy, int *ndz,
 // Set the data buffer to be written by the RVL writer. The RVL instance does
 // not own the pointer; the user should allocate the memory before writing
 // and deallocate the memory after writing.
-void rvl_set_data_buffer (RVL *self, unsigned int size, const void *buffer);
+RVLLIB_API void rvl_set_data_buffer (RVL *self, unsigned int size, const void *buffer);
 
 // Get the data buffer from the RVL reader. The RVL instance owns the
 // pointer, and users should not free the memory themselves.
-void rvl_get_data_buffer (RVL *self, const void **buffer);
+RVLLIB_API void rvl_get_data_buffer (RVL *self, const void **buffer);
 
 /* TEXT chunk functions */
-void rvl_set_text (RVL *self, RVLenum tag, const char *value);
-void rvl_get_text (RVL *self, RVLenum tag, const char **value);
+RVLLIB_API void rvl_set_text (RVL *self, RVLenum tag, const char *value);
+RVLLIB_API void rvl_get_text (RVL *self, RVLenum tag, const char **value);
 
 /**
  * Helpers
@@ -257,8 +263,8 @@ void rvl_get_text (RVL *self, RVLenum tag, const char **value);
  * These helper functions depend on certain RVL information. Please make sure
  * the instance has been fully configured before using them.
  */
-unsigned int rvl_get_primitive_nbytes (RVL *self);
-unsigned int rvl_get_data_nbytes (RVL *self);
+RVLLIB_API unsigned int rvl_get_primitive_nbytes (RVL *self);
+RVLLIB_API unsigned int rvl_get_data_nbytes (RVL *self);
 
 #ifdef __cplusplus
 }

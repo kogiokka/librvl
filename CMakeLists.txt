@@ -32,6 +32,7 @@ target_compile_definitions(rvl PRIVATE RVL_H_INTERNAL)
 target_compile_options(rvl
 PRIVATE
     $<$<C_COMPILER_ID:GNU,CLANG>:-Wall -Wextra -pedantic-errors>
+    $<$<C_COMPILER_ID:GNU>:-fvisibility=hidden>
 )
 
 target_sources(rvl
