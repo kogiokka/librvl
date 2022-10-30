@@ -30,16 +30,3 @@ PRIVATE
    "${LZ4_SOURCE_DIR}/lz4hc.c"
    "${LZ4_SOURCE_DIR}/xxhash.c"
 )
-
-#############################################################################
-# log.c
-#############################################################################
-
-add_library(logc STATIC)
-
-set(LOGC_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/log.c")
-
-target_sources(logc PRIVATE "${LOGC_SOURCE_DIR}/log.c")
-target_include_directories(logc PUBLIC "${LOGC_SOURCE_DIR}")
-target_compile_definitions(logc PRIVATE LOG_USE_COLOR)
-set_target_properties(logc PROPERTIES POSITION_INDEPENDENT_CODE ON)

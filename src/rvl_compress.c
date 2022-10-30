@@ -5,9 +5,8 @@
 #include <lz4hc.h>
 #include <lzma.h>
 
-#include <log.h>
-
 #include "detail/rvl_compress_p.h"
+#include "detail/rvl_log_p.h"
 
 static void create_lzma_encoder (lzma_stream *self, uint32_t preset);
 static void create_lzma_decoder (lzma_stream *strm);
@@ -30,8 +29,8 @@ rvl_compress_lzma (RVL *self, BYTE **out, u32 *size)
   u32         srcSize = self->data.size;
   u32         dstCap  = self->data.size;
 
-  log_trace ("[librvl compress][LZMA] Compressing data with %u bytes...",
-             srcSize);
+  rvl_log_trace ("[librvl compress][LZMA] Compressing data with %u bytes...",
+                 srcSize);
 
   lzma_ret ret;
   create_lzma_encoder (&strm, 6 | LZMA_PRESET_DEFAULT);
@@ -45,7 +44,7 @@ rvl_compress_lzma (RVL *self, BYTE **out, u32 *size)
       dstCap = lzma_stream_buffer_bound (self->data.size);
       *out   = realloc (*out, dstCap);
 
-      log_trace (
+      rvl_log_trace (
           "[librvl compress][LZMA] Reallocate output memory with %u bytes.",
           dstCap);
 
@@ -61,9 +60,9 @@ rvl_compress_lzma (RVL *self, BYTE **out, u32 *size)
   *size = strm.total_out;
   destroy_lzma_coder (&strm);
 
-  log_trace ("[librvl compress][LZMA] Compressed successfully. The output "
-             "data has %u bytes.",
-             strm.total_out);
+  rvl_log_trace ("[librvl compress][LZMA] Compressed successfully. The output "
+                 "data has %u bytes.",
+                 strm.total_out);
 }
 
 void
@@ -84,16 +83,18 @@ rvl_decompress_lzma (RVL *self, const BYTE *in, u32 size)
 
   if (strm.total_out != self->data.size)
     {
-      log_fatal ("[librvl compress][LZMA] Decompression failed. The data size "
-                 "should be %u. However, the decompressed data size was %u.",
-                 self->data.size, strm.total_out);
+      rvl_log_fatal (
+          "[librvl compress][LZMA] Decompression failed. The data size "
+          "should be %u. However, the decompressed data size was %u.",
+          self->data.size, strm.total_out);
       exit (EXIT_FAILURE);
     }
   destroy_lzma_coder (&strm);
 
-  log_trace ("[librvl compress][LZMA] Decompressed successfully. The output "
-             "data has %u bytes.",
-             strm.total_out);
+  rvl_log_trace (
+      "[librvl compress][LZMA] Decompressed successfully. The output "
+      "data has %u bytes.",
+      strm.total_out);
 }
 
 void
@@ -118,9 +119,10 @@ rvl_compress_lz4 (RVL *self, BYTE **out, u32 *size)
 
   *size = nbytes;
 
-  log_trace ("[librvl compress][LZ4] Compressed successfully. The output data "
-             "has %u bytes.",
-             nbytes);
+  rvl_log_trace (
+      "[librvl compress][LZ4] Compressed successfully. The output data "
+      "has %u bytes.",
+      nbytes);
 }
 
 void
@@ -134,9 +136,10 @@ rvl_decompress_lz4 (RVL *self, const BYTE *in, u32 size)
   int nbytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
   if ((u32)nbytes != self->data.size)
     {
-      log_fatal ("[librvl compress][LZ4] Decompression failed. The retunred "
-                 "number of bytes is %d.",
-                 nbytes);
+      rvl_log_fatal (
+          "[librvl compress][LZ4] Decompression failed. The retunred "
+          "number of bytes is %d.",
+          nbytes);
       exit (EXIT_FAILURE);
     }
 }
@@ -222,7 +225,7 @@ print_lzma_compression_error (lzma_ret ret)
       break;
     }
 
-  log_error (
+  rvl_log_error (
       "[librvl compress][LZMA] Compression failed: %s (error code %u)\n", msg,
       ret);
 }
@@ -254,7 +257,7 @@ print_lzma_decompression_error (lzma_ret ret)
       break;
     }
 
-  log_error (
+  rvl_log_error (
       "[librvl compress][LZMA] Decompression failed: %s (error code %u)\n",
       msg, ret);
 }

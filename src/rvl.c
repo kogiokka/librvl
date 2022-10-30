@@ -2,10 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <log.h>
-
 #include "rvl.h"
 
+#include "detail/rvl_log_p.h"
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
 
@@ -81,7 +80,7 @@ rvl_alloc (RVL *self, BYTE **ptr, u32 size)
 
   if (*ptr == NULL)
     {
-      log_fatal ("[librvl alloc] Memory allocation failure.\n");
+      rvl_log_fatal ("[librvl alloc] Memory allocation failure.\n");
       exit (EXIT_FAILURE);
     }
 }
@@ -101,13 +100,6 @@ rvl_dealloc (RVL *self, BYTE **ptr)
 RVL *
 rvl_create (RVLIoState ioState)
 {
-
-  log_set_level (LOG_INFO);
-
-#ifndef NDEBUG
-  log_set_level (LOG_TRACE);
-#endif
-
   RVL *self        = (RVL *)calloc (1, sizeof (RVL));
   self->version[0] = RVL_VERSION_MAJOR;
   self->version[1] = RVL_VERSION_MINOR;

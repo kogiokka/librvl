@@ -3,13 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <log.h>
-
 #include "rvl.h"
 
-#include "detail/rvl_p.h"
-
 #include "detail/rvl_compress_p.h"
+#include "detail/rvl_log_p.h"
+#include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
 
 static void rvl_write_chunk_header (RVL *self, RVLChunkCode code, u32 size);
@@ -53,7 +51,7 @@ void
 rvl_write_VFMT_chunk (RVL *self)
 {
   u32 size = 18;
-  u8 *wbuf  = calloc (1, size);
+  u8 *wbuf = calloc (1, size);
 
   RVLPrimitive primitive = self->primitive;
   RVLEndian    endian    = self->endian;
@@ -69,7 +67,7 @@ rvl_write_VFMT_chunk (RVL *self)
   rvl_write_chunk_payload (self, wbuf, size);
   rvl_write_chunk_end (self);
 
-  free(wbuf);
+  free (wbuf);
 }
 
 void
@@ -101,7 +99,7 @@ rvl_write_GRID_chunk (RVL *self)
   rvl_write_chunk_payload (self, wbuf, wbufSize);
   rvl_write_chunk_end (self);
 
-  free(wbuf);
+  free (wbuf);
 }
 
 void
@@ -197,8 +195,9 @@ rvl_fwrite (RVL *self, const BYTE *data, u32 size)
 {
   if (self->writeFn == NULL)
     {
-      log_fatal ("[librvl write] Call to NULL write function. Please check if "
-                 "the RVL instance is a writer.");
+      rvl_log_fatal (
+          "[librvl write] Call to NULL write function. Please check if "
+          "the RVL instance is a writer.");
       exit (EXIT_FAILURE);
     }
 
@@ -210,7 +209,7 @@ rvl_fwrite_default (RVL *self, const BYTE *data, u32 size)
 {
   if (self->io == NULL)
     {
-      log_fatal ("[librvl write] RVL is not initialized.");
+      rvl_log_fatal ("[librvl write] RVL is not initialized.");
       exit (EXIT_FAILURE);
     }
 
@@ -218,7 +217,7 @@ rvl_fwrite_default (RVL *self, const BYTE *data, u32 size)
 
   if (count != size)
     {
-      log_fatal ("[librvl write] fwrite failure.");
+      rvl_log_fatal ("[librvl write] fwrite failure.");
       exit (EXIT_FAILURE);
     }
 }
@@ -228,14 +227,14 @@ check_data (RVL *self)
 {
   if (self->data.size <= 0)
     {
-      log_fatal ("[librvl write] Data buffer size is less than 0.");
+      rvl_log_fatal ("[librvl write] Data buffer size is less than 0.");
       exit (EXIT_FAILURE);
     }
 
   if (self->data.size != rvl_get_data_nbytes (self))
     {
-      log_fatal ("[librvl write] Data buffer size does not match this RVL "
-                 "configuration.");
+      rvl_log_fatal ("[librvl write] Data buffer size does not match this RVL "
+                     "configuration.");
       exit (EXIT_FAILURE);
     }
 }
@@ -245,7 +244,7 @@ check_grid (RVL *self)
 {
   if (self->grid.ndx <= 0 || self->grid.ndy <= 0 || self->grid.ndz <= 0)
     {
-      log_fatal ("[librvl write] Missing voxel dimensions.");
+      rvl_log_fatal ("[librvl write] Missing voxel dimensions.");
       exit (EXIT_FAILURE);
     }
 
@@ -254,8 +253,9 @@ check_grid (RVL *self)
     case RVL_GRID_REGULAR:
       if (self->grid.ndx != 1 || self->grid.ndy != 1 || self->grid.ndz != 1)
         {
-          log_fatal ("[librvl write] Number of voxel dimensions is not valid "
-                     "for regular grid.");
+          rvl_log_fatal (
+              "[librvl write] Number of voxel dimensions is not valid "
+              "for regular grid.");
           exit (EXIT_FAILURE);
         }
       break;
@@ -265,7 +265,7 @@ check_grid (RVL *self)
         if (self->grid.ndx != r[0] || self->grid.ndy != r[1]
             || self->grid.ndz != r[2])
           {
-            log_fatal (
+            rvl_log_fatal (
                 "[librvl write] Number of voxel dimensions do not match "
                 "the resolution.");
             exit (EXIT_FAILURE);
@@ -273,7 +273,8 @@ check_grid (RVL *self)
       }
       break;
     default:
-      log_fatal ("[librvl write] Invalid grid type: %.2x.", self->grid.type);
+      rvl_log_fatal ("[librvl write] Invalid grid type: %.2x.",
+                     self->grid.type);
       exit (EXIT_FAILURE);
       break;
     }

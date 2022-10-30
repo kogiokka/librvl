@@ -339,3 +339,4 @@ print_data_buffer (int x, int y, int z, const void *buffer, int primSize)
       fprintf (stdout, "\n");
     }
 }
+

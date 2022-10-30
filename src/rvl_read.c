@@ -3,13 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <log.h>
-
 #include "rvl.h"
 
-#include "detail/rvl_p.h"
-
 #include "detail/rvl_compress_p.h"
+#include "detail/rvl_log_p.h"
+#include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
 
 static void rvl_read_chunk_header (RVL *self, u32 *size, RVLChunkCode *code);
@@ -38,8 +36,9 @@ rvl_read_rvl (RVL *self)
       rvl_read_chunk_header (self, &size, &code);
 
       char *ch = (char *)&code;
-      log_debug ("[librvl read] Reading chunk header: size %d, code: %c%c%c%c",
-                 size, ch[0], ch[1], ch[2], ch[3]);
+      rvl_log_debug (
+          "[librvl read] Reading chunk header: size %d, code: %c%c%c%c", size,
+          ch[0], ch[1], ch[2], ch[3]);
 
       BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
@@ -68,8 +67,8 @@ rvl_read_rvl (RVL *self)
           break;
         default:
           {
-            log_warn ("[librvl read] Unknown chunk code: %c%c%c%c", ch[0],
-                      ch[1], ch[2], ch[3]);
+            rvl_log_warn ("[librvl read] Unknown chunk code: %c%c%c%c", ch[0],
+                          ch[1], ch[2], ch[3]);
           }
           break;
         }
@@ -250,7 +249,7 @@ rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size)
   text->value[valueLen] = '\0';
   memcpy (text->value, &rbuf[1], valueLen);
 
-  log_trace ("[librvl read] Read TEXT: %.4X, %s", text->tag, text->value);
+  rvl_log_trace ("[librvl read] Read TEXT: %.4X, %s", text->tag, text->value);
 
   if (self->text == NULL)
     {
@@ -277,7 +276,7 @@ rvl_read_file_sig (RVL *self)
     {
       if (sig[i] != RVL_FILE_SIG[i])
         {
-          log_fatal ("[librvl read] Not an RVL file.");
+          rvl_log_fatal ("[librvl read] Not an RVL file.");
           exit (EXIT_FAILURE);
         }
     }
@@ -288,8 +287,9 @@ rvl_fread (RVL *self, BYTE *data, u32 size)
 {
   if (self->readFn == NULL)
     {
-      log_fatal ("[librvl read] Call to NULL read function. Please check if "
-                 "the RVL instance is a reader.");
+      rvl_log_fatal (
+          "[librvl read] Call to NULL read function. Please check if "
+          "the RVL instance is a reader.");
       exit (EXIT_FAILURE);
     }
 
@@ -301,7 +301,7 @@ rvl_fread_default (RVL *self, BYTE *data, u32 size)
 {
   if (self->io == NULL)
     {
-      log_fatal ("[librvl read] RVL is not intialized.");
+      rvl_log_fatal ("[librvl read] RVL is not intialized.");
       exit (EXIT_FAILURE);
     }
 
@@ -309,7 +309,7 @@ rvl_fread_default (RVL *self, BYTE *data, u32 size)
 
   if (count != size)
     {
-      log_fatal ("[librvl read] fread failure.");
+      rvl_log_fatal ("[librvl read] fread failure.");
       exit (EXIT_FAILURE);
     }
 }

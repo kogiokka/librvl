@@ -43,6 +43,7 @@ PRIVATE
     "src/rvl_get.c"
     "src/rvl_set.c"
     "src/rvl_text.c"
+    "src/rvl_log.c"
 )
 
 target_include_directories(rvl PRIVATE "include/")
@@ -57,7 +58,6 @@ target_link_libraries(rvl
 PRIVATE
     liblzma
     lz4
-    logc
 )
 
 install(TARGETS rvl EXPORT librvlTargets
