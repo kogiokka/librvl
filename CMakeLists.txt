@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
 project("rvl"
     DESCRIPTION "The Regular VoLumetric format reference library"
-    VERSION 0.6.2
+    VERSION 0.6.3
     LANGUAGES C)
 
 option(RVL_BUILD_TEST "Build the unit tests for librvl" ON)
