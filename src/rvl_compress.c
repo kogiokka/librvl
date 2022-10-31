@@ -99,6 +99,9 @@ rvl_compress_lz4 (RVL *self, BYTE **out, u32 *size)
   char       *dst     = (char *)*out;
   u32         dstCap  = self->data.size;
 
+  rvl_log_debug ("Starting LZ4 compression. The original size is %u bytes.",
+                 srcSize);
+
   int nbytes = LZ4_compress_HC (src, dst, srcSize, dstCap, LZ4HC_CLEVEL_MIN);
 
   // When the compressed size is greater than the uncompressed one.
@@ -131,6 +134,8 @@ rvl_decompress_lz4 (RVL *self, const BYTE *in, u32 size)
           "Decompression failed. The returned number of bytes is %d.", nbytes);
       exit (EXIT_FAILURE);
     }
+
+  rvl_log_debug ("Decompression succeeded. The result has %u bytes.", nbytes);
 }
 
 void
