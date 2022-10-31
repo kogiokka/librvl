@@ -128,7 +128,7 @@ rvl_decompress_lz4 (RVL *self, const BYTE *in, u32 size)
   if ((u32)nbytes != self->data.size)
     {
       rvl_log_fatal (
-          "Decompression failed. The retunred number of bytes is %d.", nbytes);
+          "Decompression failed. The returned number of bytes is %d.", nbytes);
       exit (EXIT_FAILURE);
     }
 }
