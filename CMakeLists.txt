@@ -67,21 +67,21 @@ PRIVATE
     lz4
 )
 
-set(librvl_DOC_DIR "share/doc/librvl-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
+set(rvl_DOC_DIR "share/doc/librvl-${rvl_VERSION_MAJOR}.${rvl_VERSION_MINOR}")
 
-install(TARGETS rvl EXPORT librvlTargets
+install(TARGETS rvl EXPORT rvlTargets
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
     PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
 )
 
-install(EXPORT librvlTargets
+install(EXPORT rvlTargets
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
     NAMESPACE rvl::
 )
 
-set(LIB_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/librvl")
+set(rvl_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}/librvl")
 
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/librvlConfigVersion.cmake"
@@ -91,8 +91,8 @@ write_basic_package_version_file(
 configure_package_config_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/librvlConfig.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/librvlConfig.cmake"
-    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
-    PATH_VARS LIB_INSTALL_DIR
+    INSTALL_DESTINATION "${rvl_INSTALL_LIBDIR}/cmake"
+    PATH_VARS rvl_INSTALL_LIBDIR
 )
 
 install(
@@ -102,8 +102,8 @@ install(
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
 )
 
-install(FILES LICENSE NOTICE DESTINATION "${librvl_DOC_DIR}")
-install(DIRECTORY licenses DESTINATION "${librvl_DOC_DIR}")
+install(FILES LICENSE NOTICE DESTINATION "${rvl_DOC_DIR}")
+install(DIRECTORY licenses DESTINATION "${rvl_DOC_DIR}")
 
 include(CTest)
 add_subdirectory("tests/")
