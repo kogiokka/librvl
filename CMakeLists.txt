@@ -68,6 +68,7 @@ PRIVATE
 )
 
 set(rvl_DOC_DIR "share/doc/librvl-${rvl_VERSION_MAJOR}.${rvl_VERSION_MINOR}")
+set(rvl_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}/librvl")
 
 install(TARGETS rvl EXPORT rvlTargets
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
@@ -77,11 +78,9 @@ install(TARGETS rvl EXPORT rvlTargets
 )
 
 install(EXPORT rvlTargets
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
+    DESTINATION "${rvl_INSTALL_LIBDIR}/cmake"
     NAMESPACE rvl::
 )
-
-set(rvl_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}/librvl")
 
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/librvlConfigVersion.cmake"
@@ -99,7 +98,7 @@ install(
     FILES
         "${CMAKE_CURRENT_BINARY_DIR}/librvlConfig.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/librvlConfigVersion.cmake"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
+    DESTINATION "${rvl_INSTALL_LIBDIR}/cmake"
 )
 
 install(FILES LICENSE NOTICE DESTINATION "${rvl_DOC_DIR}")
