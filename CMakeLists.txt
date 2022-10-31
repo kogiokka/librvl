@@ -79,6 +79,7 @@ install(TARGETS rvl EXPORT rvlTargets
 
 install(EXPORT rvlTargets
     DESTINATION "${rvl_INSTALL_LIBDIR}/cmake"
+    FILE "librvlTargets.cmake"
     NAMESPACE rvl::
 )
 
