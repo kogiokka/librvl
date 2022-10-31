@@ -65,6 +65,8 @@ PRIVATE
     lz4
 )
 
+set(librvl_DOC_DIR "share/doc/librvl-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
+
 install(TARGETS rvl EXPORT librvlTargets
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
@@ -97,6 +99,9 @@ install(
         "${CMAKE_CURRENT_BINARY_DIR}/librvlConfigVersion.cmake"
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/librvl/cmake"
 )
+
+install(FILES LICENSE NOTICE DESTINATION "${librvl_DOC_DIR}")
+install(DIRECTORY licenses DESTINATION "${librvl_DOC_DIR}")
 
 include(CTest)
 add_subdirectory("tests/")
