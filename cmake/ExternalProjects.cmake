@@ -31,4 +31,5 @@ PRIVATE
    "${LZ4_SOURCE_DIR}/lz4hc.c"
    "${LZ4_SOURCE_DIR}/xxhash.c"
 )
+target_compile_definitions(lz4 PRIVATE LZ4LIB_VISIBILITY=) # empty macro
 target_compile_options(lz4 PRIVATE $<$<C_COMPILER_ID:GNU>:-fvisibility=hidden>)
