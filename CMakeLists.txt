@@ -26,6 +26,8 @@ PROPERTIES
     C_STANDARD 99
     C_STANDARD_REQUIRED ON
     PUBLIC_HEADER "include/rvl.h"
+    VERSION "${rvl_VERSION}"
+    SOVERSION "${rvl_VERSION_MAJOR}.${rvl_VERSION_MINOR}"
 )
 
 target_compile_definitions(rvl
