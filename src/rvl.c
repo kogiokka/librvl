@@ -80,7 +80,7 @@ rvl_alloc (RVL *self, BYTE **ptr, u32 size)
 
   if (*ptr == NULL)
     {
-      rvl_log_fatal ("[librvl alloc] Memory allocation failure.\n");
+      rvl_log_fatal ("Memory allocation failure.");
       exit (EXIT_FAILURE);
     }
 }
