@@ -175,7 +175,7 @@ rvl_handle_VFMT_chunk (RVL *self, u32 size)
   self->endian    = endian;
   self->compress  = compress;
 
-  self->data.size = rvl_eval_voxels_nbyte (self);
+  self->data.size = rvl_eval_voxels_nbytes (self);
 
   free (rbuf);
 }

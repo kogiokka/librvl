@@ -96,13 +96,13 @@ rvl_get_text (RVL *self, RVLenum tag, const char **value)
 unsigned int
 rvl_get_primitive_nbytes (RVL *self)
 {
-  return rvl_eval_primitive_nbyte (self);
+  return rvl_eval_primitive_nbytes (self);
 }
 
 unsigned int
 rvl_get_data_nbytes (RVL *self)
 {
-  return rvl_eval_voxels_nbyte (self);
+  return rvl_eval_voxels_nbytes (self);
 }
 
 void

@@ -280,10 +280,10 @@ RVLLIB_API void rvl_get_text (RVL *self, RVLenum tag, const char **value);
  */
 
 // Evaluate the byte size of the configured primitive type.
-RVLLIB_API unsigned int rvl_eval_primitive_nbyte (RVL *self);
+RVLLIB_API unsigned int rvl_eval_primitive_nbytes (RVL *self);
 
 // Evaluate the total byte size of all voxels with VFMT information.
-RVLLIB_API unsigned int rvl_eval_voxels_nbyte (RVL *self);
+RVLLIB_API unsigned int rvl_eval_voxels_nbytes (RVL *self);
 
 
 /* Deprecated functions */
@@ -301,10 +301,10 @@ RVLLIB_API void rvl_set_data_buffer (RVL *self, unsigned int size,
 RVL_DEPRECATED("Use rvl_get_voxels() instead.")
 RVLLIB_API void rvl_get_data_buffer (RVL *self, const void **buffer);
 
-RVL_DEPRECATED("Use rvl_eval_primitive_nbyte() instead.")
+RVL_DEPRECATED("Use rvl_eval_primitive_nbytes() instead.")
 RVLLIB_API unsigned int rvl_get_primitive_nbytes (RVL *self);
 
-RVL_DEPRECATED("Use rvl_eval_voxels_nbyte() instead.")
+RVL_DEPRECATED("Use rvl_eval_voxels_nbytes() instead.")
 RVLLIB_API unsigned int rvl_get_data_nbytes (RVL *self);
 
 #ifdef __cplusplus
@@ -312,3 +312,4 @@ RVLLIB_API unsigned int rvl_get_data_nbytes (RVL *self);
 #endif
 
 #endif
+
