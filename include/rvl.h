@@ -275,8 +275,8 @@ RVLLIB_API void rvl_get_text (RVL *self, RVLenum tag, const char **value);
 /**
  * Helpers
  *
- * These helper functions depend on certain RVL information. Please make sure
- * the instance has been fully configured before using them.
+ * These helper functions depend on VFMT information. Please make sure the
+ * information needed has been set before using them.
  */
 RVLLIB_API unsigned int rvl_eval_primitive_nbyte (RVL *self);
 RVLLIB_API unsigned int rvl_eval_voxels_nbyte (RVL *self);
