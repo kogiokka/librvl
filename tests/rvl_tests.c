@@ -54,7 +54,7 @@ rvl_test_read_regular_grid ()
   RVLenum primitive, endian;
   rvl_get_volumetric_format (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
-  rvl_get_grid_position (rvl, &px, &py, &pz);
+  rvl_get_grid_origin (rvl, &px, &py, &pz);
 
   RVLenum compress = rvl_get_compression (rvl);
 
@@ -139,7 +139,7 @@ rvl_test_read_rectilinear_grid ()
   RVLenum      primitive, endian;
   rvl_get_volumetric_format (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims_v (rvl, &ndx, &ndy, &ndz, &dx, &dy, &dz);
-  rvl_get_grid_position (rvl, &px, &py, &pz);
+  rvl_get_grid_origin (rvl, &px, &py, &pz);
 
   RVLenum compress = rvl_get_compression (rvl);
 
@@ -209,7 +209,7 @@ rvl_test_partially_read ()
 
   rvl_get_volumetric_format (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
-  rvl_get_grid_position (rvl, &px, &py, &pz);
+  rvl_get_grid_origin (rvl, &px, &py, &pz);
 
   const char *title;
   const char *descr;

@@ -89,7 +89,7 @@ read_rvl (RVL *rvl)
   float   x0, y0, z0;
   rvl_get_volumetric_format (rvl, &x, &y, &z, &primitive, &endian);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
-  rvl_get_grid_position (rvl, &x0, &y0, &z0);
+  rvl_get_grid_origin (rvl, &x0, &y0, &z0);
 
   char sep[81];
   memset (sep, '-', 80);

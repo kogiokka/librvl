@@ -242,7 +242,7 @@ RVLLIB_API void rvl_set_grid_origin (RVL *self, float x0, float y0, float z0);
 RVLLIB_API RVLenum rvl_get_grid_type (RVL *self);
 RVLLIB_API RVLenum rvl_get_grid_unit (RVL *self);
 
-RVLLIB_API void rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
+RVLLIB_API void rvl_get_grid_origin (RVL *self, float *x, float *y, float *z);
 RVLLIB_API void rvl_get_voxel_dims (RVL *self, float *dx, float *dy, float *dz);
 RVLLIB_API void rvl_get_voxel_dims_v (RVL *self, int *ndx, int *ndy, int *ndz,
                            const float **dx, const float **dy,
