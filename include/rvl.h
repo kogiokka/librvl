@@ -203,6 +203,14 @@ extern "C"
 #  define RVLLIB_API
 #endif
 
+#ifdef __cplusplus
+#  define RVL_DEPRECATED(reason) [[deprecated(reason)]]
+#elif defined(__GNUC__) || defined(__clang__)
+#  define RVL_DEPRECATED(reason)  __attribute__ ((deprecated (reason)))
+#elif defined(_WIN32)
+#  define RVL_DEPRECATED __declspec(deprecated(reason))
+#endif
+
 RVLLIB_API RVL *rvl_create_writer (void);
 RVLLIB_API RVL *rvl_create_reader (void);
 RVLLIB_API void rvl_destroy (RVL **self);
@@ -273,6 +281,10 @@ RVLLIB_API void rvl_get_text (RVL *self, RVLenum tag, const char **value);
  */
 RVLLIB_API unsigned int rvl_get_primitive_nbytes (RVL *self);
 RVLLIB_API unsigned int rvl_get_data_nbytes (RVL *self);
+
+/* Deprecated functions */
+RVL_DEPRECATED("The function has been renamed to rvl_get_grid_origin().")
+RVLLIB_API void rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
 
 #ifdef __cplusplus
 }

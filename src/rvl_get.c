@@ -117,3 +117,9 @@ rvl_get_data_nbytes (RVL *self)
 
   return res[0] * res[1] * res[2] * rvl_get_primitive_nbytes (self);
 }
+
+void
+rvl_get_grid_position (RVL *self, float *x, float *y, float *z)
+{
+  rvl_get_grid_origin (self, x, y, z);
+}
