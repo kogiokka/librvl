@@ -13,8 +13,8 @@
 static void rvl_read_chunk_header (RVL *self, u32 *code, u32 *size);
 static void rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size);
 
-static void rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf, u32 size);
-static void rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size);
+static void rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf);
+static void rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf);
 static void rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size);
 static void rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size);
 
@@ -44,13 +44,13 @@ rvl_read_rvl (RVL *self)
         {
         case RVL_CHUNK_CODE_VFMT:
           rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_VFMT_chunk (self, rbuf, size);
+          rvl_read_VFMT_chunk (self, rbuf);
           break;
         case RVL_CHUNK_CODE_GRID:
           {
             rvl_alloc (self, &self->grid.dimBuf, size - 14);
             rvl_read_chunk_payload (self, rbuf, size);
-            rvl_read_GRID_chunk (self, rbuf, size);
+            rvl_read_GRID_chunk (self, rbuf);
           }
           break;
         case RVL_CHUNK_CODE_DATA:
@@ -95,13 +95,13 @@ rvl_read_info (RVL *self)
         {
         case RVL_CHUNK_CODE_VFMT:
           rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_VFMT_chunk (self, rbuf, size);
+          rvl_read_VFMT_chunk (self, rbuf);
           break;
         case RVL_CHUNK_CODE_GRID:
           {
             rvl_alloc (self, &self->grid.dimBuf, size - 14);
             rvl_read_chunk_payload (self, rbuf, size);
-            rvl_read_GRID_chunk (self, rbuf, size);
+            rvl_read_GRID_chunk (self, rbuf);
           }
           break;
         case RVL_CHUNK_CODE_TEXT:
@@ -168,7 +168,7 @@ rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size)
 }
 
 void
-rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf, u32 size)
+rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf)
 {
   RVLPrimitive primitive;
   RVLEndian    endian;
@@ -187,7 +187,7 @@ rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf, u32 size)
 }
 
 void
-rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size)
+rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf)
 {
   u32      offset = 14;
   RVLGrid *grid   = &self->grid;
