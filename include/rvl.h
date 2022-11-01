@@ -225,17 +225,18 @@ RVLLIB_API void rvl_read_info (RVL *self);
 RVLLIB_API void rvl_read_data_buffer (RVL *self, void **buffer);
 
 /* VFMT chunk functions */
-RVLLIB_API void    rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,
-                                   RVLenum primitive, RVLenum endian);
-RVLLIB_API void    rvl_get_volumetric_format (RVL *self, int *nx, int *ny, int *nz,
-                                   RVLenum *primitive, RVLenum *endian);
+RVLLIB_API void rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,
+                                           RVLenum primitive, RVLenum endian);
+RVLLIB_API void rvl_get_volumetric_format (RVL *self, int *nx, int *ny, int *nz,
+                                           RVLenum *primitive, RVLenum *endian);
+
 RVLLIB_API void    rvl_set_compression (RVL *self, RVLenum compression);
 RVLLIB_API RVLenum rvl_get_compression (RVL *self);
 
 /* GRID chunk functions */
 RVLLIB_API void rvl_set_regular_grid (RVL *self, float dx, float dy, float dz);
 RVLLIB_API void rvl_set_rectilinear_grid (RVL *self, int ndx, int ndy, int ndz,
-                               float *dx, float *dy, float *dz);
+                                          float *dx, float *dy, float *dz);
 RVLLIB_API void rvl_set_grid_unit (RVL *self, RVLenum unit);
 RVLLIB_API void rvl_set_grid_origin (RVL *self, float x0, float y0, float z0);
 
@@ -245,15 +246,16 @@ RVLLIB_API RVLenum rvl_get_grid_unit (RVL *self);
 RVLLIB_API void rvl_get_grid_origin (RVL *self, float *x, float *y, float *z);
 RVLLIB_API void rvl_get_voxel_dims (RVL *self, float *dx, float *dy, float *dz);
 RVLLIB_API void rvl_get_voxel_dims_v (RVL *self, int *ndx, int *ndy, int *ndz,
-                           const float **dx, const float **dy,
-                           const float **dz);
+                                      const float **dx, const float **dy,
+                                      const float **dz);
 
 /* DATA chunk functions */
 
 // Set the data buffer to be written by the RVL writer. The RVL instance does
 // not own the pointer; the user should allocate the memory before writing
 // and deallocate the memory after writing.
-RVLLIB_API void rvl_set_data_buffer (RVL *self, unsigned int size, const void *buffer);
+RVLLIB_API void rvl_set_data_buffer (RVL *self, unsigned int size,
+                                     const void *buffer);
 
 // Get the data buffer from the RVL reader. The RVL instance owns the
 // pointer, and users should not free the memory themselves.
@@ -277,4 +279,3 @@ RVLLIB_API unsigned int rvl_get_data_nbytes (RVL *self);
 #endif
 
 #endif
-
