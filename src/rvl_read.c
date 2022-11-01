@@ -154,8 +154,11 @@ rvl_read_data_buffer (RVL *self, void **buffer)
 void
 rvl_read_chunk_header (RVL *self, u32 *size, RVLChunkCode *code)
 {
-  rvl_fread (self, (BYTE *)size, 4);
-  rvl_fread (self, (BYTE *)code, 4);
+  BYTE buf[8];
+  rvl_fread (self, buf, 8);
+
+  *size = *((u32 *)buf);
+  *code = *((RVLChunkCode *)(buf + sizeof (u32)));
 }
 
 void
