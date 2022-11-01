@@ -11,12 +11,12 @@
 #include "detail/rvl_text_p.h"
 
 static void rvl_read_chunk_header (RVL *self, u32 *code, u32 *size);
-static void rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size);
+static void rvl_read_chunk_payload (RVL *self, BYTE *payload, u32 size);
 
-static void rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf);
-static void rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf);
-static void rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size);
-static void rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size);
+static void rvl_handle_VFMT_chunk (RVL *self, u32 size);
+static void rvl_handle_GRID_chunk (RVL *self, u32 size);
+static void rvl_handle_DATA_chunk (RVL *self, u32 size);
+static void rvl_handle_TEXT_chunk (RVL *self, u32 size);
 
 static void rvl_read_file_sig (RVL *self);
 static void rvl_fread (RVL *self, BYTE *data, u32 size);
@@ -39,28 +39,21 @@ rvl_read_rvl (RVL *self)
       rvl_log_debug ("Reading chunk header. Code: %c%c%c%c, Size: %d bytes.",
                      ch[0], ch[1], ch[2], ch[3], size);
 
-      BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
         {
         case RVL_CHUNK_CODE_VFMT:
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_VFMT_chunk (self, rbuf);
+          rvl_handle_VFMT_chunk (self, size);
           break;
         case RVL_CHUNK_CODE_GRID:
-          {
-            rvl_alloc (self, &self->grid.dimBuf, size - 14);
-            rvl_read_chunk_payload (self, rbuf, size);
-            rvl_read_GRID_chunk (self, rbuf);
-          }
+          rvl_alloc (self, &self->grid.dimBuf, size - 14);
+          rvl_handle_GRID_chunk (self, size);
           break;
         case RVL_CHUNK_CODE_DATA:
           rvl_alloc (self, &self->data.rbuf, self->data.size);
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_DATA_chunk (self, rbuf, size);
+          rvl_handle_DATA_chunk (self, size);
           break;
         case RVL_CHUNK_CODE_TEXT:
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_TEXT_chunk (self, rbuf, size);
+          rvl_handle_TEXT_chunk (self, size);
           break;
         case RVL_CHUNK_CODE_VEND:
           break;
@@ -71,7 +64,6 @@ rvl_read_rvl (RVL *self)
           }
           break;
         }
-      free (rbuf);
     }
   while (code != RVL_CHUNK_CODE_VEND);
 }
@@ -85,34 +77,28 @@ rvl_read_info (RVL *self)
   rvl_read_file_sig (self);
 
   RVLChunkCode code;
+  u32          size;
+
   do
     {
-      u32 size;
       rvl_read_chunk_header (self, &code, &size);
 
-      BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
         {
         case RVL_CHUNK_CODE_VFMT:
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_VFMT_chunk (self, rbuf);
+          rvl_handle_VFMT_chunk (self, size);
           break;
         case RVL_CHUNK_CODE_GRID:
-          {
-            rvl_alloc (self, &self->grid.dimBuf, size - 14);
-            rvl_read_chunk_payload (self, rbuf, size);
-            rvl_read_GRID_chunk (self, rbuf);
-          }
+          rvl_alloc (self, &self->grid.dimBuf, size - 14);
+          rvl_handle_GRID_chunk (self, size);
           break;
         case RVL_CHUNK_CODE_TEXT:
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_TEXT_chunk (self, rbuf, size);
+          rvl_handle_TEXT_chunk (self, size);
           break;
         default:
           fseek (self->io, size, SEEK_CUR);
           break;
         }
-      free (rbuf);
     }
   while (code != RVL_CHUNK_CODE_VEND);
   fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);
@@ -134,10 +120,7 @@ rvl_read_data_buffer (RVL *self, void **buffer)
 
       if (code == RVL_CHUNK_CODE_DATA)
         {
-          BYTE *rbuf = (BYTE *)malloc (size);
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_DATA_chunk (self, rbuf, size);
-          free (rbuf);
+          rvl_handle_DATA_chunk (self, size);
           break;
         }
       else
@@ -162,14 +145,17 @@ rvl_read_chunk_header (RVL *self, u32 *code, u32 *size)
 }
 
 void
-rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size)
+rvl_read_chunk_payload (RVL *self, BYTE *payload, u32 size)
 {
-  rvl_fread (self, data, size);
+  rvl_fread (self, payload, size);
 }
 
 void
-rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf)
+rvl_handle_VFMT_chunk (RVL *self, u32 size)
 {
+  BYTE *rbuf = (BYTE *)malloc (size);
+  rvl_read_chunk_payload (self, rbuf, size);
+
   RVLPrimitive primitive;
   RVLEndian    endian;
   RVLCompress  compress;
@@ -184,11 +170,16 @@ rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf)
   self->compress  = compress;
 
   self->data.size = rvl_get_data_nbytes (self);
+
+  free (rbuf);
 }
 
 void
-rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf)
+rvl_handle_GRID_chunk (RVL *self, u32 size)
 {
+  BYTE *rbuf = (BYTE *)malloc (size);
+  rvl_read_chunk_payload (self, rbuf, size);
+
   u32      offset = 14;
   RVLGrid *grid   = &self->grid;
 
@@ -221,11 +212,16 @@ rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf)
   memcpy (grid->dx, &rbuf[offset], szdx);
   memcpy (grid->dy, &rbuf[offset + szdx], szdy);
   memcpy (grid->dz, &rbuf[offset + szdx + szdy], szdz);
+
+  free (rbuf);
 }
 
 void
-rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size)
+rvl_handle_DATA_chunk (RVL *self, u32 size)
 {
+  BYTE *rbuf = (BYTE *)malloc (size);
+  rvl_read_chunk_payload (self, rbuf, size);
+
   if (self->compress == RVL_COMPRESSION_LZ4)
     {
       rvl_decompress_lz4 (self, rbuf, size);
@@ -234,11 +230,16 @@ rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size)
     {
       rvl_decompress_lzma (self, rbuf, size);
     }
+
+  free (rbuf);
 }
 
 void
-rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size)
+rvl_handle_TEXT_chunk (RVL *self, u32 size)
 {
+  BYTE *rbuf = (BYTE *)malloc (size);
+  rvl_read_chunk_payload (self, rbuf, size);
+
   RVLText *text = rvl_text_create ();
 
   RVLTag tag;
@@ -252,6 +253,7 @@ rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size)
   memcpy (text->value, &rbuf[1], valueLen);
 
   rvl_log_debug ("Read TEXT: %.4X, %s", text->tag, text->value);
+  free (rbuf);
 
   if (self->text == NULL)
     {
