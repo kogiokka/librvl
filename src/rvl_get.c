@@ -64,9 +64,15 @@ rvl_get_grid_origin (RVL *self, float *x, float *y, float *z)
 }
 
 void
+rvl_get_voxels (RVL *self, const void **voxels)
+{
+  *voxels = (unsigned char *)self->data.rbuf;
+}
+
+void
 rvl_get_data_buffer (RVL *self, const void **buffer)
 {
-  *buffer = (unsigned char *)self->data.rbuf;
+  rvl_get_voxels (self, buffer);
 }
 
 void
@@ -90,32 +96,13 @@ rvl_get_text (RVL *self, RVLenum tag, const char **value)
 unsigned int
 rvl_get_primitive_nbytes (RVL *self)
 {
-  BYTE *p = (BYTE *)&self->primitive;
-
-  u8 dimen = p[1];
-  u8 bytes = (1 << (p[0] & 0x0f)) / 8;
-
-  u32 nbytes = dimen * bytes;
-
-  if (nbytes <= 0)
-    {
-      rvl_log_error ("Invalid primitive: %.4x", self->primitive);
-    }
-
-  return nbytes;
+  return rvl_eval_primitive_nbyte (self);
 }
 
 unsigned int
 rvl_get_data_nbytes (RVL *self)
 {
-  const u32 *res = self->resolution;
-
-  if (res[0] <= 0 || res[1] <= 0 || res[2] <= 0)
-    {
-      rvl_log_error ("Invalid resolution: %d, %d, %d", res[0], res[1], res[2]);
-    }
-
-  return res[0] * res[1] * res[2] * rvl_get_primitive_nbytes (self);
+  return rvl_eval_voxels_nbyte (self);
 }
 
 void

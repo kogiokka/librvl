@@ -58,7 +58,7 @@ write_rvl (RVL *rvl)
   rvl_set_regular_grid (rvl, 0.1f, 0.2f, 0.1f);
   rvl_set_volumetric_format (rvl, nx, ny, nz, RVL_PRIMITIVE_F32,
                              RVL_ENDIAN_LITTLE);
-  rvl_set_data_buffer (rvl, size, buffer);
+  rvl_set_voxels (rvl, buffer);
 
   rvl_set_text (rvl, RVL_TAG_TITLE, "Sphere");
   rvl_set_text (rvl, RVL_TAG_DESCRIPTION,
@@ -102,12 +102,13 @@ read_rvl (RVL *rvl)
   fprintf (stdout, "Data primitive: 0x%.4X\n", primitive);
   fprintf (stdout, "Endianness: %d\n", endian);
   fprintf (stdout, "Voxel dimensions: (%.3f, %.3f, %.3f)\n", dx, dy, dz);
-  fprintf (stdout, "Grid position of the origin: (%.3f, %.3f, %.3f)\n", x0, y0, z0);
+  fprintf (stdout, "Grid position of the origin: (%.3f, %.3f, %.3f)\n", x0, y0,
+           z0);
   fprintf (stdout, "Grid unit: 0x%.4X\n", unit);
   fprintf (stdout, "%s\n", sep);
 
   const void *buffer;
-  rvl_get_data_buffer (rvl, &buffer);
+  rvl_get_voxels (rvl, &buffer);
   print_data_buffer (x, y, z, buffer);
 
   const char *title, *descr, *author, *copyright, *license, *source, *ctime;

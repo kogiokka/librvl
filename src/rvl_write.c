@@ -223,7 +223,7 @@ check_data (RVL *self)
       exit (EXIT_FAILURE);
     }
 
-  if (self->data.size != rvl_get_data_nbytes (self))
+  if (self->data.size != rvl_eval_voxels_nbyte (self))
     {
       rvl_log_fatal ("Size of data does not match the header information.");
       exit (EXIT_FAILURE);

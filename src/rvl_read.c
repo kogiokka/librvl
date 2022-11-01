@@ -105,7 +105,7 @@ rvl_read_info (RVL *self)
 }
 
 void
-rvl_read_data_buffer (RVL *self, void **buffer)
+rvl_read_voxels_to (RVL *self, void **buffer)
 {
   if (self == NULL)
     return;
@@ -132,6 +132,12 @@ rvl_read_data_buffer (RVL *self, void **buffer)
 
   self->data.rbuf = NULL;
   fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);
+}
+
+void
+rvl_read_data_buffer (RVL *self, void **buffer)
+{
+  rvl_read_voxels_to (self, *buffer);
 }
 
 void
@@ -169,7 +175,7 @@ rvl_handle_VFMT_chunk (RVL *self, u32 size)
   self->endian    = endian;
   self->compress  = compress;
 
-  self->data.size = rvl_get_data_nbytes (self);
+  self->data.size = rvl_eval_voxels_nbyte (self);
 
   free (rbuf);
 }

@@ -19,10 +19,10 @@ rvl_test_write_regular_grid ()
   init_regular_grid (rvl);
 
   // DATA chunk
-  int   size   = rvl_get_data_nbytes (rvl);
+  int   size   = rvl_eval_voxels_nbyte (rvl);
   void *buffer = (void *)malloc (size);
   memset (buffer, 'A', size);
-  rvl_set_data_buffer (rvl, size, buffer);
+  rvl_set_voxels (rvl, buffer);
 
   // TEXT chunk
   rvl_set_text (rvl, RVL_TAG_TITLE, "librvl");
@@ -78,8 +78,8 @@ rvl_test_read_regular_grid ()
 
   // DATA chunk
   const void *buffer;
-  rvl_get_data_buffer (rvl, &buffer);
-  print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
+  rvl_get_voxels (rvl, &buffer);
+  print_data_buffer (x, y, z, buffer, rvl_eval_primitive_nbyte (rvl));
 
   // TEXT chunk
   const char *title;
@@ -102,10 +102,10 @@ rvl_test_write_rectilinear_grid ()
   init_rectilinear_grid (rvl);
 
   // DATA chunk
-  int   size   = rvl_get_data_nbytes (rvl);
+  int   size   = rvl_eval_voxels_nbyte (rvl);
   void *buffer = (void *)malloc (size);
   memset (buffer, 'A', size);
-  rvl_set_data_buffer (rvl, size, buffer);
+  rvl_set_voxels (rvl, buffer);
 
   // TEXT chunk
   rvl_set_text (rvl, RVL_TAG_TITLE, "librvl");
@@ -176,7 +176,7 @@ rvl_test_read_rectilinear_grid ()
 
   // DATA chunk
   const void *buffer;
-  rvl_get_data_buffer (rvl, &buffer);
+  rvl_get_voxels (rvl, &buffer);
   print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
 
   // TEXT chunk
@@ -233,9 +233,9 @@ rvl_test_partially_read ()
   fprintf (stdout, "Voxel Dim - x: %.3f, y: %.3f, z: %.3f\n", dx, dy, dz);
 
   // Read DATA
-  void *buffer = (void *)malloc (rvl_get_data_nbytes (rvl));
-  rvl_read_data_buffer (rvl, &buffer);
-  print_data_buffer (x, y, z, buffer, rvl_get_primitive_nbytes (rvl));
+  void *buffer = (void *)malloc (rvl_eval_voxels_nbyte (rvl));
+  rvl_read_voxels_to (rvl, &buffer);
+  print_data_buffer (x, y, z, buffer, rvl_eval_primitive_nbyte (rvl));
   free (buffer);
 
   rvl_destroy (&rvl);
@@ -260,10 +260,10 @@ rvl_test_io ()
   RVL *rvl = rvl_create_writer ();
   init_regular_grid (rvl);
 
-  int   size   = rvl_get_data_nbytes (rvl);
+  int   size   = rvl_eval_voxels_nbyte (rvl);
   void *buffer = (void *)malloc (size);
   memset (buffer, 'O', size);
-  rvl_set_data_buffer (rvl, size, buffer);
+  rvl_set_voxels (rvl, buffer);
 
   rvl_set_file (rvl, "rvl_test_io.rvl");
   rvl_write_rvl (rvl);
@@ -339,4 +339,3 @@ print_data_buffer (int x, int y, int z, const void *buffer, int primSize)
       fprintf (stdout, "\n");
     }
 }
-
