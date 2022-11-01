@@ -10,7 +10,7 @@
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
 
-static void rvl_read_chunk_header (RVL *self, u32 *size, RVLChunkCode *code);
+static void rvl_read_chunk_header (RVL *self, u32 *code, u32 *size);
 static void rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size);
 
 static void rvl_read_VFMT_chunk (RVL *self, const BYTE *rbuf, u32 size);
@@ -33,7 +33,7 @@ rvl_read_rvl (RVL *self)
   do
     {
       u32 size;
-      rvl_read_chunk_header (self, &size, &code);
+      rvl_read_chunk_header (self, &code, &size);
 
       char *ch = (char *)&code;
       rvl_log_debug ("Reading chunk header. Code: %c%c%c%c, Size: %d bytes.",
@@ -88,7 +88,7 @@ rvl_read_info (RVL *self)
   do
     {
       u32 size;
-      rvl_read_chunk_header (self, &size, &code);
+      rvl_read_chunk_header (self, &code, &size);
 
       BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
@@ -130,7 +130,7 @@ rvl_read_data_buffer (RVL *self, void **buffer)
   do
     {
       u32 size;
-      rvl_read_chunk_header (self, &size, &code);
+      rvl_read_chunk_header (self, &code, &size);
 
       if (code == RVL_CHUNK_CODE_DATA)
         {
@@ -152,13 +152,13 @@ rvl_read_data_buffer (RVL *self, void **buffer)
 }
 
 void
-rvl_read_chunk_header (RVL *self, u32 *size, RVLChunkCode *code)
+rvl_read_chunk_header (RVL *self, u32 *code, u32 *size)
 {
-  BYTE buf[8];
-  rvl_fread (self, buf, 8);
+  u32 buf[2];
+  rvl_fread (self, (BYTE *)buf, sizeof (buf));
 
-  *size = *((u32 *)buf);
-  *code = *((RVLChunkCode *)(buf + sizeof (u32)));
+  *size = buf[0];
+  *code = buf[1];
 }
 
 void

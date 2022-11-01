@@ -10,7 +10,7 @@
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
 
-static void rvl_write_chunk_header (RVL *self, RVLChunkCode code, u32 size);
+static void rvl_write_chunk_header (RVL *self, u32 code, u32 size);
 static void rvl_write_chunk_payload (RVL *self, const BYTE *data, u32 size);
 static void rvl_write_chunk_end (RVL *self);
 
@@ -157,16 +157,14 @@ rvl_write_VEND_chunk (RVL *self)
 }
 
 void
-rvl_write_chunk_header (RVL *self, RVLChunkCode code, u32 size)
+rvl_write_chunk_header (RVL *self, u32 code, u32 size)
 {
-  u8 buf[8];
+  u32 buf[2];
 
-  // Chunk Size(bytes)
-  memcpy (buf, &size, 4);
-  // Chunk Code
-  memcpy (&buf[4], &code, 4);
+  buf[0] = size;
+  buf[1] = code;
 
-  rvl_fwrite (self, buf, 8);
+  rvl_fwrite (self, (const BYTE *)buf, sizeof (buf));
 }
 
 void
