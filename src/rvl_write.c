@@ -11,14 +11,14 @@
 #include "detail/rvl_text_p.h"
 
 static void rvl_write_chunk_header (RVL *self, u32 code, u32 size);
-static void rvl_write_chunk_payload (RVL *self, const BYTE *data, u32 size);
+static void rvl_write_chunk_payload (RVL *self, const BYTE *payload, u32 size);
 static void rvl_write_chunk_end (RVL *self);
 
-static void rvl_write_VFMT_chunk (RVL *self);
-static void rvl_write_GRID_chunk (RVL *self);
-static void rvl_write_DATA_chunk (RVL *self);
-static void rvl_write_TEXT_chunk (RVL *self, const RVLText *textList);
-static void rvl_write_VEND_chunk (RVL *self);
+static void rvl_handle_VFMT_chunk (RVL *self);
+static void rvl_handle_GRID_chunk (RVL *self);
+static void rvl_handle_DATA_chunk (RVL *self);
+static void rvl_handle_TEXT_chunk (RVL *self);
+static void rvl_handle_VEND_chunk (RVL *self);
 
 static void rvl_write_file_sig (RVL *self);
 static void rvl_fwrite (RVL *self, const BYTE *data, u32 size);
@@ -35,20 +35,20 @@ rvl_write_rvl (RVL *self)
   rvl_write_file_sig (self);
 
   // Required chunks
-  rvl_write_VFMT_chunk (self);
-  rvl_write_GRID_chunk (self);
-  rvl_write_DATA_chunk (self);
+  rvl_handle_VFMT_chunk (self);
+  rvl_handle_GRID_chunk (self);
+  rvl_handle_DATA_chunk (self);
 
   if (self->text != NULL)
     {
-      rvl_write_TEXT_chunk (self, self->text);
+      rvl_handle_TEXT_chunk (self);
     }
 
-  rvl_write_VEND_chunk (self);
+  rvl_handle_VEND_chunk (self);
 }
 
 void
-rvl_write_VFMT_chunk (RVL *self)
+rvl_handle_VFMT_chunk (RVL *self)
 {
   u32 size = 18;
   u8 *wbuf = calloc (1, size);
@@ -71,7 +71,7 @@ rvl_write_VFMT_chunk (RVL *self)
 }
 
 void
-rvl_write_GRID_chunk (RVL *self)
+rvl_handle_GRID_chunk (RVL *self)
 {
   u32   offset   = 14;
   u32   wbufSize = offset + self->grid.dimBufSz;
@@ -103,7 +103,7 @@ rvl_write_GRID_chunk (RVL *self)
 }
 
 void
-rvl_write_DATA_chunk (RVL *self)
+rvl_handle_DATA_chunk (RVL *self)
 {
   u32   wbufSize = self->data.size;
   BYTE *wbuf     = (BYTE *)malloc (wbufSize);
@@ -126,9 +126,9 @@ rvl_write_DATA_chunk (RVL *self)
 
 // Strip off the null terminator at the end of the value string.
 void
-rvl_write_TEXT_chunk (RVL *self, const RVLText *textList)
+rvl_handle_TEXT_chunk (RVL *self)
 {
-  const RVLText *cur = textList;
+  const RVLText *cur = self->text;
   while (cur != NULL)
     {
       const RVLText *const text      = cur;
@@ -149,7 +149,7 @@ rvl_write_TEXT_chunk (RVL *self, const RVLText *textList)
 }
 
 void
-rvl_write_VEND_chunk (RVL *self)
+rvl_handle_VEND_chunk (RVL *self)
 {
   rvl_write_chunk_header (self, RVL_CHUNK_CODE_VEND, 0);
   rvl_write_chunk_payload (self, NULL, 0);
@@ -168,17 +168,18 @@ rvl_write_chunk_header (RVL *self, u32 code, u32 size)
 }
 
 void
-rvl_write_chunk_payload (RVL *self, const BYTE *data, u32 size)
+rvl_write_chunk_payload (RVL *self, const BYTE *payload, u32 size)
 {
-  if (data != NULL && size > 0)
+  if (payload != NULL && size > 0)
     {
-      rvl_fwrite (self, data, size);
+      rvl_fwrite (self, payload, size);
     }
 }
 
 void
 rvl_write_chunk_end (RVL *self)
 {
+  // TODO CRC for LZ4
   return;
 }
 
