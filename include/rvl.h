@@ -259,12 +259,12 @@ RVLLIB_API void rvl_get_voxel_dims_v (RVL *self, int *ndx, int *ndy, int *ndz,
 
 /* DATA chunk functions */
 
-// Set the data buffer to be written by the RVL writer. The RVL instance does
-// not own the pointer; the user should allocate the memory before writing
-// and deallocate the memory after writing.
+// Set the voxel data to be written to file stream by RVL writer instance. The
+// instance does not own the pointer; users should allocate the memory before
+// writing and deallocate the memory after writing.
 RVLLIB_API void rvl_set_voxels (RVL *self, const void *voxels);
 
-// Get the data buffer from the RVL reader. The RVL instance owns the
+// Get the the voxel data from RVL reader instance. The instance owns the
 // pointer, and users should not free the memory themselves.
 RVLLIB_API void* rvl_get_voxels (RVL *self);
 
