@@ -30,9 +30,9 @@ main ()
 void
 write_rvl (RVL *rvl)
 {
-  int nx = 9;
-  int ny = 16;
-  int nz = 25;
+  int nx = 11;
+  int ny = 25;
+  int nz = 9;
 
   unsigned int size      = nx * ny * nz * sizeof (int);
   float       *buffer    = (float *)malloc (size);
@@ -45,9 +45,9 @@ write_rvl (RVL *rvl)
           for (int k = 0; k < nx; k++)
             {
               int   idx  = k + j * nx + i * nx * ny;
-              float dx   = (k - center[0]);
-              float dy   = (j - center[1]);
-              float dz   = (i - center[2]);
+              float dx   = (k + 0.5f - center[0]);
+              float dy   = (j + 0.5f - center[1]);
+              float dz   = (i + 0.5f - center[2]);
               float dist = sqrt (dx * dx + dy * dy + dz * dz);
 
               buffer[idx] = dist;
