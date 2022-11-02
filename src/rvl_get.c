@@ -75,8 +75,8 @@ rvl_get_data_buffer (RVL *self, const void **buffer)
   *buffer = rvl_get_voxels (self);
 }
 
-void
-rvl_get_text (RVL *self, RVLenum tag, const char **value)
+const char *
+rvl_get_text_value (RVL *self, RVLenum tag)
 {
   RVLText *cur = self->text;
   while (cur != NULL)
@@ -84,13 +84,18 @@ rvl_get_text (RVL *self, RVLenum tag, const char **value)
       if (cur->tag == tag)
         {
           rvl_log_debug ("Get TEXT: %.4X, %s", cur->tag, cur->value);
-          *value = cur->value;
-          return;
+          return cur->value;
         }
       cur = cur->next;
     }
 
-  *value = "";
+  return "";
+}
+
+void
+rvl_get_text (RVL *self, RVLenum tag, const char **value)
+{
+  *value = rvl_get_text_value (self, tag);
 }
 
 unsigned int

@@ -81,10 +81,9 @@ rvl_test_read_regular_grid ()
   print_data_buffer (x, y, z, buffer, rvl_eval_primitive_nbytes (rvl));
 
   // TEXT chunk
-  const char *title;
-  const char *descr;
-  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
-  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
+  const char *title = rvl_get_text_value (rvl, RVL_TAG_TITLE);
+  const char *descr = rvl_get_text_value (rvl, RVL_TAG_DESCRIPTION);
+
   fprintf (stdout, "Title: %s\n", title);
   fprintf (stdout, "Description: %s\n", descr);
 
@@ -178,10 +177,8 @@ rvl_test_read_rectilinear_grid ()
   print_data_buffer (x, y, z, buffer, rvl_eval_primitive_nbytes (rvl));
 
   // TEXT chunk
-  const char *title;
-  const char *descr;
-  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
-  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
+  const char *title = rvl_get_text_value (rvl, RVL_TAG_TITLE);
+  const char *descr = rvl_get_text_value (rvl, RVL_TAG_DESCRIPTION);
   fprintf (stdout, "Title: %s\n", title);
   fprintf (stdout, "Description: %s\n", descr);
 
@@ -209,10 +206,8 @@ rvl_test_partially_read ()
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_origin (rvl, &px, &py, &pz);
 
-  const char *title;
-  const char *descr;
-  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
-  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
+  const char *title = rvl_get_text_value (rvl, RVL_TAG_TITLE);
+  const char *descr = rvl_get_text_value (rvl, RVL_TAG_DESCRIPTION);
   fprintf (stdout, "Title: %s\n", title);
   fprintf (stdout, "Description: %s\n", descr);
 

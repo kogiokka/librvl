@@ -110,14 +110,13 @@ read_rvl (RVL *rvl)
   const void *buffer = rvl_get_voxels (rvl);
   print_data_buffer (x, y, z, buffer);
 
-  const char *title, *descr, *author, *copyright, *license, *source, *ctime;
-  rvl_get_text (rvl, RVL_TAG_TITLE, &title);
-  rvl_get_text (rvl, RVL_TAG_DESCRIPTION, &descr);
-  rvl_get_text (rvl, RVL_TAG_AUTHOR, &author);
-  rvl_get_text (rvl, RVL_TAG_COPYRIGHT, &copyright);
-  rvl_get_text (rvl, RVL_TAG_LICENSE, &license);
-  rvl_get_text (rvl, RVL_TAG_SOURCE, &source);
-  rvl_get_text (rvl, RVL_TAG_CREATION_TIME, &ctime);
+  const char *title     = rvl_get_text_value (rvl, RVL_TAG_TITLE);
+  const char *descr     = rvl_get_text_value (rvl, RVL_TAG_DESCRIPTION);
+  const char *author    = rvl_get_text_value (rvl, RVL_TAG_AUTHOR);
+  const char *copyright = rvl_get_text_value (rvl, RVL_TAG_COPYRIGHT);
+  const char *license   = rvl_get_text_value (rvl, RVL_TAG_LICENSE);
+  const char *source    = rvl_get_text_value (rvl, RVL_TAG_SOURCE);
+  const char *ctime     = rvl_get_text_value (rvl, RVL_TAG_CREATION_TIME);
 
   fprintf (stdout, "Title: %s\n", title);
   fprintf (stdout, "Description: %s\n", descr);

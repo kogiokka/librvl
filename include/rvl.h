@@ -270,7 +270,7 @@ RVLLIB_API void* rvl_get_voxels (RVL *self);
 
 /* TEXT chunk functions */
 RVLLIB_API void rvl_set_text (RVL *self, RVLenum tag, const char *value);
-RVLLIB_API void rvl_get_text (RVL *self, RVLenum tag, const char **value);
+RVLLIB_API const char* rvl_get_text_value (RVL *self, RVLenum tag);
 
 /**
  * Helpers
@@ -306,6 +306,9 @@ RVLLIB_API unsigned int rvl_get_primitive_nbytes (RVL *self);
 
 RVL_DEPRECATED("Use rvl_eval_voxels_nbytes() instead.")
 RVLLIB_API unsigned int rvl_get_data_nbytes (RVL *self);
+
+RVL_DEPRECATED("Use rvl_get_text_value() instead.")
+RVLLIB_API void rvl_get_text (RVL *self, RVLenum tag, const char **value);
 
 #ifdef __cplusplus
 }
