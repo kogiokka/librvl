@@ -7,7 +7,7 @@
 
 static void write_rvl (RVL *rvl);
 static void read_rvl (RVL *rvl);
-static void print_data_buffer (int x, int y, int z, const void *buffer);
+static void print_voxel_data (int x, int y, int z, const void *buffer);
 
 int
 main ()
@@ -84,10 +84,10 @@ read_rvl (RVL *rvl)
   RVLenum gridType = rvl_get_grid_type (rvl);
   RVLenum unit     = rvl_get_grid_unit (rvl);
   RVLenum primitive, endian;
-  int     x, y, z;
+  int     nx, ny, nz;
   float   dx, dy, dz;
   float   x0, y0, z0;
-  rvl_get_volumetric_format (rvl, &x, &y, &z, &primitive, &endian);
+  rvl_get_volumetric_format (rvl, &nx, &ny, &nz, &primitive, &endian);
   rvl_get_voxel_dims (rvl, &dx, &dy, &dz);
   rvl_get_grid_origin (rvl, &x0, &y0, &z0);
 
@@ -95,9 +95,9 @@ read_rvl (RVL *rvl)
   memset (sep, '-', 80);
   sep[80] = '\0';
   fprintf (stdout, "%s\n", sep);
-  fprintf (stdout, "Width (x): %d\n", x);
-  fprintf (stdout, "Length (y): %d\n", y);
-  fprintf (stdout, "Height (z): %d\n", z);
+  fprintf (stdout, "Width (x): %d\n", nx);
+  fprintf (stdout, "Length (y): %d\n", ny);
+  fprintf (stdout, "Height (z): %d\n", nz);
   fprintf (stdout, "Grid type: 0x%.4X\n", gridType);
   fprintf (stdout, "Data primitive: 0x%.4X\n", primitive);
   fprintf (stdout, "Endianness: %d\n", endian);
@@ -108,7 +108,7 @@ read_rvl (RVL *rvl)
   fprintf (stdout, "%s\n", sep);
 
   const void *buffer = rvl_get_voxels (rvl);
-  print_data_buffer (x, y, z, buffer);
+  print_voxel_data (nx, ny, nz, buffer);
 
   const char *title     = rvl_get_text_value (rvl, RVL_TAG_TITLE);
   const char *descr     = rvl_get_text_value (rvl, RVL_TAG_DESCRIPTION);
@@ -125,10 +125,17 @@ read_rvl (RVL *rvl)
   fprintf (stdout, "License: %s\n", license);
   fprintf (stdout, "Source: %s\n", source);
   fprintf (stdout, "Creation time: %s\n", ctime);
+
+  fprintf (stdout, "%s\n", sep);
+
+  int    c[3] = { (nx + 1) / 2 - 1, (ny + 1) / 2 - 1, (nz + 1) / 2 - 1 };
+  float *v    = rvl_get_voxel_at (rvl, c[0], c[1], c[2]);
+  fprintf (stdout, "Voxel at (%d, %d, %d) has value: %6.3f.\n", c[0],
+           c[1], c[2], *v);
 }
 
 void
-print_data_buffer (int x, int y, int z, const void *buffer)
+print_voxel_data (int x, int y, int z, const void *buffer)
 {
   const float *data = (float *)buffer;
   for (int k = 0; k < z; k++)
