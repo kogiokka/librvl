@@ -208,7 +208,7 @@ extern "C"
 #elif defined(__GNUC__) || defined(__clang__)
 #  define RVL_DEPRECATED(reason)  __attribute__ ((deprecated (reason)))
 #elif defined(_WIN32)
-#  define RVL_DEPRECATED __declspec(deprecated(reason))
+#  define RVL_DEPRECATED(reason) __declspec(deprecated(reason))
 #endif
 
 RVLLIB_API RVL *rvl_create_writer (void);
