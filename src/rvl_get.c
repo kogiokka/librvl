@@ -69,6 +69,17 @@ rvl_get_voxels (RVL *self)
   return (void *)self->data.rbuf;
 }
 
+void *
+rvl_get_voxel_at (RVL *self, int x, int y, int z)
+{
+  u32 nx     = self->resolution[0];
+  u32 ny     = self->resolution[1];
+  u32 index  = (x + y * nx + z * nx * ny);
+  u32 offset = index * rvl_eval_primitive_nbytes (self);
+
+  return (void *)(self->data.rbuf + offset);
+}
+
 void
 rvl_get_data_buffer (RVL *self, const void **buffer)
 {

@@ -6,8 +6,9 @@
 
 static void init_regular_grid (RVL *rvl);
 static void init_rectilinear_grid (RVL *rvl);
-static void print_data_buffer (int x, int y, int z, const void *buffer,
-                               int primSize);
+static void print_voxels (RVL *rvl);
+static void print_voxels_buffer (int nx, int ny, int nz, unsigned int prmSize,
+                                 const void *buffer);
 
 void
 rvl_test_write_regular_grid ()
@@ -78,7 +79,7 @@ rvl_test_read_regular_grid ()
 
   // DATA chunk
   const void *buffer = rvl_get_voxels (rvl);
-  print_data_buffer (x, y, z, buffer, rvl_eval_primitive_nbytes (rvl));
+  print_voxels_buffer (x, y, z, rvl_eval_primitive_nbytes (rvl), buffer);
 
   // TEXT chunk
   const char *title = rvl_get_text_value (rvl, RVL_TAG_TITLE);
@@ -173,8 +174,7 @@ rvl_test_read_rectilinear_grid ()
   fprintf (stdout, "%s\n", sep);
 
   // DATA chunk
-  const void *buffer = rvl_get_voxels (rvl);
-  print_data_buffer (x, y, z, buffer, rvl_eval_primitive_nbytes (rvl));
+  print_voxels (rvl);
 
   // TEXT chunk
   const char *title = rvl_get_text_value (rvl, RVL_TAG_TITLE);
@@ -228,7 +228,7 @@ rvl_test_partially_read ()
   // Read DATA
   void *buffer = (void *)malloc (rvl_eval_voxels_nbytes (rvl));
   rvl_read_voxels_to (rvl, buffer);
-  print_data_buffer (x, y, z, buffer, rvl_eval_primitive_nbytes (rvl));
+  print_voxels_buffer (x, y, z, rvl_eval_primitive_nbytes (rvl), buffer);
   free (buffer);
 
   rvl_destroy (&rvl);
@@ -313,20 +313,47 @@ init_rectilinear_grid (RVL *rvl)
 }
 
 void
-print_data_buffer (int x, int y, int z, const void *buffer, int primSize)
+print_voxels_buffer (int nx, int ny, int nz, unsigned int prmSize,
+                     const void *buffer)
 {
   const char *data = (char *)buffer;
-  fprintf (stdout, "Prim size: %d\n", primSize);
-  for (int k = 0; k < z; k++)
+
+  for (int k = 0; k < nz; k++)
     {
-      for (int j = 0; j < y; j++)
+      for (int j = 0; j < ny; j++)
         {
-          for (int i = 0; i < x - 1; i++)
+          for (int i = 0; i < nx - 1; i++)
             {
-              fwrite (&data[i + j * x + k * x * y], 1, primSize, stdout);
+              fwrite (&data[i + j * nx + k * nx * ny], 1, prmSize, stdout);
               fprintf (stdout, "|");
             }
-          fwrite (&data[x - 1 + j * x + k * x * y], 1, primSize, stdout);
+          fwrite (&data[nx - 1 + j * nx + k * nx * ny], 1, prmSize, stdout);
+          fprintf (stdout, "\n");
+        }
+      fprintf (stdout, "\n");
+    }
+}
+
+void
+print_voxels (RVL *rvl)
+{
+  int     nx, ny, nz;
+  RVLenum primitive;
+  RVLenum endian;
+  rvl_get_volumetric_format (rvl, &nx, &ny, &nz, &primitive, &endian);
+
+  unsigned int prmSize = rvl_eval_primitive_nbytes (rvl);
+  for (int k = 0; k < nz; k++)
+    {
+      for (int j = 0; j < ny; j++)
+        {
+          for (int i = 0; i < nx - 1; i++)
+            {
+              void *voxelPtr = rvl_get_voxel_at (rvl, i, j, k);
+              fwrite (voxelPtr, 1, prmSize, stdout);
+              fprintf (stdout, "|");
+            }
+          fwrite (rvl_get_voxel_at (rvl, nx - 1, j, k), 1, prmSize, stdout);
           fprintf (stdout, "\n");
         }
       fprintf (stdout, "\n");

@@ -268,6 +268,9 @@ RVLLIB_API void rvl_set_voxels (RVL *self, const void *voxels);
 // pointer, and users should not free the memory themselves.
 RVLLIB_API void* rvl_get_voxels (RVL *self);
 
+// Get the pointer to the voxel by x, y, and z indices.
+RVLLIB_API void* rvl_get_voxel_at (RVL *self, int x, int y, int z);
+
 /* TEXT chunk functions */
 RVLLIB_API void rvl_set_text (RVL *self, RVLenum tag, const char *value);
 RVLLIB_API const char* rvl_get_text_value (RVL *self, RVLenum tag);
