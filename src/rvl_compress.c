@@ -15,7 +15,7 @@ static void destroy_lzma_coder (lzma_stream *self);
 static lzma_ret run_lzma_compression (lzma_stream *strm, const BYTE *src,
                                       u32 srcSize, BYTE *dst, u32 dstCap);
 static lzma_ret run_lzma_decompression (lzma_stream *strm, const BYTE *src,
-                                        u32 srcSize, BYTE **dst, u32 dstCap);
+                                        u32 srcSize, BYTE *dst, u32 dstCap);
 
 static void print_lzma_compression_error (lzma_ret ret);
 static void print_lzma_decompression_error (lzma_ret ret);
@@ -69,7 +69,7 @@ rvl_decompress_lzma (RVL *self, const BYTE *in, u32 size)
 
   lzma_ret ret;
   create_lzma_decoder (&strm);
-  ret = run_lzma_decompression (&strm, in, size, &self->data.rbuf,
+  ret = run_lzma_decompression (&strm, in, size, self->data.rbuf,
                                 self->data.size);
 
   if (ret != LZMA_STREAM_END)
@@ -186,11 +186,11 @@ run_lzma_compression (lzma_stream *strm, const BYTE *src, u32 srcSize,
 
 lzma_ret
 run_lzma_decompression (lzma_stream *strm, const BYTE *src, u32 srcSize,
-                        BYTE **dst, u32 dstCap)
+                        BYTE *dst, u32 dstCap)
 {
   strm->next_in   = src;
   strm->avail_in  = srcSize;
-  strm->next_out  = *dst;
+  strm->next_out  = dst;
   strm->avail_out = dstCap;
 
   return lzma_code (strm, LZMA_FINISH);
