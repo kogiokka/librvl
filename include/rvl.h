@@ -266,7 +266,7 @@ RVLLIB_API void rvl_set_voxels (RVL *self, const void *voxels);
 
 // Get the data buffer from the RVL reader. The RVL instance owns the
 // pointer, and users should not free the memory themselves.
-RVLLIB_API void rvl_get_voxels (RVL *self, const void **voxels);
+RVLLIB_API void* rvl_get_voxels (RVL *self);
 
 /* TEXT chunk functions */
 RVLLIB_API void rvl_set_text (RVL *self, RVLenum tag, const char *value);

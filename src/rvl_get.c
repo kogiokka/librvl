@@ -63,16 +63,16 @@ rvl_get_grid_origin (RVL *self, float *x, float *y, float *z)
   *z = self->grid.position[2];
 }
 
-void
-rvl_get_voxels (RVL *self, const void **voxels)
+void *
+rvl_get_voxels (RVL *self)
 {
-  *voxels = (unsigned char *)self->data.rbuf;
+  return (void *)self->data.rbuf;
 }
 
 void
 rvl_get_data_buffer (RVL *self, const void **buffer)
 {
-  rvl_get_voxels (self, buffer);
+  *buffer = rvl_get_voxels (self);
 }
 
 void

@@ -77,8 +77,7 @@ rvl_test_read_regular_grid ()
     }
 
   // DATA chunk
-  const void *buffer;
-  rvl_get_voxels (rvl, &buffer);
+  const void *buffer = rvl_get_voxels (rvl);
   print_data_buffer (x, y, z, buffer, rvl_eval_primitive_nbytes (rvl));
 
   // TEXT chunk
@@ -175,8 +174,7 @@ rvl_test_read_rectilinear_grid ()
   fprintf (stdout, "%s\n", sep);
 
   // DATA chunk
-  const void *buffer;
-  rvl_get_voxels (rvl, &buffer);
+  const void *buffer = rvl_get_voxels (rvl);
   print_data_buffer (x, y, z, buffer, rvl_eval_primitive_nbytes (rvl));
 
   // TEXT chunk

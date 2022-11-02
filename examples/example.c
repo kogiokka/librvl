@@ -107,8 +107,7 @@ read_rvl (RVL *rvl)
   fprintf (stdout, "Grid unit: 0x%.4X\n", unit);
   fprintf (stdout, "%s\n", sep);
 
-  const void *buffer;
-  rvl_get_voxels (rvl, &buffer);
+  const void *buffer = rvl_get_voxels (rvl);
   print_data_buffer (x, y, z, buffer);
 
   const char *title, *descr, *author, *copyright, *license, *source, *ctime;
