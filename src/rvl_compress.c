@@ -108,10 +108,18 @@ rvl_compress_lz4 (RVL *self, BYTE **out, u32 *size)
   if (nbytes == 0)
     {
       dstCap = LZ4_compressBound (self->data.size);
+
+      rvl_log_debug ("Reallocate output memory to %u bytes.", dstCap);
+
       *out   = realloc (*out, srcSize);
       dst    = (char *)*out;
-
       nbytes = LZ4_compress_HC (src, dst, srcSize, dstCap, LZ4HC_CLEVEL_MIN);
+    }
+
+  if (nbytes <= 0)
+    {
+      rvl_log_fatal ("LZ4 compression failed.");
+      exit (EXIT_FAILURE);
     }
 
   *size = nbytes;
