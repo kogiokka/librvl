@@ -234,7 +234,7 @@ rvl_test_partially_read ()
 
   // Read DATA
   void *buffer = (void *)malloc (rvl_eval_voxels_nbytes (rvl));
-  rvl_read_voxels_to (rvl, &buffer);
+  rvl_read_voxels_to (rvl, buffer);
   print_data_buffer (x, y, z, buffer, rvl_eval_primitive_nbytes (rvl));
   free (buffer);
 

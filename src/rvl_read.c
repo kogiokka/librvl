@@ -105,12 +105,12 @@ rvl_read_info (RVL *self)
 }
 
 void
-rvl_read_voxels_to (RVL *self, void **buffer)
+rvl_read_voxels_to (RVL *self, void *buffer)
 {
   if (self == NULL)
     return;
 
-  self->data.rbuf = *buffer;
+  self->data.rbuf = buffer;
 
   RVLChunkCode code;
   do
@@ -137,7 +137,7 @@ rvl_read_voxels_to (RVL *self, void **buffer)
 void
 rvl_read_data_buffer (RVL *self, void **buffer)
 {
-  rvl_read_voxels_to (self, buffer);
+  rvl_read_voxels_to (self, *buffer);
 }
 
 void

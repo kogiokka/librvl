@@ -230,7 +230,7 @@ RVLLIB_API void rvl_read_info (RVL *self);
 
 // Read the entire volumetric data into the buffer. The buffer allocation and
 // deallocation is managed by the user.
-RVLLIB_API void rvl_read_voxels_to (RVL *self, void **buffer);
+RVLLIB_API void rvl_read_voxels_to (RVL *self, void *buffer);
 
 /* VFMT chunk functions */
 RVLLIB_API void rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,
@@ -312,4 +312,3 @@ RVLLIB_API unsigned int rvl_get_data_nbytes (RVL *self);
 #endif
 
 #endif
-
