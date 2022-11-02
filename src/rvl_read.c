@@ -137,7 +137,7 @@ rvl_read_voxels_to (RVL *self, void **buffer)
 void
 rvl_read_data_buffer (RVL *self, void **buffer)
 {
-  rvl_read_voxels_to (self, *buffer);
+  rvl_read_voxels_to (self, buffer);
 }
 
 void
