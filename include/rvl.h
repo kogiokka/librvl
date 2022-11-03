@@ -264,7 +264,7 @@ RVLLIB_API void rvl_get_voxel_dims_v (RVL *self, int *ndx, int *ndy, int *ndz,
 // writing and deallocate the memory after writing.
 RVLLIB_API void rvl_set_voxels (RVL *self, const void *voxels);
 
-// Get the the voxel data from RVL reader instance. The instance owns the
+// Get the voxel data from RVL reader instance. The instance owns the
 // pointer, and users should not free the memory themselves.
 RVLLIB_API void* rvl_get_voxels (RVL *self);
 
