@@ -5,7 +5,6 @@ project("rvl"
     VERSION 0.6.6
     LANGUAGES C)
 
-option(RVL_BUILD_TEST "Build the unit tests for librvl" ON)
 option(RVL_BUILD_EXAMPLES "Build the examples of librvl" ON)
 
 add_library(rvl SHARED)
