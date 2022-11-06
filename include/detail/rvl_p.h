@@ -1,6 +1,11 @@
 #ifndef RVL_P_H
 #define RVL_P_H
 
+#ifndef RVL_H_INTERNAL
+#error Never include this file directly. Use <rvl.h> instead.
+#endif
+
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -12,7 +17,7 @@ typedef float    f32;
 typedef uint8_t  u8;
 typedef uint16_t u16;
 
-/* Part of VHDR */
+/* Part of VFMT */
 typedef uint16_t RVLPrimitive;
 typedef uint8_t  RVLEndian;
 typedef uint8_t  RVLCompress;
@@ -20,6 +25,8 @@ typedef uint8_t  RVLCompress;
 /* Part of GRID */
 typedef uint8_t RVLGridType;
 typedef int8_t  RVLGridUnit;
+
+typedef struct RVLText RVLText;
 
 typedef void (*RVLWriteFn) (RVL *, const BYTE *, u32);
 typedef void (*RVLReadFn) (RVL *, BYTE *, u32);
@@ -62,12 +69,11 @@ typedef struct
 
 typedef uint32_t RVLChunkCode;
 
-#define RVLChunkCode_VHDR CHUNK_CODE (86, 72, 68, 82)
-#define RVLChunkCode_GRID CHUNK_CODE (71, 82, 73, 68)
-#define RVLChunkCode_DATA CHUNK_CODE (68, 65, 84, 65)
-#define RVLChunkCode_VEND CHUNK_CODE (86, 69, 78, 68)
-
-#define RVLChunkCode_TEXT CHUNK_CODE (84, 69, 88, 84)
+#define RVL_CHUNK_CODE_VFMT CHUNK_CODE (86, 70, 77, 84)
+#define RVL_CHUNK_CODE_GRID CHUNK_CODE (71, 82, 73, 68)
+#define RVL_CHUNK_CODE_DATA CHUNK_CODE (68, 65, 84, 65)
+#define RVL_CHUNK_CODE_TEXT CHUNK_CODE (84, 69, 88, 84)
+#define RVL_CHUNK_CODE_VEND CHUNK_CODE (86, 69, 78, 68)
 
 // RVL File Signature: .RVL FORMAT\0
 #define RVL_FILE_SIG_SIZE 12
@@ -81,12 +87,13 @@ typedef enum
 
 struct RVL
 {
+  bool       isOwningIo;
   FILE      *io;
   RVLIoState ioState;
   RVLWriteFn writeFn;
   RVLReadFn  readFn;
 
-  /* VHDR chunk */
+  /* VFMT chunk */
   u8           version[2]; // major, minor
   u32          resolution[3];
   RVLPrimitive primitive;
@@ -101,14 +108,11 @@ struct RVL
 
   /* TEXT chunk */
   RVLText *text;
-  int      numText;
 };
 
-RVLText *rvl_text_create_array (int num);
-void     rvl_text_destroy_array (RVLText **self);
-void     rvl_alloc (RVL *self, BYTE **ptr, u32 size);
-void     rvl_dealloc (RVL *self, BYTE **ptr);
-void     rvl_fwrite_default (RVL *self, const BYTE *data, u32 size);
-void     rvl_fread_default (RVL *self, BYTE *data, u32 size);
+void rvl_alloc (RVL *self, BYTE **ptr, u32 size);
+void rvl_dealloc (RVL *self, BYTE **ptr);
+void rvl_fwrite_default (RVL *self, const BYTE *data, u32 size);
+void rvl_fread_default (RVL *self, BYTE *data, u32 size);
 
 #endif

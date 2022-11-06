@@ -3,28 +3,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <log.h>
-#include <lz4.h>
-#include <lz4hc.h>
-#include <lzma.h>
-
 #include "rvl.h"
 
-#include "detail/rvl_p.h"
-
 #include "detail/rvl_compress_p.h"
+#include "detail/rvl_log_p.h"
+#include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
 
-static void rvl_write_chunk_header (RVL *self, RVLChunkCode code, u32 size);
-static void rvl_write_chunk_payload (RVL *self, const BYTE *data, u32 size);
+static void rvl_write_chunk_header (RVL *self, u32 code, u32 size);
+static void rvl_write_chunk_payload (RVL *self, const BYTE *payload, u32 size);
 static void rvl_write_chunk_end (RVL *self);
 
-static void rvl_write_VHDR_chunk (RVL *self);
-static void rvl_write_GRID_chunk (RVL *self);
-static void rvl_write_DATA_chunk (RVL *self);
-static void rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr,
-                                  int numText);
-static void rvl_write_VEND_chunk (RVL *self);
+static void rvl_handle_VFMT_chunk (RVL *self);
+static void rvl_handle_GRID_chunk (RVL *self);
+static void rvl_handle_DATA_chunk (RVL *self);
+static void rvl_handle_TEXT_chunk (RVL *self);
+static void rvl_handle_VEND_chunk (RVL *self);
 
 static void rvl_write_file_sig (RVL *self);
 static void rvl_fwrite (RVL *self, const BYTE *data, u32 size);
@@ -41,41 +35,43 @@ rvl_write_rvl (RVL *self)
   rvl_write_file_sig (self);
 
   // Required chunks
-  rvl_write_VHDR_chunk (self);
-  rvl_write_GRID_chunk (self);
-  rvl_write_DATA_chunk (self);
+  rvl_handle_VFMT_chunk (self);
+  rvl_handle_GRID_chunk (self);
+  rvl_handle_DATA_chunk (self);
 
   if (self->text != NULL)
     {
-      rvl_write_TEXT_chunk (self, self->text, self->numText);
+      rvl_handle_TEXT_chunk (self);
     }
 
-  rvl_write_VEND_chunk (self);
+  rvl_handle_VEND_chunk (self);
 }
 
 void
-rvl_write_VHDR_chunk (RVL *self)
+rvl_handle_VFMT_chunk (RVL *self)
 {
   u32 size = 18;
-  u8 *buf  = calloc (1, size);
+  u8 *wbuf = calloc (1, size);
 
   RVLPrimitive primitive = self->primitive;
   RVLEndian    endian    = self->endian;
   RVLCompress  compress  = self->compress;
 
-  memcpy (&buf[0], self->version, 2);
-  memcpy (&buf[2], &self->resolution[0], 12);
-  memcpy (&buf[14], &primitive, 2);
-  memcpy (&buf[16], &endian, 1);
-  memcpy (&buf[17], &compress, 1);
+  memcpy (&wbuf[0], self->version, 2);
+  memcpy (&wbuf[2], &self->resolution[0], 12);
+  memcpy (&wbuf[14], &primitive, 2);
+  memcpy (&wbuf[16], &endian, 1);
+  memcpy (&wbuf[17], &compress, 1);
 
-  rvl_write_chunk_header (self, RVLChunkCode_VHDR, size);
-  rvl_write_chunk_payload (self, buf, size);
+  rvl_write_chunk_header (self, RVL_CHUNK_CODE_VFMT, size);
+  rvl_write_chunk_payload (self, wbuf, size);
   rvl_write_chunk_end (self);
+
+  free (wbuf);
 }
 
 void
-rvl_write_GRID_chunk (RVL *self)
+rvl_handle_GRID_chunk (RVL *self)
 {
   u32   offset   = 14;
   u32   wbufSize = offset + self->grid.dimBufSz;
@@ -99,41 +95,30 @@ rvl_write_GRID_chunk (RVL *self)
   offset += szdy;
   memcpy (&wbuf[offset], self->grid.dz, szdz);
 
-  rvl_write_chunk_header (self, RVLChunkCode_GRID, wbufSize);
+  rvl_write_chunk_header (self, RVL_CHUNK_CODE_GRID, wbufSize);
   rvl_write_chunk_payload (self, wbuf, wbufSize);
   rvl_write_chunk_end (self);
+
+  free (wbuf);
 }
 
 void
-rvl_write_DATA_chunk (RVL *self)
+rvl_handle_DATA_chunk (RVL *self)
 {
   u32   wbufSize = self->data.size;
   BYTE *wbuf     = (BYTE *)malloc (wbufSize);
 
-  int         srcSize = self->data.size;
-  const char *src     = (char *)self->data.wbuf;
-
-  u32 compSize = 0;
-  if (self->compress == RVL_COMPRESSION_LZ4)
+  if (self->compress == RVL_COMPRESSION_LZMA)
     {
-      compSize = LZ4_compress_HC (src, (char *)wbuf, srcSize, wbufSize,
-                                  LZ4HC_CLEVEL_MIN);
-      // When the compressed size is greater than the uncompressed one.
-      if (compSize == 0)
-        {
-          wbufSize = LZ4_compressBound (self->data.size);
-          wbuf     = realloc (wbuf, wbufSize);
-          compSize = LZ4_compress_HC (src, (char *)wbuf, self->data.size,
-                                      wbufSize, LZ4HC_CLEVEL_MIN);
-        }
+      rvl_compress_lzma (self, &wbuf, &wbufSize);
     }
-  else if (self->compress == RVL_COMPRESSION_LZMA)
+  else if (self->compress == RVL_COMPRESSION_LZ4)
     {
-      rvl_compress_lzma (self, &wbuf, &compSize);
+      rvl_compress_lz4 (self, &wbuf, &wbufSize);
     }
 
-  rvl_write_chunk_header (self, RVLChunkCode_DATA, compSize);
-  rvl_write_chunk_payload (self, (const BYTE *)wbuf, compSize);
+  rvl_write_chunk_header (self, RVL_CHUNK_CODE_DATA, wbufSize);
+  rvl_write_chunk_payload (self, (const BYTE *)wbuf, wbufSize);
   rvl_write_chunk_end (self);
 
   free (wbuf);
@@ -141,19 +126,16 @@ rvl_write_DATA_chunk (RVL *self)
 
 // Strip off the null terminator at the end of the value string.
 void
-rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr, int numText)
+rvl_handle_TEXT_chunk (RVL *self)
 {
-  for (int i = 0; i < numText; i++)
+  const RVLText *cur = self->text;
+  while (cur != NULL)
     {
-      const RVLText *const text      = &textArr[i];
-      const u32            keySize   = strlen (text->key);
+      const RVLText *const text      = cur;
       const u32            valueSize = strlen (text->value);
 
-      rvl_write_chunk_header (self, RVLChunkCode_TEXT,
-                              keySize + valueSize + 1);
-
-      // Include the null terminator
-      rvl_write_chunk_payload (self, (const BYTE *)text->key, keySize + 1);
+      rvl_write_chunk_header (self, RVL_CHUNK_CODE_TEXT, valueSize + 1);
+      rvl_write_chunk_payload (self, (const BYTE *)&cur->tag, 1);
 
       if (valueSize != 0)
         {
@@ -161,42 +143,43 @@ rvl_write_TEXT_chunk (RVL *self, const RVLText *textArr, int numText)
         }
 
       rvl_write_chunk_end (self);
+
+      cur = cur->next;
     }
 }
 
 void
-rvl_write_VEND_chunk (RVL *self)
+rvl_handle_VEND_chunk (RVL *self)
 {
-  rvl_write_chunk_header (self, RVLChunkCode_VEND, 0);
+  rvl_write_chunk_header (self, RVL_CHUNK_CODE_VEND, 0);
   rvl_write_chunk_payload (self, NULL, 0);
   rvl_write_chunk_end (self);
 }
 
 void
-rvl_write_chunk_header (RVL *self, RVLChunkCode code, u32 size)
+rvl_write_chunk_header (RVL *self, u32 code, u32 size)
 {
-  u8 buf[8];
+  u32 buf[2];
 
-  // Chunk Size(bytes)
-  memcpy (buf, &size, 4);
-  // Chunk Code
-  memcpy (&buf[4], &code, 4);
+  buf[0] = size;
+  buf[1] = code;
 
-  rvl_fwrite (self, buf, 8);
+  rvl_fwrite (self, (const BYTE *)buf, sizeof (buf));
 }
 
 void
-rvl_write_chunk_payload (RVL *self, const BYTE *data, u32 size)
+rvl_write_chunk_payload (RVL *self, const BYTE *payload, u32 size)
 {
-  if (data != NULL && size > 0)
+  if (payload != NULL && size > 0)
     {
-      rvl_fwrite (self, data, size);
+      rvl_fwrite (self, payload, size);
     }
 }
 
 void
 rvl_write_chunk_end (RVL *self)
 {
+  // TODO CRC for LZ4
   return;
 }
 
@@ -211,8 +194,8 @@ rvl_fwrite (RVL *self, const BYTE *data, u32 size)
 {
   if (self->writeFn == NULL)
     {
-      log_fatal ("[librvl write] Call to NULL write function. Please check if "
-                 "the RVL instance is a writer.");
+      rvl_log_fatal ("Call to NULL write function. Please check if "
+                     "the RVL instance is a writer.");
       exit (EXIT_FAILURE);
     }
 
@@ -222,17 +205,11 @@ rvl_fwrite (RVL *self, const BYTE *data, u32 size)
 void
 rvl_fwrite_default (RVL *self, const BYTE *data, u32 size)
 {
-  if (self->io == NULL)
-    {
-      log_fatal ("[librvl write] RVL is not initialized.");
-      exit (EXIT_FAILURE);
-    }
-
   const size_t count = fwrite (data, 1, size, self->io);
 
   if (count != size)
     {
-      log_fatal ("[librvl write] fwrite failure.");
+      rvl_log_fatal ("Failed to write to file stream.");
       exit (EXIT_FAILURE);
     }
 }
@@ -242,14 +219,13 @@ check_data (RVL *self)
 {
   if (self->data.size <= 0)
     {
-      log_fatal ("[librvl write] Data buffer size is less than 0.");
+      rvl_log_fatal ("Size of data is less than 0.");
       exit (EXIT_FAILURE);
     }
 
-  if (self->data.size != rvl_get_data_nbytes (self))
+  if (self->data.size != rvl_eval_voxels_nbytes (self))
     {
-      log_fatal ("[librvl write] Data buffer size does not match this RVL "
-                 "configuration.");
+      rvl_log_fatal ("Size of data does not match the header information.");
       exit (EXIT_FAILURE);
     }
 }
@@ -259,7 +235,7 @@ check_grid (RVL *self)
 {
   if (self->grid.ndx <= 0 || self->grid.ndy <= 0 || self->grid.ndz <= 0)
     {
-      log_fatal ("[librvl write] Missing voxel dimensions.");
+      rvl_log_fatal ("Missing voxel dimensions.");
       exit (EXIT_FAILURE);
     }
 
@@ -268,8 +244,8 @@ check_grid (RVL *self)
     case RVL_GRID_REGULAR:
       if (self->grid.ndx != 1 || self->grid.ndy != 1 || self->grid.ndz != 1)
         {
-          log_fatal ("[librvl write] Number of voxel dimensions is not valid "
-                     "for regular grid.");
+          rvl_log_fatal ("Number of voxel dimensions is not valid "
+                         "for regular grid.");
           exit (EXIT_FAILURE);
         }
       break;
@@ -279,15 +255,14 @@ check_grid (RVL *self)
         if (self->grid.ndx != r[0] || self->grid.ndy != r[1]
             || self->grid.ndz != r[2])
           {
-            log_fatal (
-                "[librvl write] Number of voxel dimensions do not match "
-                "the resolution.");
+            rvl_log_fatal ("Number of voxel dimensions do not match "
+                           "the resolution.");
             exit (EXIT_FAILURE);
           }
       }
       break;
     default:
-      log_fatal ("[librvl write] Invalid grid type: %.2x.", self->grid.type);
+      rvl_log_fatal ("Invalid grid type: %.2x.", self->grid.type);
       exit (EXIT_FAILURE);
       break;
     }

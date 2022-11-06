@@ -1,32 +1,69 @@
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "rvl.h"
 
+#include "detail/rvl_log_p.h"
 #include "detail/rvl_p.h"
+#include "detail/rvl_text_p.h"
 
+static void rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz);
+static void rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz,
+                                  float *dx, float *dy, float *dz);
 void
-rvl_set_grid_type (RVL *self, RVLenum gridType)
+rvl_set_file (RVL *self, const char *filename)
 {
-  self->grid.type = gridType;
+
+  if (self->isOwningIo && self->io != NULL)
+    {
+      rvl_log_debug ("Closing old file stream...");
+      fclose (self->io);
+    }
+
+  switch (self->ioState)
+    {
+    case RVLIoState_Read:
+      self->io = fopen (filename, "rb");
+      break;
+    case RVLIoState_Write:
+      self->io = fopen (filename, "wb");
+      break;
+    }
+
+  if (self->io == NULL)
+    {
+      rvl_log_error ("fopen failed: %s", strerror (errno));
+    }
+
+  rvl_log_debug ("File stream has been set to file \"%s\".", filename);
+  self->isOwningIo = true;
 }
 
 void
-rvl_set_grid_unit (RVL *self, RVLenum gridUnit)
+rvl_set_io (RVL *self, FILE *stream)
 {
-  self->grid.unit = gridUnit;
+  if (self->isOwningIo && self->io != NULL)
+    {
+      rvl_log_debug ("Closing old file stream...");
+      fclose (self->io);
+    }
+
+  self->io = stream;
+
+  rvl_log_debug ("File stream has been set to %p", stream);
+  self->isOwningIo = false;
 }
 
 void
-rvl_set_primitive (RVL *self, RVLenum primitive)
+rvl_set_volumetric_format (RVL *self, int nx, int ny, int nz,
+                           RVLenum primitive, RVLenum endian)
 {
-  self->primitive = primitive;
-}
-
-void
-rvl_set_endian (RVL *self, RVLenum endian)
-{
-  self->endian = endian;
+  self->resolution[0] = nx;
+  self->resolution[1] = ny;
+  self->resolution[2] = nz;
+  self->primitive     = primitive;
+  self->endian        = endian;
 }
 
 void
@@ -36,19 +73,32 @@ rvl_set_compression (RVL *self, RVLenum compression)
 }
 
 void
-rvl_set_resolution (RVL *self, int x, int y, int z)
+rvl_set_regular_grid (RVL *self, float dx, float dy, float dz)
 {
-  self->resolution[0] = x;
-  self->resolution[1] = y;
-  self->resolution[2] = z;
+  self->grid.type = RVL_GRID_REGULAR;
+  rvl_set_voxel_dims (self, dx, dy, dz);
 }
 
 void
-rvl_set_grid_position (RVL *self, float x, float y, float z)
+rvl_set_rectilinear_grid (RVL *self, int ndx, int ndy, int ndz, float *dx,
+                          float *dy, float *dz)
 {
-  self->grid.position[0] = x;
-  self->grid.position[1] = y;
-  self->grid.position[2] = z;
+  self->grid.type = RVL_GRID_RECTILINEAR;
+  rvl_set_voxel_dims_v (self, ndx, ndy, ndz, dx, dy, dz);
+}
+
+void
+rvl_set_grid_unit (RVL *self, RVLenum gridUnit)
+{
+  self->grid.unit = gridUnit;
+}
+
+void
+rvl_set_grid_origin (RVL *self, float x0, float y0, float z0)
+{
+  self->grid.position[0] = x0;
+  self->grid.position[1] = y0;
+  self->grid.position[2] = z0;
 }
 
 void
@@ -96,18 +146,49 @@ rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz, float *dx,
 }
 
 void
-rvl_set_data_buffer (RVL *self, unsigned int size, const unsigned char *buffer)
+rvl_set_voxels (RVL *self, const void *voxels)
+{
+  self->data.size = rvl_eval_voxels_nbytes (self);
+  self->data.wbuf = (BYTE *)voxels;
+}
+
+void
+rvl_set_data_buffer (RVL *self, unsigned int size, const void *buffer)
 {
   self->data.size = size;
   self->data.wbuf = (BYTE *)buffer;
 }
 
 void
-rvl_set_text (RVL *self, RVLText **text, int numText)
+rvl_set_text (RVL *self, RVLenum tag, const char *value)
 {
-  rvl_text_destroy_array (&self->text);
+  if ((tag & 0xff00) != 0x0D00)
+    {
+      rvl_log_error ("Invalid enum for TEXT chunk.");
+      return;
+    }
 
-  self->text    = *text;
-  self->numText = numText;
-  *text         = NULL;
+  if (self->text == NULL)
+    {
+      RVLText *text = rvl_text_create ();
+      rvl_text_set_field (text, tag, value);
+      self->text = text;
+      return;
+    }
+
+  RVLText *cur = self->text;
+  while (cur->next != NULL)
+    {
+      if (cur->tag == tag)
+        {
+          rvl_log_error ("The text field %.4x has already exist.");
+          return;
+        }
+
+      cur = cur->next;
+    }
+
+  RVLText *text = rvl_text_create ();
+  rvl_text_set_field (text, tag, value);
+  cur->next = text;
 }

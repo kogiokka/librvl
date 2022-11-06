@@ -3,24 +3,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <log.h>
-#include <lz4.h>
-#include <lzma.h>
-
 #include "rvl.h"
 
-#include "detail/rvl_p.h"
-
 #include "detail/rvl_compress_p.h"
+#include "detail/rvl_log_p.h"
+#include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
 
-static void rvl_read_chunk_header (RVL *self, u32 *size, RVLChunkCode *code);
-static void rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size);
+static void rvl_read_chunk_header (RVL *self, u32 *code, u32 *size);
+static void rvl_read_chunk_payload (RVL *self, BYTE *payload, u32 size);
 
-static void rvl_read_VHDR_chunk (RVL *self, const BYTE *rbuf, u32 size);
-static void rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size);
-static void rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size);
-static void rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size);
+static void rvl_handle_VFMT_chunk (RVL *self, u32 size);
+static void rvl_handle_GRID_chunk (RVL *self, u32 size);
+static void rvl_handle_DATA_chunk (RVL *self, u32 size);
+static void rvl_handle_TEXT_chunk (RVL *self, u32 size);
 
 static void rvl_read_file_sig (RVL *self);
 static void rvl_fread (RVL *self, BYTE *data, u32 size);
@@ -37,47 +33,39 @@ rvl_read_rvl (RVL *self)
   do
     {
       u32 size;
-      rvl_read_chunk_header (self, &size, &code);
+      rvl_read_chunk_header (self, &code, &size);
 
       char *ch = (char *)&code;
-      log_debug ("[librvl read] Reading chunk header: size %d, code: %c%c%c%c",
-                 size, ch[0], ch[1], ch[2], ch[3]);
+      rvl_log_debug ("Reading chunk header. Code: %c%c%c%c, Size: %d bytes.",
+                     ch[0], ch[1], ch[2], ch[3], size);
 
-      BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
         {
-        case RVLChunkCode_VHDR:
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_VHDR_chunk (self, rbuf, size);
+        case RVL_CHUNK_CODE_VFMT:
+          rvl_handle_VFMT_chunk (self, size);
           break;
-        case RVLChunkCode_GRID:
-          {
-            rvl_alloc (self, &self->grid.dimBuf, size - 14);
-            rvl_read_chunk_payload (self, rbuf, size);
-            rvl_read_GRID_chunk (self, rbuf, size);
-          }
+        case RVL_CHUNK_CODE_GRID:
+          rvl_alloc (self, &self->grid.dimBuf, size - 14);
+          rvl_handle_GRID_chunk (self, size);
           break;
-        case RVLChunkCode_DATA:
+        case RVL_CHUNK_CODE_DATA:
           rvl_alloc (self, &self->data.rbuf, self->data.size);
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_DATA_chunk (self, rbuf, size);
+          rvl_handle_DATA_chunk (self, size);
           break;
-        case RVLChunkCode_TEXT:
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_TEXT_chunk (self, rbuf, size);
+        case RVL_CHUNK_CODE_TEXT:
+          rvl_handle_TEXT_chunk (self, size);
           break;
-        case RVLChunkCode_VEND:
+        case RVL_CHUNK_CODE_VEND:
           break;
         default:
           {
-            log_warn ("[librvl read] Unknown chunk code: %c%c%c%c", ch[0],
-                      ch[1], ch[2], ch[3]);
+            rvl_log_warn ("Unknown chunk code: %c%c%c%c", ch[0], ch[1], ch[2],
+                          ch[3]);
           }
           break;
         }
-      free (rbuf);
     }
-  while (code != RVLChunkCode_VEND);
+  while (code != RVL_CHUNK_CODE_VEND);
 }
 
 void
@@ -89,90 +77,91 @@ rvl_read_info (RVL *self)
   rvl_read_file_sig (self);
 
   RVLChunkCode code;
+  u32          size;
+
   do
     {
-      u32 size;
-      rvl_read_chunk_header (self, &size, &code);
+      rvl_read_chunk_header (self, &code, &size);
 
-      BYTE *rbuf = (BYTE *)malloc (size);
       switch (code)
         {
-        case RVLChunkCode_VHDR:
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_VHDR_chunk (self, rbuf, size);
+        case RVL_CHUNK_CODE_VFMT:
+          rvl_handle_VFMT_chunk (self, size);
           break;
-        case RVLChunkCode_GRID:
-          {
-            rvl_alloc (self, &self->grid.dimBuf, size - 14);
-            rvl_read_chunk_payload (self, rbuf, size);
-            rvl_read_GRID_chunk (self, rbuf, size);
-          }
+        case RVL_CHUNK_CODE_GRID:
+          rvl_alloc (self, &self->grid.dimBuf, size - 14);
+          rvl_handle_GRID_chunk (self, size);
           break;
-        case RVLChunkCode_TEXT:
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_TEXT_chunk (self, rbuf, size);
+        case RVL_CHUNK_CODE_TEXT:
+          rvl_handle_TEXT_chunk (self, size);
           break;
         default:
           fseek (self->io, size, SEEK_CUR);
           break;
         }
-      free (rbuf);
     }
-  while (code != RVLChunkCode_VEND);
+  while (code != RVL_CHUNK_CODE_VEND);
   fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);
 }
 
 void
-rvl_read_data_buffer (RVL *self, unsigned char **buffer)
+rvl_read_voxels_to (RVL *self, void *buffer)
 {
   if (self == NULL)
     return;
 
-  self->data.rbuf = *buffer;
+  self->data.rbuf = buffer;
 
   RVLChunkCode code;
   do
     {
       u32 size;
-      rvl_read_chunk_header (self, &size, &code);
+      rvl_read_chunk_header (self, &code, &size);
 
-      BYTE *rbuf = (BYTE *)malloc (size);
-
-      if (code == RVLChunkCode_DATA)
+      if (code == RVL_CHUNK_CODE_DATA)
         {
-          rvl_read_chunk_payload (self, rbuf, size);
-          rvl_read_DATA_chunk (self, rbuf, size);
+          rvl_handle_DATA_chunk (self, size);
           break;
         }
       else
         {
           fseek (self->io, size, SEEK_CUR);
         }
-
-      free (rbuf);
     }
-  while (code != RVLChunkCode_VEND);
+  while (code != RVL_CHUNK_CODE_VEND);
 
   self->data.rbuf = NULL;
   fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);
 }
 
 void
-rvl_read_chunk_header (RVL *self, u32 *size, RVLChunkCode *code)
+rvl_read_data_buffer (RVL *self, void **buffer)
 {
-  rvl_fread (self, (BYTE *)size, 4);
-  rvl_fread (self, (BYTE *)code, 4);
+  rvl_read_voxels_to (self, *buffer);
 }
 
 void
-rvl_read_chunk_payload (RVL *self, BYTE *data, u32 size)
+rvl_read_chunk_header (RVL *self, u32 *code, u32 *size)
 {
-  rvl_fread (self, data, size);
+  u32 buf[2];
+  rvl_fread (self, (BYTE *)buf, sizeof (buf));
+
+  *size = buf[0];
+  *code = buf[1];
 }
 
 void
-rvl_read_VHDR_chunk (RVL *self, const BYTE *rbuf, u32 size)
+rvl_read_chunk_payload (RVL *self, BYTE *payload, u32 size)
 {
+  rvl_fread (self, payload, size);
+}
+
+void
+rvl_handle_VFMT_chunk (RVL *self, u32 size)
+{
+  BYTE *rbuf = (BYTE *)malloc (size);
+  rvl_read_chunk_payload (self, rbuf, size);
+
   RVLPrimitive primitive;
   RVLEndian    endian;
   RVLCompress  compress;
@@ -186,12 +175,17 @@ rvl_read_VHDR_chunk (RVL *self, const BYTE *rbuf, u32 size)
   self->endian    = endian;
   self->compress  = compress;
 
-  self->data.size = rvl_get_data_nbytes (self);
+  self->data.size = rvl_eval_voxels_nbytes (self);
+
+  free (rbuf);
 }
 
 void
-rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size)
+rvl_handle_GRID_chunk (RVL *self, u32 size)
 {
+  BYTE *rbuf = (BYTE *)malloc (size);
+  rvl_read_chunk_payload (self, rbuf, size);
+
   u32      offset = 14;
   RVLGrid *grid   = &self->grid;
 
@@ -224,63 +218,62 @@ rvl_read_GRID_chunk (RVL *self, const BYTE *rbuf, u32 size)
   memcpy (grid->dx, &rbuf[offset], szdx);
   memcpy (grid->dy, &rbuf[offset + szdx], szdy);
   memcpy (grid->dz, &rbuf[offset + szdx + szdy], szdz);
+
+  free (rbuf);
 }
 
 void
-rvl_read_DATA_chunk (RVL *self, const BYTE *rbuf, u32 size)
+rvl_handle_DATA_chunk (RVL *self, u32 size)
 {
-  char *const src     = (char *)rbuf;
-  char *const dst     = (char *)self->data.rbuf;
-  const u32   srcSize = size;
-  const u32   dstCap  = self->data.size;
+  BYTE *rbuf = (BYTE *)malloc (size);
+  rvl_read_chunk_payload (self, rbuf, size);
 
   if (self->compress == RVL_COMPRESSION_LZ4)
     {
-      int numBytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
-      if (numBytes != self->data.size)
-        {
-          log_fatal ("[librvl read] Data decompression error!");
-          exit (EXIT_FAILURE);
-        }
+      rvl_decompress_lz4 (self, rbuf, size);
     }
   else if (self->compress == RVL_COMPRESSION_LZMA)
     {
       rvl_decompress_lzma (self, rbuf, size);
     }
+
+  free (rbuf);
 }
 
 void
-rvl_read_TEXT_chunk (RVL *self, const BYTE *rbuf, u32 size)
+rvl_handle_TEXT_chunk (RVL *self, u32 size)
 {
-  RVLText *newArr  = rvl_text_create_array (self->numText + 1);
-  int      numText = self->numText + 1;
+  BYTE *rbuf = (BYTE *)malloc (size);
+  rvl_read_chunk_payload (self, rbuf, size);
 
-  if (self->text != NULL)
+  RVLText *text = rvl_text_create ();
+
+  RVLTag tag;
+  memcpy (&tag, &rbuf[0], 1);
+  text->tag = ((RVLenum)tag) | 0x0D00;
+
+  u32 valueLen = size - 1;
+  text->value  = (char *)malloc (valueLen + 1);
+
+  text->value[valueLen] = '\0';
+  memcpy (text->value, &rbuf[1], valueLen);
+
+  rvl_log_debug ("Read TEXT: %.4X, %s", text->tag, text->value);
+  free (rbuf);
+
+  if (self->text == NULL)
     {
-      memcpy (newArr, self->text, sizeof (RVLText) * self->numText);
-      free (self->text);
+      self->text = text;
+      return;
     }
 
-  RVLText *newText = &newArr[numText - 1];
-
-  // Both the key and the value will be null-terminated.
-  u32 nullPos = 0;
-  for (u32 i = 0; i < size; i++)
+  RVLText *cur = self->text;
+  while (cur->next != NULL)
     {
-      if (rbuf[i] == '\0')
-        {
-          nullPos = i;
-        }
+      cur = cur->next;
     }
-  memcpy (newText->key, rbuf, nullPos + 1);
 
-  u32 valueSize  = size - (nullPos + 1);
-  newText->value = (char *)malloc (valueSize + 1);
-  memcpy (newText->value, rbuf + nullPos + 1, valueSize);
-  newText->value[valueSize + 1] = '\0';
-
-  self->text    = newArr;
-  self->numText = numText;
+  cur->next = text;
 }
 
 void
@@ -293,7 +286,7 @@ rvl_read_file_sig (RVL *self)
     {
       if (sig[i] != RVL_FILE_SIG[i])
         {
-          log_fatal ("[librvl read] Not an RVL file.");
+          rvl_log_fatal ("Not an RVL file.");
           exit (EXIT_FAILURE);
         }
     }
@@ -304,8 +297,8 @@ rvl_fread (RVL *self, BYTE *data, u32 size)
 {
   if (self->readFn == NULL)
     {
-      log_fatal ("[librvl read] Call to NULL read function. Please check if "
-                 "the RVL instance is a reader.");
+      rvl_log_fatal ("Call to NULL read function. Please check if "
+                     "the RVL instance is a reader.");
       exit (EXIT_FAILURE);
     }
 
@@ -315,17 +308,11 @@ rvl_fread (RVL *self, BYTE *data, u32 size)
 void
 rvl_fread_default (RVL *self, BYTE *data, u32 size)
 {
-  if (self->io == NULL)
-    {
-      log_fatal ("[librvl read] RVL is not intialized.");
-      exit (EXIT_FAILURE);
-    }
-
   const size_t count = fread (data, 1, size, self->io);
 
   if (count != size)
     {
-      log_fatal ("[librvl read] fread failure.");
+      rvl_log_fatal ("Failed to read from file stream.");
       exit (EXIT_FAILURE);
     }
 }
