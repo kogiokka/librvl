@@ -279,7 +279,7 @@ rvl_test_io ()
 void
 init_regular_grid (RVL *rvl)
 {
-  rvl_set_volumetric_format (rvl, 2, 2, 2, RVL_PRIMITIVE_VEC2U8,
+  rvl_set_volumetric_format (rvl, 1, 1, 1, RVL_PRIMITIVE_VEC2U8,
                              RVL_ENDIAN_LITTLE);
 
   rvl_set_regular_grid (rvl, 0.1f, 0.2f, 0.3f);

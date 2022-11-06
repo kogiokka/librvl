@@ -30,9 +30,10 @@ rvl_compress_lzma (RVL *self, BYTE **out, u32 *size)
   ret = lzma_raw_buffer_encode (filters, NULL, src, srcSize, *out, &outPos,
                                 dstCap);
 
+  // Handle tiny data
   if (ret == LZMA_BUF_ERROR)
     {
-      dstCap = dstCap * 1.25f;
+      dstCap = 256;
       *out   = realloc (*out, dstCap);
 
       rvl_log_debug ("Reallocate output memory to %u bytes.", dstCap);
