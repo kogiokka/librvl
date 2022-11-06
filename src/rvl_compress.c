@@ -8,9 +8,10 @@
 #include "detail/rvl_compress_p.h"
 #include "detail/rvl_log_p.h"
 
-static void create_lzma_encoder (lzma_stream *self, uint32_t preset);
-static void create_lzma_decoder (lzma_stream *strm);
-static void destroy_lzma_coder (lzma_stream *self);
+static void  create_lzma_encoder (lzma_stream *self);
+static void  create_lzma_decoder (lzma_stream *strm);
+static void  destroy_lzma_coder (lzma_stream *self);
+lzma_filter *get_lzma_default_filters ();
 
 static lzma_ret run_lzma_compression (lzma_stream *strm, const BYTE *src,
                                       u32 srcSize, BYTE *dst, u32 dstCap);
@@ -33,13 +34,13 @@ rvl_compress_lzma (RVL *self, BYTE **out, u32 *size)
                  srcSize);
 
   lzma_ret ret;
-  create_lzma_encoder (&strm, 6 | LZMA_PRESET_DEFAULT);
+  create_lzma_encoder (&strm);
   ret = run_lzma_compression (&strm, src, srcSize, *out, dstCap);
 
   if (ret != LZMA_STREAM_END)
     {
       destroy_lzma_coder (&strm);
-      create_lzma_encoder (&strm, 6 | LZMA_PRESET_DEFAULT);
+      create_lzma_encoder (&strm);
 
       dstCap = lzma_stream_buffer_bound (self->data.size);
       *out   = realloc (*out, dstCap);
@@ -147,11 +148,12 @@ rvl_decompress_lz4 (RVL *self, const BYTE *in, u32 size)
 }
 
 void
-create_lzma_encoder (lzma_stream *self, uint32_t preset)
+create_lzma_encoder (lzma_stream *self)
 {
   *self = (lzma_stream)LZMA_STREAM_INIT;
 
-  lzma_ret ret = lzma_easy_encoder (self, preset, LZMA_CHECK_CRC64);
+  lzma_filter *filters = get_lzma_default_filters ();
+  lzma_ret     ret     = lzma_raw_encoder (self, filters);
 
   // Return successfully
   if (ret == LZMA_OK)
@@ -165,7 +167,8 @@ create_lzma_decoder (lzma_stream *self)
 {
   *self = (lzma_stream)LZMA_STREAM_INIT;
 
-  lzma_ret ret = lzma_stream_decoder (self, UINT32_MAX, LZMA_CONCATENATED);
+  lzma_filter *filters = get_lzma_default_filters ();
+  lzma_ret     ret     = lzma_raw_decoder (self, filters);
 
   // Return successfully
   if (ret == LZMA_OK)
@@ -178,6 +181,41 @@ void
 destroy_lzma_coder (lzma_stream *self)
 {
   lzma_end (self);
+}
+
+lzma_filter *
+get_lzma_default_filters ()
+{
+  static bool initialized = false;
+
+  static lzma_filter       filters[LZMA_FILTERS_MAX + 1];
+  static lzma_options_lzma options;
+
+  if (initialized)
+    {
+      return filters;
+    }
+
+  options.preset_dict      = NULL;
+  options.preset_dict_size = 0;
+
+  options.lc        = LZMA_LC_DEFAULT;
+  options.lp        = LZMA_LP_DEFAULT;
+  options.pb        = LZMA_PB_DEFAULT;
+  options.dict_size = 1U << 23;
+  options.mode      = LZMA_MODE_NORMAL;
+  options.mf        = LZMA_MF_BT4;
+  options.nice_len  = 64;
+  options.depth     = 0;
+
+  filters[0].id      = LZMA_FILTER_LZMA2;
+  filters[0].options = &options;
+  filters[1].id      = LZMA_VLI_UNKNOWN;
+  filters[1].options = NULL;
+
+  initialized = true;
+
+  return filters;
 }
 
 lzma_ret
