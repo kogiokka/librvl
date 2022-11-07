@@ -117,9 +117,9 @@ rvl_create (RVLIoState ioState)
 }
 
 unsigned int
-rvl_eval_primitive_nbytes (RVL *self)
+rvl_sizeof (RVLenum primitive)
 {
-  BYTE *p = (BYTE *)&self->primitive;
+  BYTE *p = (BYTE *)&primitive;
 
   u8 dimen = p[1];
   u8 bytes = (1 << (p[0] & 0x0f)) / 8;
@@ -128,7 +128,7 @@ rvl_eval_primitive_nbytes (RVL *self)
 
   if (nbytes <= 0)
     {
-      rvl_log_error ("Invalid primitive: %.4x", self->primitive);
+      rvl_log_error ("Invalid primitive: %.4x", primitive);
     }
 
   return nbytes;
@@ -144,5 +144,5 @@ rvl_eval_voxels_nbytes (RVL *self)
       rvl_log_error ("Invalid resolution: %d, %d, %d", res[0], res[1], res[2]);
     }
 
-  return res[0] * res[1] * res[2] * rvl_eval_primitive_nbytes (self);
+  return res[0] * res[1] * res[2] * rvl_sizeof (self->primitive);
 }

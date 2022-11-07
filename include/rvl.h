@@ -275,18 +275,8 @@ RVLLIB_API void* rvl_get_voxel_at (RVL *self, int x, int y, int z);
 RVLLIB_API void rvl_set_text (RVL *self, RVLenum tag, const char *value);
 RVLLIB_API const char* rvl_get_text_value (RVL *self, RVLenum tag);
 
-/**
- * Helpers
- *
- * These helper functions depend on VFMT information. Please make sure the
- * information needed has been set before using them.
- */
-
 // Evaluate the byte size of the configured primitive type.
-RVLLIB_API unsigned int rvl_eval_primitive_nbytes (RVL *self);
-
-// Evaluate the total byte size of all voxels with VFMT information.
-RVLLIB_API unsigned int rvl_eval_voxels_nbytes (RVL *self);
+RVLLIB_API unsigned int rvl_sizeof (RVLenum primitive);
 
 
 /* Deprecated functions */
@@ -318,3 +308,4 @@ RVLLIB_API void rvl_get_text (RVL *self, RVLenum tag, const char **value);
 #endif
 
 #endif
+

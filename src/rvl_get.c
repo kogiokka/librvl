@@ -75,7 +75,7 @@ rvl_get_voxel_at (RVL *self, int x, int y, int z)
   u32 nx     = self->resolution[0];
   u32 ny     = self->resolution[1];
   u32 index  = (x + y * nx + z * nx * ny);
-  u32 offset = index * rvl_eval_primitive_nbytes (self);
+  u32 offset = index * rvl_sizeof (self->primitive);
 
   return (void *)(self->data.rbuf + offset);
 }
@@ -112,7 +112,7 @@ rvl_get_text (RVL *self, RVLenum tag, const char **value)
 unsigned int
 rvl_get_primitive_nbytes (RVL *self)
 {
-  return rvl_eval_primitive_nbytes (self);
+  return rvl_sizeof (self->primitive);
 }
 
 unsigned int
