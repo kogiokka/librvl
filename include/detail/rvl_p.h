@@ -115,4 +115,6 @@ void rvl_dealloc (RVL *self, BYTE **ptr);
 void rvl_fwrite_default (RVL *self, const BYTE *data, u32 size);
 void rvl_fread_default (RVL *self, BYTE *data, u32 size);
 
+unsigned int rvl_eval_voxels_nbytes (RVL *self);
+
 #endif

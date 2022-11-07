@@ -241,6 +241,10 @@ RVLLIB_API void rvl_get_volumetric_format (RVL *self, int *nx, int *ny, int *nz,
 RVLLIB_API void    rvl_set_compression (RVL *self, RVLenum compression);
 RVLLIB_API RVLenum rvl_get_compression (RVL *self);
 
+// Get the byte size of the primitive type.
+RVLLIB_API unsigned int rvl_sizeof (RVLenum primitive);
+
+
 /* GRID chunk functions */
 RVLLIB_API void rvl_set_regular_grid (RVL *self, float dx, float dy, float dz);
 RVLLIB_API void rvl_set_rectilinear_grid (RVL *self, int ndx, int ndy, int ndz,
@@ -275,19 +279,6 @@ RVLLIB_API void* rvl_get_voxel_at (RVL *self, int x, int y, int z);
 RVLLIB_API void rvl_set_text (RVL *self, RVLenum tag, const char *value);
 RVLLIB_API const char* rvl_get_text_value (RVL *self, RVLenum tag);
 
-/**
- * Helpers
- *
- * These helper functions depend on VFMT information. Please make sure the
- * information needed has been set before using them.
- */
-
-// Evaluate the byte size of the configured primitive type.
-RVLLIB_API unsigned int rvl_eval_primitive_nbytes (RVL *self);
-
-// Evaluate the total byte size of all voxels with VFMT information.
-RVLLIB_API unsigned int rvl_eval_voxels_nbytes (RVL *self);
-
 
 /* Deprecated functions */
 
@@ -318,3 +309,4 @@ RVLLIB_API void rvl_get_text (RVL *self, RVLenum tag, const char **value);
 #endif
 
 #endif
+

@@ -102,7 +102,7 @@ rvl_compress_lz4 (RVL *self, BYTE **out, u32 *size)
 
       rvl_log_debug ("Reallocate output memory to %u bytes.", dstCap);
 
-      *out   = realloc (*out, srcSize);
+      *out   = realloc (*out, dstCap);
       dst    = (char *)*out;
       nbytes = LZ4_compress_HC (src, dst, srcSize, dstCap, LZ4HC_CLEVEL_MIN);
     }
