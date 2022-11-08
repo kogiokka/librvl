@@ -90,7 +90,7 @@
 #include <stdio.h>
 
 #define RVL_VERSION_MAJOR 0
-#define RVL_VERSION_MINOR 6
+#define RVL_VERSION_MINOR 7
 
 /* RVL struct types */
 typedef struct RVL RVL;
@@ -278,31 +278,6 @@ RVLLIB_API void* rvl_get_voxel_at (RVL *self, int x, int y, int z);
 /* TEXT chunk functions */
 RVLLIB_API void rvl_set_text (RVL *self, RVLenum tag, const char *value);
 RVLLIB_API const char* rvl_get_text_value (RVL *self, RVLenum tag);
-
-
-/* Deprecated functions */
-
-RVL_DEPRECATED("The function has been renamed to rvl_get_grid_origin().")
-RVLLIB_API void rvl_get_grid_position (RVL *self, float *x, float *y, float *z);
-
-RVL_DEPRECATED("Use rvl_read_voxels_to() instead.")
-RVLLIB_API void rvl_read_data_buffer (RVL *self, void **buffer);
-
-RVL_DEPRECATED("Use rvl_set_voxels() instead.")
-RVLLIB_API void rvl_set_data_buffer (RVL *self, unsigned int size,
-                                     const void *buffer);
-
-RVL_DEPRECATED("Use rvl_get_voxels() instead.")
-RVLLIB_API void rvl_get_data_buffer (RVL *self, const void **buffer);
-
-RVL_DEPRECATED("Use rvl_eval_primitive_nbytes() instead.")
-RVLLIB_API unsigned int rvl_get_primitive_nbytes (RVL *self);
-
-RVL_DEPRECATED("Use rvl_eval_voxels_nbytes() instead.")
-RVLLIB_API unsigned int rvl_get_data_nbytes (RVL *self);
-
-RVL_DEPRECATED("Use rvl_get_text_value() instead.")
-RVLLIB_API void rvl_get_text (RVL *self, RVLenum tag, const char **value);
 
 #ifdef __cplusplus
 }
