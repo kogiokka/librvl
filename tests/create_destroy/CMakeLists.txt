@@ -6,4 +6,4 @@ add_executable(create_destroy)
 target_sources(create_destroy PRIVATE "create_destroy.c")
 target_link_libraries(create_destroy rvl-test)
 
-add_test(NAME "Create/Destroy RVL struct" COMMAND create_destroy)
+add_test_cwd("Create/Destroy RVL struct" create_destroy)

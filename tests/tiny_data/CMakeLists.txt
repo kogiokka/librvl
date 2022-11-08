@@ -6,4 +6,4 @@ add_executable(tiny_data)
 target_sources(tiny_data PRIVATE "tiny_data.c")
 target_link_libraries(tiny_data PRIVATE rvl-test)
 
-add_test(NAME "Read/Write tiny data" COMMAND tiny_data)
+add_test_cwd("Read/Write tiny data" tiny_data)
