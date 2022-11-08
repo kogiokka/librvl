@@ -60,14 +60,14 @@ write_rvl (RVL *rvl)
                              RVL_ENDIAN_LITTLE);
   rvl_set_voxels (rvl, buffer);
 
-  rvl_set_text (rvl, RVL_TAG_TITLE, "Sphere");
-  rvl_set_text (rvl, RVL_TAG_DESCRIPTION,
+  rvl_set_text (rvl, RVL_TEXT_TITLE, "Sphere");
+  rvl_set_text (rvl, RVL_TEXT_DESCRIPTION,
                 "Distances from the center of the volumetric data.");
-  rvl_set_text (rvl, RVL_TAG_AUTHOR, "John Doe");
-  rvl_set_text (rvl, RVL_TAG_COPYRIGHT,
+  rvl_set_text (rvl, RVL_TEXT_AUTHOR, "John Doe");
+  rvl_set_text (rvl, RVL_TEXT_COPYRIGHT,
                 "Copyright (c) 2022 by John Doe, All Rights Reserved.");
-  rvl_set_text (rvl, RVL_TAG_LICENSE, "CC BY-SA 4.0");
-  rvl_set_text (rvl, RVL_TAG_CREATION_TIME, "2022-10-26T05:13:44+08:00");
+  rvl_set_text (rvl, RVL_TEXT_LICENSE, "CC BY-SA 4.0");
+  rvl_set_text (rvl, RVL_TEXT_CREATION_TIME, "2022-10-26T05:13:44+08:00");
 
   // Write to file
   rvl_write_rvl (rvl);
@@ -110,13 +110,13 @@ read_rvl (RVL *rvl)
   const void *buffer = rvl_get_voxels (rvl);
   print_voxel_data (nx, ny, nz, buffer);
 
-  const char *title     = rvl_get_text_value (rvl, RVL_TAG_TITLE);
-  const char *descr     = rvl_get_text_value (rvl, RVL_TAG_DESCRIPTION);
-  const char *author    = rvl_get_text_value (rvl, RVL_TAG_AUTHOR);
-  const char *copyright = rvl_get_text_value (rvl, RVL_TAG_COPYRIGHT);
-  const char *license   = rvl_get_text_value (rvl, RVL_TAG_LICENSE);
-  const char *source    = rvl_get_text_value (rvl, RVL_TAG_SOURCE);
-  const char *ctime     = rvl_get_text_value (rvl, RVL_TAG_CREATION_TIME);
+  const char *title     = rvl_get_text_value (rvl, RVL_TEXT_TITLE);
+  const char *descr     = rvl_get_text_value (rvl, RVL_TEXT_DESCRIPTION);
+  const char *author    = rvl_get_text_value (rvl, RVL_TEXT_AUTHOR);
+  const char *copyright = rvl_get_text_value (rvl, RVL_TEXT_COPYRIGHT);
+  const char *license   = rvl_get_text_value (rvl, RVL_TEXT_LICENSE);
+  const char *source    = rvl_get_text_value (rvl, RVL_TEXT_SOURCE);
+  const char *ctime     = rvl_get_text_value (rvl, RVL_TEXT_CREATION_TIME);
 
   fprintf (stdout, "Title: %s\n", title);
   fprintf (stdout, "Description: %s\n", descr);
@@ -130,8 +130,8 @@ read_rvl (RVL *rvl)
 
   int    c[3] = { (nx + 1) / 2 - 1, (ny + 1) / 2 - 1, (nz + 1) / 2 - 1 };
   float *v    = rvl_get_voxel_at (rvl, c[0], c[1], c[2]);
-  fprintf (stdout, "Voxel at (%d, %d, %d) has value: %6.3f.\n", c[0],
-           c[1], c[2], *v);
+  fprintf (stdout, "Voxel at (%d, %d, %d) has value: %6.3f.\n", c[0], c[1],
+           c[2], *v);
 }
 
 void

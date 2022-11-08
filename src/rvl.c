@@ -107,7 +107,7 @@ rvl_create (RVLIoState ioState)
   self->text       = NULL;
 
   // Explicitly set the default values of the optional settings.
-  self->compress         = RVL_COMPRESSION_LZMA;
+  self->compress         = RVL_COMPRESSION_LZMA2;
   self->grid.unit        = RVL_UNIT_NA;
   self->grid.position[0] = 0.0f;
   self->grid.position[1] = 0.0f;

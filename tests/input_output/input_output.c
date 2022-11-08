@@ -14,7 +14,7 @@ main ()
 
   rvl_set_volumetric_format (rvl, NX, NY, NZ, prm, RVL_ENDIAN_BIG);
   rvl_set_regular_grid (rvl, 1.0f, 1.0f, 1.0f);
-  rvl_set_text (rvl, RVL_TAG_AUTHOR, "John Doe");
+  rvl_set_text (rvl, RVL_TEXT_AUTHOR, "John Doe");
 
   int   size = NX * NY * NZ * rvl_sizeof (prm);
   void *data = (void *)malloc (size);

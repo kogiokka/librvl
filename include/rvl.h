@@ -174,16 +174,16 @@ typedef unsigned int RVLenum;
 #define RVL_UNIT_MILIMETER 0X02
 #define RVL_UNIT_KILOMETER 0X03
 
-#define RVL_COMPRESSION_LZMA 0x00
-#define RVL_COMPRESSION_LZ4  0x01
+#define RVL_COMPRESSION_LZMA2 0x00
+#define RVL_COMPRESSION_LZ4   0x01
 
-#define RVL_TAG_TITLE         0x0D01
-#define RVL_TAG_DESCRIPTION   0x0D02
-#define RVL_TAG_AUTHOR        0x0D03
-#define RVL_TAG_COPYRIGHT     0x0D04
-#define RVL_TAG_LICENSE       0x0D05
-#define RVL_TAG_SOURCE        0x0D06
-#define RVL_TAG_CREATION_TIME 0x0D07
+#define RVL_TEXT_TITLE         0x0D01
+#define RVL_TEXT_DESCRIPTION   0x0D02
+#define RVL_TEXT_AUTHOR        0x0D03
+#define RVL_TEXT_COPYRIGHT     0x0D04
+#define RVL_TEXT_LICENSE       0x0D05
+#define RVL_TEXT_SOURCE        0x0D06
+#define RVL_TEXT_CREATION_TIME 0x0D07
 
 // Prevent name-mangling for librvl functions from C++ compiler.
 #ifdef __cplusplus
@@ -284,4 +284,5 @@ RVLLIB_API const char* rvl_get_text_value (RVL *self, RVLenum tag);
 #endif
 
 #endif
+
 

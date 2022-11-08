@@ -14,7 +14,7 @@ main ()
   RVL *rvl = rvl_create_writer ();
   rvl_set_volumetric_format (rvl, RES[0], RES[1], RES[2], PRM, ENDIAN);
   rvl_set_regular_grid (rvl, VX_DIM[0], VX_DIM[1], VX_DIM[2]);
-  rvl_set_text (rvl, RVL_TAG_AUTHOR, "John Doe");
+  rvl_set_text (rvl, RVL_TEXT_AUTHOR, "John Doe");
 
   float *data = (float *)malloc (RES[0] * RES[1] * RES[2]);
   rvl_set_voxels (rvl, data);
@@ -34,7 +34,7 @@ main ()
   rvl_read_info (rvl);
   rvl_get_volumetric_format (rvl, &nx, &ny, &nz, &prm, &endian);
 
-  const char *author = rvl_get_text_value (rvl, RVL_TAG_AUTHOR);
+  const char *author = rvl_get_text_value (rvl, RVL_TEXT_AUTHOR);
 
   if ((prm != PRM) || (endian != ENDIAN)
       || (nx != RES[0] || ny != RES[1] || nz != RES[2])

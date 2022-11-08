@@ -36,7 +36,7 @@ main ()
   rvl_set_regular_grid (rvl, 0.1f, 0.1f, 0.1f);
   rvl_set_voxels (rvl, VOXELS);
 
-  rvl_set_compression (rvl, RVL_COMPRESSION_LZMA);
+  rvl_set_compression (rvl, RVL_COMPRESSION_LZMA2);
   rvl_set_file (rvl, "tiny-lzma2.rvl");
   rvl_write_rvl (rvl);
 

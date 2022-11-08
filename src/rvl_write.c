@@ -108,7 +108,7 @@ rvl_handle_DATA_chunk (RVL *self)
   u32   wbufSize = self->data.size;
   BYTE *wbuf     = (BYTE *)malloc (wbufSize);
 
-  if (self->compress == RVL_COMPRESSION_LZMA)
+  if (self->compress == RVL_COMPRESSION_LZMA2)
     {
       rvl_compress_lzma (self, &wbuf, &wbufSize);
     }

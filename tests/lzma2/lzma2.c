@@ -36,7 +36,7 @@ main ()
   rvl_set_volumetric_format (rvl, NX, NY, NZ, RVL_PRIMITIVE_F32,
                              RVL_ENDIAN_LITTLE);
   rvl_set_regular_grid (rvl, 1.0f, 1.0f, 1.0f);
-  rvl_set_compression (rvl, RVL_COMPRESSION_LZMA);
+  rvl_set_compression (rvl, RVL_COMPRESSION_LZMA2);
 
   rvl_set_voxels (rvl, VOXELS);
 

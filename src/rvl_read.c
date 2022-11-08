@@ -232,7 +232,7 @@ rvl_handle_DATA_chunk (RVL *self, u32 size)
     {
       rvl_decompress_lz4 (self, rbuf, size);
     }
-  else if (self->compress == RVL_COMPRESSION_LZMA)
+  else if (self->compress == RVL_COMPRESSION_LZMA2)
     {
       rvl_decompress_lzma (self, rbuf, size);
     }
