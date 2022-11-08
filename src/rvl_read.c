@@ -166,6 +166,17 @@ rvl_handle_VFMT_chunk (RVL *self, u32 size)
   RVLEndian    endian;
   RVLCompress  compress;
 
+  u8 major = (u8)rbuf[0];
+  u8 minor = (u8)rbuf[1];
+  if (minor != RVL_VERSION_MINOR /* before v1.0.0 */
+      || major != RVL_VERSION_MAJOR)
+    {
+      rvl_log_fatal ("The file was created in an incompatible version: "
+                     "v%d.%d (currently v%d.%d).",
+                     major, minor, RVL_VERSION_MAJOR, RVL_VERSION_MINOR);
+      exit (EXIT_FAILURE);
+    }
+
   memcpy (&self->resolution, &rbuf[2], 12);
   memcpy (&primitive, &rbuf[14], 2);
   memcpy (&endian, &rbuf[16], 1);
