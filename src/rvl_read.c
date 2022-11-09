@@ -175,7 +175,7 @@ rvl_read_chunk_end (RVL *self)
   u32 crc;
   rvl_fread (self, (BYTE *)&crc, sizeof (u32));
 
-  if (crc != self->crc)
+  if (crc != CRC32 (self->crc))
     {
       rvl_log_fatal ("CRC failed. Possibly file corruption.", crc, self->crc);
       exit (EXIT_FAILURE);
@@ -284,8 +284,7 @@ void
 rvl_handle_TEXT_chunk (RVL *self, u32 size)
 {
   BYTE *rbuf = (BYTE *)malloc (size);
-  rvl_read_chunk_payload (self, rbuf, 1);
-  rvl_read_chunk_payload (self, rbuf + 1, size - 1);
+  rvl_read_chunk_payload (self, rbuf, size);
   rvl_read_chunk_end (self);
 
   RVLText *text = rvl_text_create ();

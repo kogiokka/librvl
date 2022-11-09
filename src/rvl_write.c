@@ -182,7 +182,8 @@ rvl_write_chunk_payload (RVL *self, const BYTE *payload, u32 size)
 void
 rvl_write_chunk_end (RVL *self)
 {
-  rvl_fwrite (self, (BYTE *)&self->crc, sizeof (u32));
+  u32 crc = CRC32 (self->crc);
+  rvl_fwrite (self, (BYTE *)&crc, sizeof (u32));
   return;
 }
 

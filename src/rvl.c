@@ -121,7 +121,7 @@ rvl_create (RVLIoState ioState)
 void
 rvl_calculate_crc32 (RVL *self, const BYTE *buf, u32 size)
 {
-  self->crc = CRC32(lzma_crc32 (buf, size, self->crc));
+  self->crc = lzma_crc32 (buf, size, self->crc);
 }
 
 unsigned int
