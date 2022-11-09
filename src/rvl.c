@@ -161,3 +161,12 @@ rvl_eval_voxels_nbytes (RVL *self)
 
   return res[0] * res[1] * res[2] * rvl_sizeof (self->primitive);
 }
+
+void
+rvl_save_u32le (BYTE *buf, u32 num)
+{
+  buf[0] = (BYTE)num;
+  buf[1] = (BYTE)(num >> 8);
+  buf[2] = (BYTE)(num >> 16);
+  buf[3] = (BYTE)(num >> 24);
+}

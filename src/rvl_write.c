@@ -164,7 +164,7 @@ rvl_write_chunk_header (RVL *self, u32 code, u32 size)
   buf[0] = size;
   buf[1] = code;
 
-  rvl_reset_crc32(self);
+  rvl_reset_crc32 (self);
   rvl_calculate_crc32 (self, (BYTE *)&code, 4);
   rvl_fwrite (self, (const BYTE *)buf, sizeof (buf));
 }
@@ -182,8 +182,9 @@ rvl_write_chunk_payload (RVL *self, const BYTE *payload, u32 size)
 void
 rvl_write_chunk_end (RVL *self)
 {
-  u32 crc = CRC32 (self->crc);
-  rvl_fwrite (self, (BYTE *)&crc, sizeof (u32));
+  BYTE buf[4];
+  rvl_save_u32le (buf, self->crc);
+  rvl_fwrite (self, buf, sizeof (u32));
   return;
 }
 

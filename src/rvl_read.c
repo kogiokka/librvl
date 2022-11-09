@@ -172,12 +172,14 @@ rvl_read_chunk_payload (RVL *self, BYTE *payload, u32 size)
 void
 rvl_read_chunk_end (RVL *self)
 {
-  u32 crc;
-  rvl_fread (self, (BYTE *)&crc, sizeof (u32));
+  u32 crc1, crc2;
 
-  if (crc != CRC32 (self->crc))
+  rvl_fread (self, (BYTE *)&crc1, sizeof (u32));
+  rvl_save_u32le ((BYTE *)&crc2, self->crc);
+
+  if (crc1 != crc2)
     {
-      rvl_log_fatal ("CRC failed. Possibly file corruption.", crc, self->crc);
+      rvl_log_fatal ("CRC failed. Possibly file corruption.");
       exit (EXIT_FAILURE);
     }
 }

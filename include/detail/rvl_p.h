@@ -64,8 +64,6 @@ typedef struct
  * little-endian order.
  */
 #define SHIFT32(byte, numBits) ((u32)(byte) << numBits)
-#define CRC32(crc)                                                            \
-  (SHIFT32 (crc, 24) | SHIFT32 (crc, 16) | SHIFT32 (crc, 8) | crc)
 #define CHUNK_CODE(b1, b2, b3, b4)                                            \
   (SHIFT32 (b4, 24) | SHIFT32 (b3, 16) | SHIFT32 (b2, 8) | b1)
 
@@ -122,5 +120,7 @@ unsigned int rvl_eval_voxels_nbytes (RVL *self);
 
 void rvl_calculate_crc32 (RVL *self, const BYTE *buf, u32 size);
 void rvl_reset_crc32 (RVL *self);
+
+void rvl_save_u32le (BYTE *buf, u32 num);
 
 #endif
