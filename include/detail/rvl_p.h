@@ -64,6 +64,8 @@ typedef struct
  * little-endian order.
  */
 #define SHIFT32(byte, numBits) ((u32)(byte) << numBits)
+#define CRC32(crc)                                                            \
+  (SHIFT32 (crc, 24) | SHIFT32 (crc, 16) | SHIFT32 (crc, 8) | crc)
 #define CHUNK_CODE(b1, b2, b3, b4)                                            \
   (SHIFT32 (b4, 24) | SHIFT32 (b3, 16) | SHIFT32 (b2, 8) | b1)
 
@@ -92,6 +94,7 @@ struct RVL
   RVLIoState ioState;
   RVLWriteFn writeFn;
   RVLReadFn  readFn;
+  u32        crc;
 
   /* VFMT chunk */
   u8           version[2]; // major, minor
@@ -116,5 +119,7 @@ void rvl_fwrite_default (RVL *self, const BYTE *data, u32 size);
 void rvl_fread_default (RVL *self, BYTE *data, u32 size);
 
 unsigned int rvl_eval_voxels_nbytes (RVL *self);
+
+void rvl_calculate_crc32 (RVL *self, const BYTE *buf, u32 size);
 
 #endif

@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <lzma.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -105,6 +106,7 @@ rvl_create (RVLIoState ioState)
   self->version[1] = RVL_VERSION_MINOR;
   self->ioState    = ioState;
   self->text       = NULL;
+  self->crc        = 0xFF;
 
   // Explicitly set the default values of the optional settings.
   self->compress         = RVL_COMPRESSION_LZMA2;
@@ -114,6 +116,12 @@ rvl_create (RVLIoState ioState)
   self->grid.position[2] = 0.0f;
 
   return self;
+}
+
+void
+rvl_calculate_crc32 (RVL *self, const BYTE *buf, u32 size)
+{
+  self->crc = CRC32(lzma_crc32 (buf, size, self->crc));
 }
 
 unsigned int

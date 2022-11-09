@@ -13,6 +13,7 @@
        +00 4B chunk size (N bytes)
        +04 4B chunk code
        +08 NB chunk payload
+       +xx 4B CRC32
 
    There are 5 types of chunk: VFMT, GRID, DATA, TEXT, VEND. A valid RVL file
    must contain a VFMT chunk, a GRID chunk, one or more DATA chunks, and a VEND

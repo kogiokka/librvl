@@ -12,11 +12,13 @@
 
 static void rvl_read_chunk_header (RVL *self, u32 *code, u32 *size);
 static void rvl_read_chunk_payload (RVL *self, BYTE *payload, u32 size);
+static void rvl_read_chunk_end (RVL *self);
 
 static void rvl_handle_VFMT_chunk (RVL *self, u32 size);
 static void rvl_handle_GRID_chunk (RVL *self, u32 size);
 static void rvl_handle_DATA_chunk (RVL *self, u32 size);
 static void rvl_handle_TEXT_chunk (RVL *self, u32 size);
+static void rvl_handle_VEND_chunk (RVL *self);
 
 static void rvl_read_file_sig (RVL *self);
 static void rvl_fread (RVL *self, BYTE *data, u32 size);
@@ -56,6 +58,7 @@ rvl_read_rvl (RVL *self)
           rvl_handle_TEXT_chunk (self, size);
           break;
         case RVL_CHUNK_CODE_VEND:
+          rvl_handle_VEND_chunk (self);
           break;
         default:
           {
@@ -95,8 +98,11 @@ rvl_read_info (RVL *self)
         case RVL_CHUNK_CODE_TEXT:
           rvl_handle_TEXT_chunk (self, size);
           break;
+        case RVL_CHUNK_CODE_VEND:
+          rvl_handle_VEND_chunk (self);
+          break;
         default:
-          fseek (self->io, size, SEEK_CUR);
+          fseek (self->io, size + sizeof (u32), SEEK_CUR);
           break;
         }
     }
@@ -148,12 +154,32 @@ rvl_read_chunk_header (RVL *self, u32 *code, u32 *size)
 
   *size = buf[0];
   *code = buf[1];
+
+  self->crc = 0xFF;
+  rvl_calculate_crc32 (self, (BYTE *)code, sizeof (u32));
 }
 
 void
 rvl_read_chunk_payload (RVL *self, BYTE *payload, u32 size)
 {
-  rvl_fread (self, payload, size);
+  if (payload != NULL && size > 0)
+    {
+      rvl_fread (self, payload, size);
+      rvl_calculate_crc32 (self, (BYTE *)payload, size);
+    }
+}
+
+void
+rvl_read_chunk_end (RVL *self)
+{
+  u32 crc;
+  rvl_fread (self, (BYTE *)&crc, sizeof (u32));
+
+  if (crc != self->crc)
+    {
+      rvl_log_fatal ("CRC failed. Possibly file corruption.", crc, self->crc);
+      exit (EXIT_FAILURE);
+    }
 }
 
 void
@@ -161,6 +187,7 @@ rvl_handle_VFMT_chunk (RVL *self, u32 size)
 {
   BYTE *rbuf = (BYTE *)malloc (size);
   rvl_read_chunk_payload (self, rbuf, size);
+  rvl_read_chunk_end (self);
 
   RVLPrimitive primitive;
   RVLEndian    endian;
@@ -196,6 +223,7 @@ rvl_handle_GRID_chunk (RVL *self, u32 size)
 {
   BYTE *rbuf = (BYTE *)malloc (size);
   rvl_read_chunk_payload (self, rbuf, size);
+  rvl_read_chunk_end (self);
 
   u32      offset = 14;
   RVLGrid *grid   = &self->grid;
@@ -238,6 +266,7 @@ rvl_handle_DATA_chunk (RVL *self, u32 size)
 {
   BYTE *rbuf = (BYTE *)malloc (size);
   rvl_read_chunk_payload (self, rbuf, size);
+  rvl_read_chunk_end (self);
 
   if (self->compress == RVL_COMPRESSION_LZ4)
     {
@@ -255,7 +284,9 @@ void
 rvl_handle_TEXT_chunk (RVL *self, u32 size)
 {
   BYTE *rbuf = (BYTE *)malloc (size);
-  rvl_read_chunk_payload (self, rbuf, size);
+  rvl_read_chunk_payload (self, rbuf, 1);
+  rvl_read_chunk_payload (self, rbuf + 1, size - 1);
+  rvl_read_chunk_end (self);
 
   RVLText *text = rvl_text_create ();
 
@@ -285,6 +316,13 @@ rvl_handle_TEXT_chunk (RVL *self, u32 size)
     }
 
   cur->next = text;
+}
+
+void
+rvl_handle_VEND_chunk (RVL *self)
+{
+  rvl_read_chunk_payload (self, NULL, 0);
+  rvl_read_chunk_end (self);
 }
 
 void

@@ -164,6 +164,8 @@ rvl_write_chunk_header (RVL *self, u32 code, u32 size)
   buf[0] = size;
   buf[1] = code;
 
+  self->crc = 0xFF;
+  rvl_calculate_crc32 (self, (BYTE *)&code, 4);
   rvl_fwrite (self, (const BYTE *)buf, sizeof (buf));
 }
 
@@ -172,6 +174,7 @@ rvl_write_chunk_payload (RVL *self, const BYTE *payload, u32 size)
 {
   if (payload != NULL && size > 0)
     {
+      rvl_calculate_crc32 (self, payload, size);
       rvl_fwrite (self, payload, size);
     }
 }
@@ -179,7 +182,7 @@ rvl_write_chunk_payload (RVL *self, const BYTE *payload, u32 size)
 void
 rvl_write_chunk_end (RVL *self)
 {
-  // TODO CRC for LZ4
+  rvl_fwrite (self, (BYTE *)&self->crc, sizeof (u32));
   return;
 }
 
