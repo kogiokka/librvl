@@ -155,7 +155,7 @@ rvl_read_chunk_header (RVL *self, u32 *code, u32 *size)
   *size = buf[0];
   *code = buf[1];
 
-  self->crc = 0xFF;
+  rvl_reset_crc32 (self);
   rvl_calculate_crc32 (self, (BYTE *)code, sizeof (u32));
 }
 

@@ -106,7 +106,8 @@ rvl_create (RVLIoState ioState)
   self->version[1] = RVL_VERSION_MINOR;
   self->ioState    = ioState;
   self->text       = NULL;
-  self->crc        = 0xFF;
+
+  rvl_reset_crc32 (self);
 
   // Explicitly set the default values of the optional settings.
   self->compress         = RVL_COMPRESSION_LZMA2;
@@ -122,6 +123,12 @@ void
 rvl_calculate_crc32 (RVL *self, const BYTE *buf, u32 size)
 {
   self->crc = lzma_crc32 (buf, size, self->crc);
+}
+
+void
+rvl_reset_crc32 (RVL *self)
+{
+  self->crc = 0xffffffff;
 }
 
 unsigned int
