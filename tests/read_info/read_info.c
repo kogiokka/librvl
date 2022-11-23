@@ -42,4 +42,6 @@ main ()
     {
       exit (EXIT_FAILURE);
     }
+
+  rvl_destroy(&rvl);
 }

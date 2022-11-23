@@ -64,4 +64,6 @@ main ()
             }
         }
     }
+
+  rvl_destroy (&rvl);
 }
