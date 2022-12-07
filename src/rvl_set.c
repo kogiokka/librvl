@@ -4,6 +4,7 @@
 
 #include "rvl.h"
 
+#include "detail/filesystem.h"
 #include "detail/rvl_log_p.h"
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
@@ -28,6 +29,22 @@ rvl_set_file (RVL *self, const char *filename)
       break;
     case RVLIoState_Write:
       self->io = fopen (filename, "wb");
+      if (self->io == NULL)
+        {
+          char *parent = (char *)malloc (strlen (filename));
+          parent_path (parent, filename);
+          bool success = create_directories (parent);
+          free (parent);
+
+          if (success)
+            {
+              self->io = fopen (filename, "wb");
+            }
+          else
+            {
+              return;
+            }
+        }
       break;
     }
 

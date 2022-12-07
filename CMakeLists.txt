@@ -51,6 +51,7 @@ PRIVATE
     "src/rvl_set.c"
     "src/rvl_text.c"
     "src/rvl_log.c"
+    "src/filesystem.c"
 )
 
 target_include_directories(rvl PRIVATE "include/")
