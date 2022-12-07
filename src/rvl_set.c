@@ -34,6 +34,7 @@ rvl_set_file (RVL *self, const char *filename)
   if (self->io == NULL)
     {
       rvl_log_error ("fopen failed: %s", strerror (errno));
+      return;
     }
 
   rvl_log_debug ("File stream has been set to file \"%s\".", filename);
