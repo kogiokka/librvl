@@ -27,6 +27,7 @@ PROPERTIES
     PUBLIC_HEADER "include/rvl.h"
     VERSION "${rvl_VERSION}"
     SOVERSION "${rvl_VERSION_MAJOR}.${rvl_VERSION_MINOR}"
+    POSITION_INDEPENDENT_CODE ON
 )
 
 target_compile_definitions(rvl
