@@ -32,7 +32,7 @@ create_directory (const char *path)
   int status = _mkdir (path);
 #endif
 
-  if (status != 0)
+  if (status != 0 && errno != EEXIST)
     {
       rvl_log_error ("%s", strerror (errno));
       return false;
@@ -84,7 +84,7 @@ create_directories (const char *path)
 
       free (stack[i]);
 
-      if (status != 0)
+      if (status != 0 && errno != EEXIST)
         {
           rvl_log_error ("%s", strerror (errno));
           for (int j = i - 1; j >= 0; j--)
@@ -149,4 +149,3 @@ find_last_not_of (const char *str, char c, int pos)
 
   return pos;
 }
-
