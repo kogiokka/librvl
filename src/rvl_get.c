@@ -80,12 +80,6 @@ rvl_get_voxel_at (RVL *self, int x, int y, int z)
   return (void *)(self->data.rbuf + offset);
 }
 
-void
-rvl_get_data_buffer (RVL *self, const void **buffer)
-{
-  *buffer = rvl_get_voxels (self);
-}
-
 const char *
 rvl_get_text_value (RVL *self, RVLenum tag)
 {
@@ -101,28 +95,4 @@ rvl_get_text_value (RVL *self, RVLenum tag)
     }
 
   return "";
-}
-
-void
-rvl_get_text (RVL *self, RVLenum tag, const char **value)
-{
-  *value = rvl_get_text_value (self, tag);
-}
-
-unsigned int
-rvl_get_primitive_nbytes (RVL *self)
-{
-  return rvl_sizeof (self->primitive);
-}
-
-unsigned int
-rvl_get_data_nbytes (RVL *self)
-{
-  return rvl_eval_voxels_nbytes (self);
-}
-
-void
-rvl_get_grid_position (RVL *self, float *x, float *y, float *z)
-{
-  rvl_get_grid_origin (self, x, y, z);
 }

@@ -171,13 +171,6 @@ rvl_set_voxels (RVL *self, const void *voxels)
 }
 
 void
-rvl_set_data_buffer (RVL *self, unsigned int size, const void *buffer)
-{
-  self->data.size = size;
-  self->data.wbuf = (BYTE *)buffer;
-}
-
-void
 rvl_set_text (RVL *self, RVLenum tag, const char *value)
 {
   if ((tag & 0xff00) != 0x0D00)
