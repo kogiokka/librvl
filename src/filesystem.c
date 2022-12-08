@@ -19,6 +19,7 @@
 #define MAX_DIR_DEPTH 80
 
 static int find_last_of (const char *str, char c, int pos);
+static int find_last_not_of (const char *str, char c, int pos);
 
 bool
 create_directory (const char *path)
@@ -108,11 +109,11 @@ parent_path (char *dst, const char *path)
       lastPos -= 1;
     }
 
-  int pos = find_last_of (path, '/', lastPos);
+  int pos = find_last_not_of (path, '/', find_last_of (path, '/', lastPos));
 
   if (pos == NPOS)
     {
-      pos = find_last_of (path, '\\', lastPos);
+      pos = find_last_not_of (path, '\\', find_last_of (path, '\\', lastPos));
     }
 
   dst[pos + 1] = '\0';
@@ -133,3 +134,19 @@ find_last_of (const char *str, char c, int pos)
 
   return pos;
 }
+
+int
+find_last_not_of (const char *str, char c, int pos)
+{
+  for (int i = pos; i >= 0; i--)
+    {
+      if (str[i] != c)
+        {
+          break;
+        }
+      pos--;
+    }
+
+  return pos;
+}
+
