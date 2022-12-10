@@ -130,14 +130,20 @@ rvl_read_voxels_to (RVL *self, void *buffer)
       rvl_log_debug ("Reading chunk header. Code: %c%c%c%c, Size: %d bytes.",
                      ch[0], ch[1], ch[2], ch[3], size);
 
-      if (code == RVL_CHUNK_CODE_DATA)
+      switch (code)
         {
+        case RVL_CHUNK_CODE_VFMT:
+          rvl_handle_VFMT_chunk (self, size);
+          break;
+        case RVL_CHUNK_CODE_DATA:
           rvl_handle_DATA_chunk (self, size);
           break;
-        }
-      else
-        {
+        case RVL_CHUNK_CODE_VEND:
+          rvl_handle_VEND_chunk (self);
+          break;
+        default:
           fseek (self->io, size + sizeof (u32), SEEK_CUR);
+          break;
         }
     }
   while (code != RVL_CHUNK_CODE_VEND);
