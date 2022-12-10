@@ -31,7 +31,12 @@ main ()
 
   rvl = rvl_create_reader ();
   rvl_set_file (rvl, "read_info.rvl");
-  rvl_read_info (rvl);
+
+  for (int i = 0; i < 10; i++)
+    {
+      rvl_read_info (rvl);
+    }
+
   rvl_get_volumetric_format (rvl, &nx, &ny, &nz, &prm, &endian);
 
   const char *author = rvl_get_text_value (rvl, RVL_TEXT_AUTHOR);
@@ -43,5 +48,5 @@ main ()
       exit (EXIT_FAILURE);
     }
 
-  rvl_destroy(&rvl);
+  rvl_destroy (&rvl);
 }

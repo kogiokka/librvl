@@ -107,7 +107,7 @@ rvl_read_info (RVL *self)
         }
     }
   while (code != RVL_CHUNK_CODE_VEND);
-  fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);
+  fseek (self->io, 0, SEEK_SET);
 }
 
 void
