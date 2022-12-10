@@ -116,6 +116,8 @@ rvl_read_voxels_to (RVL *self, void *buffer)
   if (self == NULL)
     return;
 
+  rvl_read_file_sig (self);
+
   self->data.rbuf = buffer;
 
   RVLChunkCode code;
@@ -124,6 +126,10 @@ rvl_read_voxels_to (RVL *self, void *buffer)
       u32 size;
       rvl_read_chunk_header (self, &code, &size);
 
+      char *ch = (char *)&code;
+      rvl_log_debug ("Reading chunk header. Code: %c%c%c%c, Size: %d bytes.",
+                     ch[0], ch[1], ch[2], ch[3], size);
+
       if (code == RVL_CHUNK_CODE_DATA)
         {
           rvl_handle_DATA_chunk (self, size);
@@ -131,13 +137,13 @@ rvl_read_voxels_to (RVL *self, void *buffer)
         }
       else
         {
-          fseek (self->io, size, SEEK_CUR);
+          fseek (self->io, size + sizeof (u32), SEEK_CUR);
         }
     }
   while (code != RVL_CHUNK_CODE_VEND);
 
   self->data.rbuf = NULL;
-  fseek (self->io, RVL_FILE_SIG_SIZE, SEEK_SET);
+  fseek (self->io, 0, SEEK_SET);
 }
 
 void
