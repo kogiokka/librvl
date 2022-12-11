@@ -6,7 +6,7 @@
 #include <lzma.h>
 
 #include "detail/rvl_compress_p.h"
-#include "detail/rvl_log_p.h"
+#include "util/logger.h"
 
 lzma_filter *get_lzma_default_filters ();
 
@@ -20,7 +20,7 @@ rvl_compress_lzma (RVL *self, BYTE **out, u32 *size)
   u32         srcSize = self->data.size;
   u32         dstCap  = self->data.size;
 
-  rvl_log_debug ("Starting XZ compression. The original size is %u bytes.",
+  log_debug ("Starting XZ compression. The original size is %u bytes.",
                  srcSize);
 
   lzma_filter *filters = get_lzma_default_filters ();
@@ -36,7 +36,7 @@ rvl_compress_lzma (RVL *self, BYTE **out, u32 *size)
       dstCap = 256;
       *out   = realloc (*out, dstCap);
 
-      rvl_log_debug ("Reallocate output memory to %u bytes.", dstCap);
+      log_debug ("Reallocate output memory to %u bytes.", dstCap);
       ret = lzma_raw_buffer_encode (filters, NULL, src, srcSize, *out, &outPos,
                                     dstCap);
     }
@@ -48,7 +48,7 @@ rvl_compress_lzma (RVL *self, BYTE **out, u32 *size)
     }
 
   *size = outPos;
-  rvl_log_debug ("Compression succeeded. The result has %u bytes.", outPos);
+  log_debug ("Compression succeeded. The result has %u bytes.", outPos);
 }
 
 void
@@ -73,13 +73,13 @@ rvl_decompress_lzma (RVL *self, const BYTE *in, u32 size)
 
   if (outPos != self->data.size)
     {
-      rvl_log_fatal ("Decompression failed. The original data size should be "
+      log_fatal ("Decompression failed. The original data size should be "
                      "%u. However, the decompressed size was %u.",
                      self->data.size, outPos);
       exit (EXIT_FAILURE);
     }
 
-  rvl_log_debug ("Decompression succeeded. The result has %u bytes.", outPos);
+  log_debug ("Decompression succeeded. The result has %u bytes.", outPos);
 }
 
 void
@@ -90,7 +90,7 @@ rvl_compress_lz4 (RVL *self, BYTE **out, u32 *size)
   char       *dst     = (char *)*out;
   u32         dstCap  = self->data.size;
 
-  rvl_log_debug ("Starting LZ4 compression. The original size is %u bytes.",
+  log_debug ("Starting LZ4 compression. The original size is %u bytes.",
                  srcSize);
 
   int nbytes = LZ4_compress_HC (src, dst, srcSize, dstCap, LZ4HC_CLEVEL_MIN);
@@ -100,7 +100,7 @@ rvl_compress_lz4 (RVL *self, BYTE **out, u32 *size)
     {
       dstCap = LZ4_compressBound (self->data.size);
 
-      rvl_log_debug ("Reallocate output memory to %u bytes.", dstCap);
+      log_debug ("Reallocate output memory to %u bytes.", dstCap);
 
       *out   = realloc (*out, dstCap);
       dst    = (char *)*out;
@@ -109,13 +109,13 @@ rvl_compress_lz4 (RVL *self, BYTE **out, u32 *size)
 
   if (nbytes <= 0)
     {
-      rvl_log_fatal ("LZ4 compression failed.");
+      log_fatal ("LZ4 compression failed.");
       exit (EXIT_FAILURE);
     }
 
   *size = nbytes;
 
-  rvl_log_debug ("Compression succeeded. The result has %u bytes.", nbytes);
+  log_debug ("Compression succeeded. The result has %u bytes.", nbytes);
 }
 
 void
@@ -129,12 +129,12 @@ rvl_decompress_lz4 (RVL *self, const BYTE *in, u32 size)
   int nbytes = LZ4_decompress_safe (src, dst, srcSize, dstCap);
   if ((u32)nbytes != self->data.size)
     {
-      rvl_log_fatal (
+      log_fatal (
           "Decompression failed. The returned number of bytes is %d.", nbytes);
       exit (EXIT_FAILURE);
     }
 
-  rvl_log_debug ("Decompression succeeded. The result has %u bytes.", nbytes);
+  log_debug ("Decompression succeeded. The result has %u bytes.", nbytes);
 }
 
 lzma_filter *
@@ -219,7 +219,7 @@ print_lzma_compression_error (lzma_ret ret)
       break;
     }
 
-  rvl_log_error ("Compression failed: %s (error code %u)\n", msg, ret);
+  log_error ("Compression failed: %s (error code %u)\n", msg, ret);
 }
 
 void
@@ -249,5 +249,5 @@ print_lzma_decompression_error (lzma_ret ret)
       break;
     }
 
-  rvl_log_error ("Decompression failed: %s (error code %u)\n", msg, ret);
+  log_error ("Decompression failed: %s (error code %u)\n", msg, ret);
 }

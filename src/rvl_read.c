@@ -6,9 +6,9 @@
 #include "rvl.h"
 
 #include "detail/rvl_compress_p.h"
-#include "detail/rvl_log_p.h"
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
+#include "util/logger.h"
 
 static void rvl_read_chunk_header (RVL *self, u32 *code, u32 *size);
 static void rvl_read_chunk_payload (RVL *self, BYTE *payload, u32 size);
@@ -38,7 +38,7 @@ rvl_read_rvl (RVL *self)
       rvl_read_chunk_header (self, &code, &size);
 
       char *ch = (char *)&code;
-      rvl_log_debug ("Reading chunk header. Code: %c%c%c%c, Size: %d bytes.",
+      log_debug ("Reading chunk header. Code: %c%c%c%c, Size: %d bytes.",
                      ch[0], ch[1], ch[2], ch[3], size);
 
       switch (code)
@@ -62,7 +62,7 @@ rvl_read_rvl (RVL *self)
           break;
         default:
           {
-            rvl_log_warn ("Unknown chunk code: %c%c%c%c", ch[0], ch[1], ch[2],
+            log_warn ("Unknown chunk code: %c%c%c%c", ch[0], ch[1], ch[2],
                           ch[3]);
           }
           break;
@@ -127,7 +127,7 @@ rvl_read_voxels_to (RVL *self, void *buffer)
       rvl_read_chunk_header (self, &code, &size);
 
       char *ch = (char *)&code;
-      rvl_log_debug ("Reading chunk header. Code: %c%c%c%c, Size: %d bytes.",
+      log_debug ("Reading chunk header. Code: %c%c%c%c, Size: %d bytes.",
                      ch[0], ch[1], ch[2], ch[3], size);
 
       switch (code)
@@ -185,7 +185,7 @@ rvl_read_chunk_end (RVL *self)
 
   if (crc1 != crc2)
     {
-      rvl_log_fatal ("CRC failed. Possibly file corruption.");
+      log_fatal ("CRC failed. Possibly file corruption.");
       exit (EXIT_FAILURE);
     }
 }
@@ -206,7 +206,7 @@ rvl_handle_VFMT_chunk (RVL *self, u32 size)
   if (minor != RVL_VERSION_MINOR /* before v1.0.0 */
       || major != RVL_VERSION_MAJOR)
     {
-      rvl_log_fatal ("The file was created in an incompatible version: "
+      log_fatal ("The file was created in an incompatible version: "
                      "v%d.%d (currently v%d.%d).",
                      major, minor, RVL_VERSION_MAJOR, RVL_VERSION_MINOR);
       exit (EXIT_FAILURE);
@@ -307,7 +307,7 @@ rvl_handle_TEXT_chunk (RVL *self, u32 size)
   text->value[valueLen] = '\0';
   memcpy (text->value, &rbuf[1], valueLen);
 
-  rvl_log_debug ("Read TEXT: %.4X, %s", text->tag, text->value);
+  log_debug ("Read TEXT: %.4X, %s", text->tag, text->value);
   free (rbuf);
 
   if (self->text == NULL)
@@ -342,7 +342,7 @@ rvl_read_file_sig (RVL *self)
     {
       if (sig[i] != RVL_FILE_SIG[i])
         {
-          rvl_log_fatal ("Not an RVL file.");
+          log_fatal ("Not an RVL file.");
           exit (EXIT_FAILURE);
         }
     }
@@ -353,7 +353,7 @@ rvl_fread (RVL *self, BYTE *data, u32 size)
 {
   if (self->readFn == NULL)
     {
-      rvl_log_fatal ("Call to NULL read function. Please check if "
+      log_fatal ("Call to NULL read function. Please check if "
                      "the RVL instance is a reader.");
       exit (EXIT_FAILURE);
     }
@@ -368,7 +368,7 @@ rvl_fread_default (RVL *self, BYTE *data, u32 size)
 
   if (count != size)
     {
-      rvl_log_fatal ("Failed to read from file stream.");
+      log_fatal ("Failed to read from file stream.");
       exit (EXIT_FAILURE);
     }
 }

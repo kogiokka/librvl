@@ -5,9 +5,9 @@
 
 #include "rvl.h"
 
-#include "detail/rvl_log_p.h"
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
+#include "util/logger.h"
 
 // .RVL FORMAT\0
 BYTE RVL_FILE_SIG[RVL_FILE_SIG_SIZE] = {
@@ -81,7 +81,7 @@ rvl_alloc (RVL *self, BYTE **ptr, u32 size)
 
   if (*ptr == NULL)
     {
-      rvl_log_fatal ("Memory allocation failure.");
+      log_fatal ("Memory allocation failure.");
       exit (EXIT_FAILURE);
     }
 }
@@ -143,7 +143,7 @@ rvl_sizeof (RVLenum primitive)
 
   if (nbytes <= 0)
     {
-      rvl_log_error ("Invalid primitive: %.4x", primitive);
+      log_error ("Invalid primitive: %.4x", primitive);
     }
 
   return nbytes;
@@ -156,7 +156,7 @@ rvl_eval_voxels_nbytes (RVL *self)
 
   if (res[0] <= 0 || res[1] <= 0 || res[2] <= 0)
     {
-      rvl_log_error ("Invalid resolution: %d, %d, %d", res[0], res[1], res[2]);
+      log_error ("Invalid resolution: %d, %d, %d", res[0], res[1], res[2]);
     }
 
   return res[0] * res[1] * res[2] * rvl_sizeof (self->primitive);

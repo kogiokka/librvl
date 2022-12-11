@@ -4,10 +4,10 @@
 
 #include "rvl.h"
 
-#include "detail/filesystem.h"
-#include "detail/rvl_log_p.h"
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
+#include "util/filesystem.h"
+#include "util/logger.h"
 
 static void rvl_set_voxel_dims (RVL *self, float dx, float dy, float dz);
 static void rvl_set_voxel_dims_v (RVL *self, int ndx, int ndy, int ndz,
@@ -18,7 +18,7 @@ rvl_set_file (RVL *self, const char *filename)
 
   if (self->isOwningIo && self->io != NULL)
     {
-      rvl_log_debug ("Closing old file stream...");
+      log_debug ("Closing old file stream...");
       fclose (self->io);
     }
 
@@ -50,11 +50,11 @@ rvl_set_file (RVL *self, const char *filename)
 
   if (self->io == NULL)
     {
-      rvl_log_error ("fopen failed: %s", strerror (errno));
+      log_error ("fopen failed: %s", strerror (errno));
       return;
     }
 
-  rvl_log_debug ("File stream has been set to file \"%s\".", filename);
+  log_debug ("File stream has been set to file \"%s\".", filename);
   self->isOwningIo = true;
 }
 
@@ -63,13 +63,13 @@ rvl_set_io (RVL *self, FILE *stream)
 {
   if (self->isOwningIo && self->io != NULL)
     {
-      rvl_log_debug ("Closing old file stream...");
+      log_debug ("Closing old file stream...");
       fclose (self->io);
     }
 
   self->io = stream;
 
-  rvl_log_debug ("File stream has been set to %p", stream);
+  log_debug ("File stream has been set to %p", stream);
   self->isOwningIo = false;
 }
 
@@ -175,7 +175,7 @@ rvl_set_text (RVL *self, RVLenum tag, const char *value)
 {
   if ((tag & 0xff00) != 0x0D00)
     {
-      rvl_log_error ("Invalid enum for TEXT chunk.");
+      log_error ("Invalid enum for TEXT chunk.");
       return;
     }
 
@@ -192,7 +192,7 @@ rvl_set_text (RVL *self, RVLenum tag, const char *value)
     {
       if (cur->tag == tag)
         {
-          rvl_log_error ("The text field %.4x has already exist.");
+          log_error ("The text field %.4x has already exist.");
           return;
         }
 

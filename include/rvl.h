@@ -271,7 +271,7 @@ RVLLIB_API void rvl_set_voxels (RVL *self, const void *voxels);
 
 // Get the voxel data from RVL reader instance. The instance owns the
 // pointer, and users should not free the memory themselves.
-RVLLIB_API void* rvl_get_voxels (RVL *self);
+RVLLIB_API char* rvl_get_voxels (RVL *self);
 
 // Get the pointer to the voxel by x, y, and z indices.
 RVLLIB_API void* rvl_get_voxel_at (RVL *self, int x, int y, int z);

@@ -2,9 +2,9 @@
 
 #include "rvl.h"
 
-#include "detail/rvl_log_p.h"
 #include "detail/rvl_p.h"
 #include "detail/rvl_text_p.h"
+#include "util/logger.h"
 
 void
 rvl_get_volumetric_format (RVL *self, int *nx, int *ny, int *nz,
@@ -63,10 +63,10 @@ rvl_get_grid_origin (RVL *self, float *x, float *y, float *z)
   *z = self->grid.position[2];
 }
 
-void *
+char *
 rvl_get_voxels (RVL *self)
 {
-  return (void *)self->data.rbuf;
+  return (char *)self->data.rbuf;
 }
 
 void *
@@ -88,7 +88,7 @@ rvl_get_text_value (RVL *self, RVLenum tag)
     {
       if (cur->tag == tag)
         {
-          rvl_log_debug ("Get TEXT: %.4X, %s", cur->tag, cur->value);
+          log_debug ("Get TEXT: %.4X, %s", cur->tag, cur->value);
           return cur->value;
         }
       cur = cur->next;

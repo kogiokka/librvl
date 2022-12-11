@@ -50,8 +50,8 @@ PRIVATE
     "src/rvl_get.c"
     "src/rvl_set.c"
     "src/rvl_text.c"
-    "src/rvl_log.c"
-    "src/filesystem.c"
+    "src/util/logger.c"
+    "src/util/filesystem.c"
 )
 
 target_include_directories(rvl PRIVATE "include/")
