@@ -21,7 +21,7 @@ main ()
   memset (data, 'x', size);
   rvl_set_voxels (rvl, data);
 
-  rvl_set_file (rvl, "io.rvl");
+  rvl_set_file (rvl, "test_io.rvl");
   rvl_write_rvl (rvl);
 
   rvl_set_io (rvl, stdout);
@@ -32,8 +32,11 @@ main ()
   rvl_set_io (rvl, stderr);
   rvl_write_rvl (rvl);
 
-  rvl_set_file (rvl, "io_2.rvl");
-  rvl_set_file (rvl, "io_3.rvl");
+  // Create parent directories as needed
+  rvl_set_file (rvl, "out/1/2/test_io_2.rvl");
+
+  // Create parent directories as needed with an existing path
+  rvl_set_file (rvl, "out/1/2/3/test_io_3.rvl");
   rvl_write_rvl (rvl);
 
   free (data);

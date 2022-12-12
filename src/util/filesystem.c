@@ -65,6 +65,7 @@ create_directories (const char *path)
 
       if (strcmp (tmp, "") == 0)
         {
+          free (tmp);
           break;
         }
 
