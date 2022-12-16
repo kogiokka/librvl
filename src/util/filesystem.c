@@ -1,3 +1,10 @@
+/*
+ * Author: Luis Kao
+ *
+ * This file has been put into the public domain.
+ * You can do whatever you want with this file.
+ */
+
 #include "util/filesystem.h"
 #include "util/logger.h"
 
