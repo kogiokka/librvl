@@ -19,7 +19,7 @@ typedef void (*logfn) (logger *self);
 
 struct logger
 {
-  loglevel level;
+  enum loglevel level;
 
   char        timestamp[80];
   const char *fn_name;
@@ -32,8 +32,8 @@ struct logger
 static void logger_fwrite_default (logger *self);
 static void logger_create_timestamp (logger *self);
 
-static logger   the_logger    = { .write_fn = logger_fwrite_default };
-static loglevel level_default = LOG_LEVEL_TRACE;
+static logger        the_logger    = { .write_fn = logger_fwrite_default };
+static enum loglevel level_default = LOG_LEVEL_TRACE;
 
 static int level_colors[LOG_LEVEL_LAST + 1] = { 94, 34, 93, 33, 31, 41 };
 static int level_attrs[LOG_LEVEL_LAST + 1]  = { 2, 1, 1, 1, 1, 1 };
@@ -42,7 +42,7 @@ static const char *level_strings[LOG_LEVEL_LAST + 1] = {
 };
 
 void
-log_event (loglevel level, const char *fn_name, const char *fmt, ...)
+log_event (enum loglevel level, const char *fn_name, const char *fmt, ...)
 {
   if (level < level_default)
     {
@@ -59,7 +59,7 @@ log_event (loglevel level, const char *fn_name, const char *fmt, ...)
 }
 
 void
-log_set_level (loglevel level)
+log_set_level (enum loglevel level)
 {
   level_default = level;
 }

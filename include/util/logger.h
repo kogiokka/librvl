@@ -8,8 +8,6 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-typedef int loglevel;
-
 enum loglevel
 {
   LOG_LEVEL_TRACE,
@@ -20,7 +18,12 @@ enum loglevel
   LOG_LEVEL_FATAL,
 };
 
-void log_event (loglevel level, const char *fn_name, const char *fmt, ...);
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+void log_event (enum loglevel level, const char *fn_name, const char *fmt, ...);
 
 #ifndef NDEBUG
 #define DEBUG_LOG(...) log_event (__VA_ARGS__)
@@ -36,6 +39,10 @@ void log_event (loglevel level, const char *fn_name, const char *fmt, ...);
 #define log_error(...) log_event (LOG_LEVEL_ERROR, __func__, __VA_ARGS__)
 #define log_fatal(...) log_event (LOG_LEVEL_FATAL, __func__, __VA_ARGS__)
 
-void log_set_level (loglevel level);
+void log_set_level (enum loglevel level);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
